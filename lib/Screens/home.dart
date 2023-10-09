@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'history.dart';
+import 'profile.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -22,6 +25,18 @@ class _HomeState extends State<Home> {
     setState(() {
       _selectedIndex = index;
     });
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => History()),
+      );
+    }
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Profile()),
+      );
+    }
   }
 
   @override
