@@ -48,7 +48,7 @@ class FoodPageState extends State<FoodPage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
               child: Text('OK'),
             ),
@@ -79,18 +79,20 @@ class FoodPageState extends State<FoodPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         toolbarHeight: 100,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_sharp),
+          icon: const Icon(Icons.arrow_back_ios_new_sharp,
+          color: Colors.black,),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, MaterialPageRoute(builder: (context) => const Home(),));
           },
         ),
         centerTitle: true,
         title: Text(
           "Foods",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
         ),
       ),
       body: ListView(
@@ -109,6 +111,7 @@ class FoodPageState extends State<FoodPage> {
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all(Size(100, 50)),
+                        backgroundColor: MaterialStateProperty.all(Colors.white), // Default color
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -130,6 +133,7 @@ class FoodPageState extends State<FoodPage> {
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all(Size(100, 50)),
+                        backgroundColor: MaterialStateProperty.all(Colors.white), // Default color
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -149,6 +153,7 @@ class FoodPageState extends State<FoodPage> {
                     },
                     style: ButtonStyle(
                       minimumSize: MaterialStateProperty.all(Size(100, 50)),
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -246,8 +251,11 @@ class FoodPageState extends State<FoodPage> {
         ],
       ),
       floatingActionButton: Container(
-        width: 400,
-        height: 120,
+        width: MediaQuery.of(context).size.width,
+        height: 110,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(80)
+        ),
         child: ElevatedButton(
           onPressed: () {
             // Navigator.push(
