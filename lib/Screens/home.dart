@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'history.dart';
 import 'profile.dart';
+import 'foodPage.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
