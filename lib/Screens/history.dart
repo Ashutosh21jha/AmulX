@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../widgets/item.dart';
+import '../components/bottom_nav.dart';
 
 class History extends StatelessWidget {
   const History({Key? key}) : super(key: key);
@@ -91,6 +92,7 @@ class History extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: const BottomNav(),
     );
   }
 }
