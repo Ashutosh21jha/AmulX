@@ -59,12 +59,12 @@ class FoodPageState extends State<FoodPage> {
   }
 
   void _viewCart() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CartPage(cartItems: _cartItems),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => CartPage(cartItems: _cartItems),
+    //   ),
+    // );
   }
 
   bool _isSortedByPriceLowestToHighest = false;
@@ -250,12 +250,12 @@ class FoodPageState extends State<FoodPage> {
         height: 120,
         child: ElevatedButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CartPage(cartItems: _cartItems),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => CartPage(cartItems: _cartItems),
+            //   ),
+            // );
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.blue), // Change button color

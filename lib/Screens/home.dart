@@ -53,7 +53,7 @@ class _HomeState extends State<Home> {
           Padding(
             padding:
                 const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
-            child: Container(
+            child: SizedBox(
               height: 92,
               child: Center(
                 child: Row(
@@ -85,216 +85,229 @@ class _HomeState extends State<Home> {
 
           const SizedBox(height: 45),
 
-          Container(
-            child: const Text(
-              "Answer your\nappetite!",
-              style: TextStyle(
-                color: Color(0xFF414042),
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.02 *
-                    16, // 2% of the font size (16 logical pixels in this case)
-                // Line height (32 / 16 = 2.0)
-              ),
-              textAlign: TextAlign.center,
+          const Text(
+            "Answer your\nappetite!",
+            style: TextStyle(
+              color: Color(0xFF414042),
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.02 *
+                  16, // 2% of the font size (16 logical pixels in this case)
+              // Line height (32 / 16 = 2.0)
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 30),
 
-          Container(
-            child: GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              children: [
-                // food item container
-                Container(
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Container(
-                            width: 134.5,
-                            height: 134.5,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  spreadRadius: 1,
-                                  blurRadius: 1,
-                                ),
-                              ],
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            children: [
+              // food item container
+              Column(
+                children: [
+                  Center(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FoodPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                          width: 134.5,
+                          height: 134.5,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                spreadRadius: 1,
+                                blurRadius: 1,
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                              child: Image.asset(
+                            "assets/images/food.png",
+                            fit: BoxFit.contain,
+                            width: 80,
+                            height: 83,
+                          ))),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 6.5,
+                  ),
+                  const Text(
+                    "Food",
+                    style: TextStyle(
+                      color: Color(0xFF57585B),
+                      fontSize: 14,
+                    ),
+                  )
+                ],
+              ),
+
+              //Drinks items container
+              Column(
+                children: [
+                  Center(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FoodPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 134.5,
+                        height: 134.5,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              spreadRadius: 1,
+                              blurRadius: 1,
                             ),
-                            /* child: Center(child: SvgPicture.asset(
-                           "assets/images/food.svg"),
-                          ),*/
-                            child: Center(
-                                child: Image.asset(
-                              "assets/images/food.png",
-                              fit: BoxFit.contain,
-                              width: 80,
-                              height: 83,
-                            ))),
-                      ),
-                      const SizedBox(
-                        height: 6.5,
-                      ),
-                      const Text(
-                        "Food",
-                        style: TextStyle(
-                          color: Color(0xFF57585B),
-                          fontSize: 14,
+                          ],
                         ),
-                      )
-                    ],
+/*
+                        child: Center(child: SvgPicture.asset( "assets/images/df.svg",fit: BoxFit.contain,width: 44,height: 57,)),
+*/
+                        child: Center(
+                            child: Image.asset(
+                          "assets/images/drinks.png",
+                          fit: BoxFit.contain,
+                          width: 70,
+                          height: 73,
+                        )),
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(
+                    height: 6.5,
+                  ),
+                  const Text(
+                    "Drinks",
+                    style: TextStyle(
+                      color: Color(0xFF57585B),
+                      fontSize: 14,
+                    ),
+                  )
+                ],
+              ),
 
-                //Drinks items container
-                Container(
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Container(
-/*
-                          child: Center(child: SvgPicture.asset( "assets/images/df.svg",fit: BoxFit.contain,width: 44,height: 57,)),
-*/
-                          width: 134.5,
-                          height: 134.5,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                              ),
-                            ],
+              //munchies items container
+              Column(
+                children: [
+                  Center(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FoodPage(),
                           ),
-/*
-                          child: Center(child: SvgPicture.asset( "assets/images/df.svg",fit: BoxFit.contain,width: 44,height: 57,)),
-*/
-                          child: Center(
-                              child: Image.asset(
-                            "assets/images/drinks.png",
-                            fit: BoxFit.contain,
-                            width: 70,
-                            height: 73,
-                          )),
+                        );
+                      },
+                      child: Container(
+                        width: 134.5,
+                        height: 134.5,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              spreadRadius: 1,
+                              blurRadius: 1,
+                            ),
+                          ],
                         ),
+                        child: Center(
+                            child: Image.asset(
+                          "assets/images/munchies.png",
+                          fit: BoxFit.contain,
+                          width: 66,
+                          height: 70,
+                        )),
                       ),
-                      const SizedBox(
-                        height: 6.5,
-                      ),
-                      const Text(
-                        "Drinks",
-                        style: TextStyle(
-                          color: Color(0xFF57585B),
-                          fontSize: 14,
-                        ),
-                      )
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(
+                    height: 6.5,
+                  ),
+                  const Text(
+                    "Munchies",
+                    style: TextStyle(
+                      color: Color(0xFF57585B),
+                      fontSize: 14,
+                    ),
+                  )
+                ],
+              ),
 
-                //munchies items container
-                Container(
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Container(
-/*
-                          child: Center(child: SvgPicture.asset( "assets/images/df.svg",fit: BoxFit.contain,width: 44,height: 57,)),
-*/
-                          width: 134.5,
-                          height: 134.5,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                              ),
-                            ],
+              // diary items container
+              Column(
+                children: [
+                  Center(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FoodPage(),
                           ),
+                        );
+                      },
+                      child: Container(
+                        width: 134.5,
+                        height: 134.5,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              spreadRadius: 1,
+                              blurRadius: 1,
+                            ),
+                          ],
+                        ),
 /*
-                          child: Center(child: SvgPicture.asset( "assets/images/logo.svg",fit: BoxFit.contain,width: 44,height: 57,)),
+                        child: Center(child: SvgPicture.asset( "assets/images/df.svg",fit: BoxFit.contain,width: 44,height: 57,)),
 */
-                          child: Center(
-                              child: Image.asset(
-                            "assets/images/munchies.png",
-                            fit: BoxFit.contain,
-                            width: 66,
-                            height: 70,
-                          )),
-                        ),
+                        child: Center(
+                            child: Image.asset(
+                          "assets/images/dairy.png",
+                          fit: BoxFit.contain,
+                          width: 62,
+                          height: 62,
+                        )),
                       ),
-                      const SizedBox(
-                        height: 6.5,
-                      ),
-                      const Text(
-                        "Munchies",
-                        style: TextStyle(
-                          color: Color(0xFF57585B),
-                          fontSize: 14,
-                        ),
-                      )
-                    ],
+                    ),
                   ),
-                ),
-
-                // diary items container
-                Container(
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Container(
-/*
-                          child: Center(child: SvgPicture.asset( "assets/images/df.svg",fit: BoxFit.contain,width: 44,height: 57,)),
-*/
-                          width: 134.5,
-                          height: 134.5,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                              ),
-                            ],
-                          ),
-/*
-                          child: Center(child: SvgPicture.asset( "assets/images/df.svg",fit: BoxFit.contain,width: 44,height: 57,)),
-*/
-                          child: Center(
-                              child: Image.asset(
-                            "assets/images/dairy.png",
-                            fit: BoxFit.contain,
-                            width: 62,
-                            height: 62,
-                          )),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 6.5,
-                      ),
-                      const Text(
-                        "Dairy",
-                        style: TextStyle(
-                          color: Color(0xFF57585B),
-                          fontSize: 14,
-                        ),
-                      )
-                    ],
+                  const SizedBox(
+                    height: 6.5,
                   ),
-                ),
-              ],
-            ),
+                  const Text(
+                    "Dairy",
+                    style: TextStyle(
+                      color: Color(0xFF57585B),
+                      fontSize: 14,
+                    ),
+                  )
+                ],
+              ),
+            ],
           ),
         ],
       ),
