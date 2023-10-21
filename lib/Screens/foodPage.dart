@@ -287,27 +287,3 @@ class FoodPageState extends State<FoodPage> {
     );
   }
 }
-class CartPage extends StatelessWidget {
-  final List<FoodItem> cartItems;
-
-  CartPage({required this.cartItems});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Cart'),
-      ),
-      body: ListView.builder(
-        itemCount: cartItems.length,
-        itemBuilder: (context, index) {
-          final cartItem = cartItems[index];
-          return ListTile(
-            title: Text(cartItem.name),
-            subtitle: Text('₹${cartItem.price.toString()}'),
-          );
-        },
-      ),
-    );
-  }
-}
