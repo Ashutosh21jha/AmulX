@@ -4,9 +4,6 @@ import 'package:amul/Screens/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'home.dart';
-// import 'cart_page.dart';
-// import 'cart_items.dart';
-// import 'cart_controller.dart'
 
 class FoodItem {
   String name;
@@ -65,16 +62,6 @@ class FoodPageState extends State<FoodPage> {
     );
   }
 
-  void _viewCart() {
-    Get.to(cart_page());
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => cart_page(cartItems: _cartItems),
-      ),
-    );
-  }
-
   bool _isSortedByPriceLowestToHighest = false;
   bool _isSortedByPriceHighestToLowest = false;
   void _sortListByDefaultOrder() {
@@ -96,18 +83,17 @@ class FoodPageState extends State<FoodPage> {
             color: Colors.black,
           ),
           onPressed: () {
-            Navigator.pop(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Home(),
-                ));
+            Navigator.pop(context);
           },
         ),
         centerTitle: true,
         title: Text(
           "Foods",
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+            color: Colors.black,
+          ),
         ),
       ),
       body: ListView(
@@ -126,13 +112,15 @@ class FoodPageState extends State<FoodPage> {
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all(Size(100, 50)),
-                        backgroundColor: MaterialStateProperty.all(
-                            Colors.white), // Default color
+                        backgroundColor:
+                        MaterialStateProperty.all(Colors.white), // Default color
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('Most Popular',
-                            style: TextStyle(color: Colors.blue)),
+                        child: Text(
+                          'Most Popular',
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
                     ),
                   ),
@@ -142,9 +130,9 @@ class FoodPageState extends State<FoodPage> {
                       onPressed: () {
                         setState(() {
                           _isSortedByPriceLowestToHighest =
-                              !_isSortedByPriceLowestToHighest;
+                          !_isSortedByPriceLowestToHighest;
                           _isSortedByPriceHighestToLowest =
-                              !_isSortedByPriceHighestToLowest;
+                          !_isSortedByPriceHighestToLowest;
                           if (_isSortedByPriceLowestToHighest) {
                             _foodItems.sort((a, b) =>
                                 a.price.compareTo(b.price)); // Ascending order
@@ -153,13 +141,15 @@ class FoodPageState extends State<FoodPage> {
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all(Size(100, 50)),
-                        backgroundColor: MaterialStateProperty.all(
-                            Colors.white), // Default color
+                        backgroundColor:
+                        MaterialStateProperty.all(Colors.white), // Default color
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('Price: Lowest-Highest',
-                            style: TextStyle(color: Colors.blue)),
+                        child: Text(
+                          'Price: Lowest-Highest',
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
                     ),
                   ),
@@ -167,12 +157,13 @@ class FoodPageState extends State<FoodPage> {
                     onPressed: () {
                       setState(() {
                         if (_isSortedByPriceHighestToLowest) {
-                          _foodItems.sort((a, b) => b.price.compareTo(a.price));
+                          _foodItems.sort((a, b) =>
+                              b.price.compareTo(a.price));
                         }
                         _isSortedByPriceHighestToLowest =
-                            !_isSortedByPriceHighestToLowest;
+                        !_isSortedByPriceHighestToLowest;
                         _isSortedByPriceLowestToHighest =
-                            !_isSortedByPriceLowestToHighest;
+                        !_isSortedByPriceLowestToHighest;
                       });
                     },
                     style: ButtonStyle(
@@ -181,8 +172,10 @@ class FoodPageState extends State<FoodPage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text('Price: Highest-Lowest',
-                          style: TextStyle(color: Colors.blue)),
+                      child: Text(
+                        'Price: Highest-Lowest',
+                        style: TextStyle(color: Colors.blue),
+                      ),
                     ),
                   ),
                 ],
@@ -287,53 +280,48 @@ class FoodPageState extends State<FoodPage> {
           SizedBox(height: 120),
         ],
       ),
-      floatingActionButton: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 110,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(80)),
-        child: ElevatedButton(
-          onPressed: () {
-            Get.to(cart_page());
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => cart_page(cartItems: _cartItems),
-              ),
-            );
-          },
-          style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all(Colors.blue), // Change button color
-            padding: MaterialStateProperty.all(
-                EdgeInsets.all(16.0)), // Increase padding
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
+      floatingActionButton: InkWell(
+        onTap: () {
+          Get.to(CartPage());
+        },
+        child: Container(
+          height: 120,
+          child: Card(
+            elevation: 20, // You can adjust the elevation for the card
+            color: Colors.blue,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30), // Customize the border radius
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(26),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align items at each end of the row
                 children: [
-                  Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: Colors.orangeAccent,
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Icon(
+                  Row(
+                    children: [
+                      Icon(
                         Icons.shopping_cart,
                         color: Colors.white,
-                        size: 40,
-                      )), // Icon on the left
-                  SizedBox(width: 80), // Add spacing between icon and text
-                  Text('View Cart',
-                      style: TextStyle(fontSize: 24, color: Colors.white)),
+                        size: 30,
+                      ),
+                      const SizedBox(width: 100),
+                      Text(
+                        'View Cart',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 30,
+                  ),
                 ],
               ),
-              Icon(
-                Icons.arrow_forward,
-                color: Colors.white,
-                size: 30,
-              ), // Forward icon on the right
-            ],
+            ),
           ),
         ),
       ),
