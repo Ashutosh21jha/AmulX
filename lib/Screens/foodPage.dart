@@ -1,12 +1,12 @@
-// import 'package:amul/Screens/cart_controller.dart';
-// import 'package:amul/Screens/cart_items.dart';
-// import 'package:amul/Screens/cart_page.dart';
+import 'package:amul/Screens/cart_controller.dart';
+import 'package:amul/Screens/cart_items.dart';
+import 'package:amul/Screens/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'home.dart';
-import 'cart_page.dart';
-import 'cart_items.dart';
-import 'cart_controller.dart'
+// import 'cart_page.dart';
+// import 'cart_items.dart';
+// import 'cart_controller.dart'
 
 class FoodItem {
   String name;
