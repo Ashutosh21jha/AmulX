@@ -1,11 +1,15 @@
+import 'package:amul/Screens/cart_controller.dart';
+import 'package:amul/Screens/cart_items.dart';
+import 'package:amul/Screens/cart_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'home.dart';
 
 class FoodItem {
   String name;
   int price;
   String imageAsset;
-  FoodItem(this.name, this.price, this.imageAsset );
+  FoodItem(this.name, this.price, this.imageAsset);
 }
 
 class FoodPage extends StatefulWidget {
@@ -59,6 +63,7 @@ class FoodPageState extends State<FoodPage> {
   }
 
   void _viewCart() {
+    Get.to(CartPage());
     // Navigator.push(
     //   context,
     //   MaterialPageRoute(
@@ -83,16 +88,23 @@ class FoodPageState extends State<FoodPage> {
         toolbarHeight: 100,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_sharp,
-          color: Colors.black,),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_sharp,
+            color: Colors.black,
+          ),
           onPressed: () {
-            Navigator.pop(context, MaterialPageRoute(builder: (context) => const Home(),));
+            Navigator.pop(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(),
+                ));
           },
         ),
         centerTitle: true,
         title: Text(
           "Foods",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
         ),
       ),
       body: ListView(
@@ -111,11 +123,13 @@ class FoodPageState extends State<FoodPage> {
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all(Size(100, 50)),
-                        backgroundColor: MaterialStateProperty.all(Colors.white), // Default color
+                        backgroundColor: MaterialStateProperty.all(
+                            Colors.white), // Default color
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('Most Popular', style: TextStyle(color: Colors.blue)),
+                        child: Text('Most Popular',
+                            style: TextStyle(color: Colors.blue)),
                       ),
                     ),
                   ),
@@ -124,20 +138,25 @@ class FoodPageState extends State<FoodPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _isSortedByPriceLowestToHighest = !_isSortedByPriceLowestToHighest;
-                          _isSortedByPriceHighestToLowest = !_isSortedByPriceHighestToLowest;
+                          _isSortedByPriceLowestToHighest =
+                              !_isSortedByPriceLowestToHighest;
+                          _isSortedByPriceHighestToLowest =
+                              !_isSortedByPriceHighestToLowest;
                           if (_isSortedByPriceLowestToHighest) {
-                            _foodItems.sort((a, b) => a.price.compareTo(b.price)); // Ascending order
+                            _foodItems.sort((a, b) =>
+                                a.price.compareTo(b.price)); // Ascending order
                           }
                         });
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all(Size(100, 50)),
-                        backgroundColor: MaterialStateProperty.all(Colors.white), // Default color
+                        backgroundColor: MaterialStateProperty.all(
+                            Colors.white), // Default color
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('Price: Lowest-Highest', style: TextStyle(color: Colors.blue)),
+                        child: Text('Price: Lowest-Highest',
+                            style: TextStyle(color: Colors.blue)),
                       ),
                     ),
                   ),
@@ -147,8 +166,10 @@ class FoodPageState extends State<FoodPage> {
                         if (_isSortedByPriceHighestToLowest) {
                           _foodItems.sort((a, b) => b.price.compareTo(a.price));
                         }
-                        _isSortedByPriceHighestToLowest = !_isSortedByPriceHighestToLowest;
-                        _isSortedByPriceLowestToHighest = !_isSortedByPriceLowestToHighest;
+                        _isSortedByPriceHighestToLowest =
+                            !_isSortedByPriceHighestToLowest;
+                        _isSortedByPriceLowestToHighest =
+                            !_isSortedByPriceLowestToHighest;
                       });
                     },
                     style: ButtonStyle(
@@ -157,7 +178,8 @@ class FoodPageState extends State<FoodPage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text('Price: Highest-Lowest', style: TextStyle(color: Colors.blue)),
+                      child: Text('Price: Highest-Lowest',
+                          style: TextStyle(color: Colors.blue)),
                     ),
                   ),
                 ],
@@ -174,7 +196,8 @@ class FoodPageState extends State<FoodPage> {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10, top: 16, bottom: 12),
+                    padding: const EdgeInsets.only(
+                        left: 10, right: 10, top: 16, bottom: 12),
                     child: Container(
                       height: 150,
                       decoration: BoxDecoration(
@@ -211,14 +234,22 @@ class FoodPageState extends State<FoodPage> {
                                     padding: const EdgeInsets.all(8),
                                     child: Text(
                                       foodItem.name,
-                                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w700),
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(top:10, bottom: 10, left: 10, right: 10),
+                                    padding: const EdgeInsets.only(
+                                        top: 10,
+                                        bottom: 10,
+                                        left: 10,
+                                        right: 10),
                                     child: Text(
                                       '₹${foodItem.price.toString()}',
-                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                 ],
@@ -231,6 +262,9 @@ class FoodPageState extends State<FoodPage> {
                                   padding: const EdgeInsets.only(right: 10),
                                   child: OutlinedButton(
                                     onPressed: () {
+                                      CartController.to.addItem(CartItem(
+                                          name: foodItem.name,
+                                          price: foodItem.price.toDouble()));
                                       _addToCart(foodItem);
                                     },
                                     child: Text('Add'),
@@ -253,11 +287,10 @@ class FoodPageState extends State<FoodPage> {
       floatingActionButton: Container(
         width: MediaQuery.of(context).size.width,
         height: 110,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(80)
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(80)),
         child: ElevatedButton(
           onPressed: () {
+            Get.to(CartPage());
             // Navigator.push(
             //   context,
             //   MaterialPageRoute(
@@ -266,8 +299,10 @@ class FoodPageState extends State<FoodPage> {
             // );
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.blue), // Change button color
-            padding: MaterialStateProperty.all(EdgeInsets.all(16.0)), // Increase padding
+            backgroundColor:
+                MaterialStateProperty.all(Colors.blue), // Change button color
+            padding: MaterialStateProperty.all(
+                EdgeInsets.all(16.0)), // Increase padding
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -279,14 +314,22 @@ class FoodPageState extends State<FoodPage> {
                       height: 60,
                       decoration: BoxDecoration(
                           color: Colors.orangeAccent,
-                          borderRadius: BorderRadius.circular(30)
-                      ),
-                      child: Icon(Icons.shopping_cart, color: Colors.white, size: 40,)), // Icon on the left
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Icon(
+                        Icons.shopping_cart,
+                        color: Colors.white,
+                        size: 40,
+                      )), // Icon on the left
                   SizedBox(width: 80), // Add spacing between icon and text
-                  Text('View Cart', style: TextStyle(fontSize: 24, color: Colors.white)),
+                  Text('View Cart',
+                      style: TextStyle(fontSize: 24, color: Colors.white)),
                 ],
               ),
-              Icon(Icons.arrow_forward, color: Colors.white, size: 30,), // Forward icon on the right
+              Icon(
+                Icons.arrow_forward,
+                color: Colors.white,
+                size: 30,
+              ), // Forward icon on the right
             ],
           ),
         ),
