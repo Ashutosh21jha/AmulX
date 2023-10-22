@@ -1,9 +1,12 @@
-import 'package:amul/Screens/cart_controller.dart';
-import 'package:amul/Screens/cart_items.dart';
-import 'package:amul/Screens/cart_page.dart';
+// import 'package:amul/Screens/cart_controller.dart';
+// import 'package:amul/Screens/cart_items.dart';
+// import 'package:amul/Screens/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'home.dart';
+import 'cart_page.dart';
+import 'cart_items.dart';
+import 'cart_controller.dart'
 
 class FoodItem {
   String name;
@@ -63,13 +66,13 @@ class FoodPageState extends State<FoodPage> {
   }
 
   void _viewCart() {
-    Get.to(CartPage());
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => CartPage(cartItems: _cartItems),
-    //   ),
-    // );
+    Get.to(cart_page());
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => cart_page(cartItems: _cartItems),
+      ),
+    );
   }
 
   bool _isSortedByPriceLowestToHighest = false;
@@ -290,13 +293,13 @@ class FoodPageState extends State<FoodPage> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(80)),
         child: ElevatedButton(
           onPressed: () {
-            Get.to(CartPage());
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => CartPage(cartItems: _cartItems),
-            //   ),
-            // );
+            Get.to(cart_page());
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => cart_page(cartItems: _cartItems),
+              ),
+            );
           },
           style: ButtonStyle(
             backgroundColor:
