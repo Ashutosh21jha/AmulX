@@ -1,4 +1,6 @@
 import 'package:amul/Screens/foodPage.dart';
+import 'package:amul/Screens/home.dart';
+import 'package:amul/Screens/loginpage.dart';
 import 'package:amul/Screens/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
     ));
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: Loginpage(),
     );
   }
 }

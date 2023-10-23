@@ -47,6 +47,7 @@ class CartPage extends StatelessWidget {
                 final item = CartController.to.cartItems[index];
                 return Container(
                   height: 90,
+                  width: 200,
                   margin:
                       const EdgeInsets.symmetric(vertical: 9, horizontal: 14),
                   decoration: BoxDecoration(
@@ -68,6 +69,8 @@ class CartPage extends StatelessWidget {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ),
