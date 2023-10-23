@@ -31,8 +31,8 @@ class CartPage extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'Cart',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
                     ),
                   ),
                 ),
