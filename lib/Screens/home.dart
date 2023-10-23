@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
-import '../components/bottom_nav.dart';
-import 'history.dart';
-import 'profile.dart';
 import 'foodPage.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomePage> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,18 +35,10 @@ class _HomeState extends State<Home> {
                       width: 85,
                       height: 30,
                     ),
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage(
-                            "assets/images/avatar.png",
-                          ),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                    CircleAvatar(
+                      backgroundImage: AssetImage("assets/images/avatar.png"),
+                      backgroundColor: Colors.transparent,
+                      radius: 22,
                     ),
                   ],
                 ),
@@ -266,7 +254,7 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNav(),
+      // bottomNavigationBar: BottomNav(),
     );
   }
 }

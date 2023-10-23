@@ -1,15 +1,10 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
-
 import 'profile_screens/about.dart';
 import 'profile_screens/terms.dart';
 import 'profile_screens/privacy.dart';
 import 'profile_screens/editprofile.dart';
 import 'profile_screens/faq.dart';
 import 'profile_screens/profile_card.dart';
-
-import '../components/bottom_nav.dart';
 
 const EdgeInsets _paddingButtons =
     EdgeInsets.symmetric(horizontal: 12, vertical: 8);
@@ -64,7 +59,7 @@ class Profile extends StatelessWidget {
         children: [
           Container(
             height: MediaQuery.of(context).size.height * 0.25,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -85,9 +80,10 @@ class Profile extends StatelessWidget {
                   // PROFILE CARD
                   Container(
                     width: 327,
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: ShapeDecoration(
-                      color: Color.fromARGB(255, 255, 255, 255),
+                      color: const Color.fromARGB(255, 255, 255, 255),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40),
                       ),
@@ -114,7 +110,7 @@ class Profile extends StatelessWidget {
                                     child: Container(
                                       width: 60,
                                       height: 60,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           image: NetworkImage(
@@ -130,7 +126,7 @@ class Profile extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(width: 16),
-                        Column(
+                        const Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +139,7 @@ class Profile extends StatelessWidget {
                                   fontWeight: FontWeight.w400,
                                   height: 0.07,
                                 )),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20),
                             Text('2022UPD9505',
                                 style: TextStyle(
                                   color: Color(0xFF57585B),
@@ -158,7 +154,7 @@ class Profile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  Text(
+                  const Text(
                     'Account',
                     style: TextStyle(
                       color: Color(0xFF57585B),
@@ -173,36 +169,36 @@ class Profile extends StatelessWidget {
                   ProfileCard(
                       icon: Icons.person,
                       text: "Profile",
-                      screen: EditProfile(),
-                      color: Color(0xFFA287F8)),
+                      screen: const EditProfile(),
+                      color: const Color(0xFFA287F8)),
                   const SizedBox(height: 16),
                   // ABOUT US
                   ProfileCard(
                       icon: Icons.info_outline,
                       text: "About Us",
-                      screen: About(),
-                      color: Color(0xFF02B9F0)),
+                      screen: const About(),
+                      color: const Color(0xFF02B9F0)),
                   const SizedBox(height: 16),
                   // FAQ
                   ProfileCard(
                       icon: Icons.question_answer_outlined,
                       text: "FAQ",
-                      screen: Faq(),
-                      color: Color(0xFFFC6DBB)),
+                      screen: const Faq(),
+                      color: const Color(0xFFFC6DBB)),
                   const SizedBox(height: 16),
                   // TERMS AND CONDITION
                   ProfileCard(
                       icon: Icons.file_copy,
                       text: "Terms and Conditions",
-                      screen: Terms(),
-                      color: Color(0xFF3BA889)),
+                      screen: const Terms(),
+                      color: const Color(0xFF3BA889)),
                   const SizedBox(height: 16),
                   // PRIVACY POLICY
                   ProfileCard(
                       icon: Icons.shield_outlined,
                       text: "Privacy Policy",
-                      screen: Privacy(),
-                      color: Color(0xFFFBBC04)),
+                      screen: const Privacy(),
+                      color: const Color(0xFFFBBC04)),
                   const SizedBox(height: 16),
                   // LOGOUT
                   Container(
@@ -211,7 +207,8 @@ class Profile extends StatelessWidget {
                     decoration: ShapeDecoration(
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 1, color: Color(0xFFF3F3F3)),
+                        side: const BorderSide(
+                            width: 1, color: Color(0xFFF3F3F3)),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       shadows: _shadows,
@@ -224,7 +221,7 @@ class Profile extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(4),
                           decoration: ShapeDecoration(
-                            color: Color(0xFFF57878),
+                            color: const Color(0xFFF57878),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)),
                           ),
@@ -242,8 +239,8 @@ class Profile extends StatelessWidget {
                                     width: 24,
                                     height: 24,
                                     clipBehavior: Clip.antiAlias,
-                                    decoration: BoxDecoration(),
-                                    child: Icon(
+                                    decoration: const BoxDecoration(),
+                                    child: const Icon(
                                       Icons.logout,
                                       color: Colors.white,
                                       size: 16,
@@ -255,7 +252,7 @@ class Profile extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        Expanded(
+                        const Expanded(
                           child: SizedBox(
                             child: Text(
                               'Logout',
@@ -276,7 +273,7 @@ class Profile extends StatelessWidget {
           )
         ],
       ),
-      bottomNavigationBar: BottomNav(),
+      // bottomNavigationBar: const BottomNav(),
     );
   }
 }

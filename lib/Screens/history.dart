@@ -1,9 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../widgets/item.dart';
-import '../components/bottom_nav.dart';
 
 class History extends StatelessWidget {
   const History({Key? key}) : super(key: key);
@@ -17,7 +14,7 @@ class History extends StatelessWidget {
     ];
 
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
+      const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
       ),
@@ -53,7 +50,7 @@ class History extends StatelessWidget {
         children: [
           Container(
             height: MediaQuery.of(context).size.height * 0.25,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -92,7 +89,7 @@ class History extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNav(),
+      // bottomNavigationBar: const BottomNav(),
     );
   }
 }

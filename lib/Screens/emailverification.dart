@@ -1,3 +1,4 @@
+import 'package:amul/Screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
@@ -94,7 +95,6 @@ class _EmailverificationState extends State<Emailverification> {
           const SizedBox(
             height: 20,
           ),
-
           GestureDetector(
             onTap: () {
               Navigator.pushReplacement(context,
@@ -148,7 +148,9 @@ class _EmailverificationState extends State<Emailverification> {
             InkWell(
               onTap: () {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => const Home()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Mainscreen()));
               },
               child: Container(
                 width: 140,
