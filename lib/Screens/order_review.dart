@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'cart_items.dart';
+import 'cart_components/cart_items.dart';
 import 'payment_success.dart';
 import 'order_icons.dart';
 

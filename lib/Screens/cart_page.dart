@@ -1,7 +1,7 @@
 import 'package:amul/Screens/order_review.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'cart_controller.dart';
+import 'cart_components/cart_controller.dart';
 
 class CartPage extends StatelessWidget {
   @override

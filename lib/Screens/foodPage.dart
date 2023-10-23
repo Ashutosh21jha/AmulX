@@ -1,5 +1,5 @@
-import 'package:amul/Screens/cart_controller.dart';
-import 'package:amul/Screens/cart_items.dart';
+import 'cart_components/cart_controller.dart';
+import 'cart_components/cart_items.dart';
 import 'package:amul/Screens/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
