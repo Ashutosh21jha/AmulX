@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import '../components/bottom_nav.dart';
 import 'history.dart';
@@ -83,12 +84,7 @@ class _HomeState extends State<Home> {
                   Center(
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FoodPage(),
-                          ),
-                        );
+                        Get.to(FoodPage());
                       },
                       child: Container(
                           width: 134.5,
@@ -132,12 +128,7 @@ class _HomeState extends State<Home> {
                   Center(
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FoodPage(),
-                          ),
-                        );
+                        Get.to(FoodPage());
                       },
                       child: Container(
                         width: 134.5,
@@ -185,12 +176,7 @@ class _HomeState extends State<Home> {
                   Center(
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FoodPage(),
-                          ),
-                        );
+                        Get.to(FoodPage());
                       },
                       child: Container(
                         width: 134.5,
@@ -235,12 +221,7 @@ class _HomeState extends State<Home> {
                   Center(
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FoodPage(),
-                          ),
-                        );
+                        Get.to(FoodPage());
                       },
                       child: Container(
                         width: 134.5,
