@@ -284,53 +284,56 @@ class FoodPageState extends State<FoodPage> {
           SizedBox(height: 120),
         ],
       ),
-      floatingActionButton: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 110,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(80)),
-        child: ElevatedButton(
-          onPressed: () {
-            Get.to(CartPage());
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => CartPage(cartItems: _cartItems),
-            //   ),
-            // );
-          },
-          style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all(Colors.blue), // Change button color
-            padding: MaterialStateProperty.all(
-                EdgeInsets.all(16.0)), // Increase padding
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
+      floatingActionButton: InkWell(
+        onTap: () {
+          Get.to(CartPage());
+        },
+        child: Container(
+          height: 120,
+          child: Card(
+            elevation: 20, // You can adjust the elevation for the card
+            color: Colors.blue,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30), // Customize the border radius
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align items at each end of the row
                 children: [
-                  Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: Colors.orangeAccent,
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Icon(
-                        Icons.shopping_cart,
-                        color: Colors.white,
-                        size: 40,
-                      )), // Icon on the left
-                  SizedBox(width: 80), // Add spacing between icon and text
-                  Text('View Cart',
-                      style: TextStyle(fontSize: 24, color: Colors.white)),
+                  Row(
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.amber,
+                        ),
+                        child: Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      const SizedBox(width: 60),
+                      Text(
+                        'View Cart',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 30,
+                  ),
                 ],
               ),
-              Icon(
-                Icons.arrow_forward,
-                color: Colors.white,
-                size: 30,
-              ), // Forward icon on the right
-            ],
+            ),
           ),
         ),
       ),
