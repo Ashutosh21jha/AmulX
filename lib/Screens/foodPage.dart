@@ -22,7 +22,7 @@ class FoodPage extends StatefulWidget {
 
 class FoodPageState extends State<FoodPage> {
   List<FoodItem> _foodItems = [
-    FoodItem('Masala Maggi', 40, 'assets/images/masalamaggi.jpg'),
+    FoodItem('Masala\nMaggi', 40, 'assets/images/masalamaggi.jpg'),
     FoodItem('Plain Maggi', 30, 'assets/images/maggi2.jpg'),
     FoodItem('Egg Maggi', 35, 'assets/images/eggmaggie.jpg'),
     FoodItem('2 Egg Maggi', 50, 'assets/images/eggmaggie.jpg'),
