@@ -63,7 +63,7 @@ class OrderReviewPage extends StatelessWidget {
                             ),
                           ), // Item name with count
                           Text(
-                            '\₹.${item.price.toStringAsFixed(2)}',
+                            '\₹${item.price.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 17,
                             ),
