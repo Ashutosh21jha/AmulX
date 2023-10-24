@@ -36,7 +36,7 @@ class PaymentSuccessScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               // Navigate back to the menu page.
-              Get.offAll(FoodPage());
+              Get.offAll(() => FoodPage());
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(horizontal: 120, vertical: 16),

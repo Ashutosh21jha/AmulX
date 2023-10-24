@@ -10,7 +10,7 @@ class CartItemReviewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(item.name),
-      trailing: Text('\Rs.${item.price.toStringAsFixed(2)}'),
+      trailing: Text('\₹${item.price.toStringAsFixed(2)}'),
     );
   }
 }
