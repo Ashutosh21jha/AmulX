@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     ));
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Loginpage(),
+      home: SplashScreen(),
     );
   }
 }

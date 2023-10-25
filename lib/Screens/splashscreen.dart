@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     // After 3000 milliseconds (3 seconds), navigate to the next screen
-    Future.delayed(Duration(milliseconds: 1000), () {
+    Future.delayed(const Duration(milliseconds: 1000), () {
       if (!_animationStarted) {
         _startImageAnimation();
       } else {
@@ -31,15 +31,15 @@ class _SplashScreenState extends State<SplashScreen> {
   // Function to start the image animation
   void _startImageAnimation() {
     // After 500 milliseconds (0.5 seconds), start the animation
-    Future.delayed(Duration(milliseconds: 700), () {
+    Future.delayed(const Duration(milliseconds: 700), () {
       setState(() {
-        _imageOffset = -245.0; // Move the image up by 200 pixels
+        _imageOffset = -175.0; // Move the image up by 200 pixels
         _animationStarted = true;
       });
     });
 
     // After 2500 milliseconds (2.5 seconds), navigate to the next screen
-    Future.delayed(Duration(milliseconds: 1000), () {
+    Future.delayed(const Duration(milliseconds: 1000), () {
       _navigateToNextScreen();
     });
   }
@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color(0xFF00084B),
@@ -67,17 +67,42 @@ class _SplashScreenState extends State<SplashScreen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Center(
-          child: AnimatedContainer(
-            // Translate the image upward
-            duration: Duration(milliseconds: 200),
-            transform: Matrix4.translationValues(0, _imageOffset, 0),
-            child: SvgPicture.asset(
-              "assets/images/logo_white.svg",
-              width: 140,
-              height: 45,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: AnimatedContainer(
+                  // Translate the image upward
+                  duration: const Duration(milliseconds: 200),
+                  transform: Matrix4.translationValues(0, _imageOffset, 0),
+                  child: SvgPicture.asset(
+                    "assets/images/logo_white.svg",
+                    width: 140,
+                    height: 45,
+                  ),
+                ),
+              ),
             ),
-          ),
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 60), // Add padding to the bottom
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Text(
+                    "From DEVCOMM NSUT",
+                    style: TextStyle(
+                      color: Colors.white60,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
