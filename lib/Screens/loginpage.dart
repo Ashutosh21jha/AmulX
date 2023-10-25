@@ -91,7 +91,7 @@ class _LoginpageState extends State<Loginpage> {
               const SizedBox(height: 10),
 
               Container(
-                width: 330,
+                width: double.infinity,
                 height: 50,
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -154,7 +154,7 @@ class _LoginpageState extends State<Loginpage> {
               const SizedBox(height: 10),
 
               Container(
-                width: 330,
+                width: double.infinity,
                 height: 50,
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -222,7 +222,7 @@ class _LoginpageState extends State<Loginpage> {
               ),
               const SizedBox(height: 10),
               Container(
-                width: 330,
+                width: double.infinity,
                 height: 50,
                 decoration: BoxDecoration(
                   border: Border.all(
