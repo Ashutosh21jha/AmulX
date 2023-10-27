@@ -103,7 +103,7 @@ class _LoginpageState extends State<Loginpage> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 5, left: 5),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _text1,
                       decoration: const InputDecoration(
                         /*errorText: _validate ? 'Input Valid Info' : null,*/
@@ -166,7 +166,7 @@ class _LoginpageState extends State<Loginpage> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 5, left: 5),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _text2,
                       obscureText: passwordVisible,
                       decoration: InputDecoration(

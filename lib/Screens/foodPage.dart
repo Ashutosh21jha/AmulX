@@ -1,3 +1,5 @@
+import 'package:flutter_svg/svg.dart';
+
 import 'cart_components/cart_controller.dart';
 import 'cart_components/cart_items.dart';
 import 'package:amul/Screens/cart_page.dart';
@@ -21,16 +23,21 @@ class FoodPage extends StatefulWidget {
 }
 
 class FoodPageState extends State<FoodPage> {
+  List<FoodItem> _cartItems = [];
+  FoodItem? _selectedItem;
+  List<FoodItem> _defaultOrder = [];
   List<FoodItem> _foodItems = [
     FoodItem('Masala\nMaggi', 40, 'assets/images/masalamaggi.jpg'),
     FoodItem('Plain Maggi', 30, 'assets/images/maggi2.jpg'),
     FoodItem('Egg Maggi', 35, 'assets/images/eggmaggie.jpg'),
     FoodItem('2 Egg Maggi', 50, 'assets/images/eggmaggie.jpg'),
     FoodItem('Chocolate\nBrownie', 55, 'assets/images/brownie.jpg'),
+    FoodItem('Masala\nMaggi', 40, 'assets/images/masalamaggi.jpg'),
+    FoodItem('Plain Maggi', 30, 'assets/images/maggi2.jpg'),
+    FoodItem('Egg Maggi', 35, 'assets/images/eggmaggie.jpg'),
+    FoodItem('2 Egg Maggi', 50, 'assets/images/eggmaggie.jpg'),
+    FoodItem('Chocolate\nBrownie', 55, 'assets/images/brownie.jpg'),
   ];
-  List<FoodItem> _cartItems = [];
-  FoodItem? _selectedItem;
-  List<FoodItem> _defaultOrder = [];
 
   @override
   void initState() {
@@ -85,9 +92,11 @@ class FoodPageState extends State<FoodPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         toolbarHeight: 100,
+        elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(
@@ -109,63 +118,74 @@ class FoodPageState extends State<FoodPage> {
               fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
         ),
       ),
-      body: ListView(
-        children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              height: 50,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _sortListByDefaultOrder(); // Sort by default order
-                      },
-                      style: ButtonStyle(
-                        minimumSize:
-                            MaterialStateProperty.all(const Size(100, 50)),
-                        backgroundColor: MaterialStateProperty.all(
-                            Colors.white), // Default color
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Most Popular',
-                            style: TextStyle(color: Colors.blue)),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _isSortedByPriceLowestToHighest =
-                              !_isSortedByPriceLowestToHighest;
-                          _isSortedByPriceHighestToLowest =
-                              !_isSortedByPriceHighestToLowest;
-                          if (_isSortedByPriceLowestToHighest) {
-                            _foodItems.sort((a, b) =>
-                                a.price.compareTo(b.price)); // Ascending order
-                          }
-                        });
-                      },
-                      style: ButtonStyle(
-                        minimumSize:
-                            MaterialStateProperty.all(const Size(100, 50)),
-                        backgroundColor: MaterialStateProperty.all(
-                            Colors.white), // Default color
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Price: Lowest-Highest',
-                            style: TextStyle(color: Colors.blue)),
+                  GestureDetector(
+                    onTap: () {
+                      _sortListByDefaultOrder(); // Sort by default order
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        width: 160,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: const Color(0xFFD1D2D3), // Border color
+                            width: 1, // Border width
+                          ),
+                          borderRadius:
+                              BorderRadius.circular(32.0), // Border radius
+                        ),
+                        child: const Center(
+                            child: Text(
+                          "Most Popular",
+                          //style: TextStyle(color: Colors.white),
+                        )),
                       ),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _isSortedByPriceLowestToHighest =
+                            !_isSortedByPriceLowestToHighest;
+                        _isSortedByPriceHighestToLowest =
+                            !_isSortedByPriceHighestToLowest;
+                        if (_isSortedByPriceLowestToHighest) {
+                          _foodItems.sort((a, b) =>
+                              a.price.compareTo(b.price)); // Ascending order
+                        }
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        width: 240,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: const Color(0xFFD1D2D3), // Border color
+                            width: 1, // Border width
+                          ),
+                          borderRadius:
+                              BorderRadius.circular(32.0), // Border radius
+                        ),
+                        child: const Center(
+                            child: Text(
+                          "Price: Lowest - Highest",
+                          // style: TextStyle(color: Colors.white),
+                        )),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
                       setState(() {
                         if (_isSortedByPriceHighestToLowest) {
                           _foodItems.sort((a, b) => b.price.compareTo(a.price));
@@ -176,169 +196,154 @@ class FoodPageState extends State<FoodPage> {
                             !_isSortedByPriceLowestToHighest;
                       });
                     },
-                    style: ButtonStyle(
-                      minimumSize:
-                          MaterialStateProperty.all(const Size(100, 50)),
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('Price: Highest-Lowest',
-                          style: TextStyle(color: Colors.blue)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        width: 240,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: const Color(0xFFD1D2D3), // Border color
+                            width: 1, // Border width
+                          ),
+                          borderRadius:
+                              BorderRadius.circular(32.0), // Border radius
+                        ),
+                        child: const Center(
+                            child: Text("Price: Highest - Lowest")),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _foodItems.length,
-            itemBuilder: (context, index) {
-              final foodItem = _foodItems[index];
-
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10, right: 10, top: 16, bottom: 12),
-                    child: Container(
-                      height: 150,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.4),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
+            const SizedBox(
+              height: 20,
+            ),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: _foodItems.length,
+                itemBuilder: (context, index) {
+                  final foodItem = _foodItems[index];
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8, right: 8, bottom: 5),
+                    child: Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ListTile(
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: 70,
+                              height: 70,
                               child: Image.asset(
                                 foodItem.imageAsset,
-                                width: 100,
-                                height: 100,
                                 fit: BoxFit.fill,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Text(
-                                      foodItem.name,
-                                      style: const TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10,
-                                        bottom: 10,
-                                        left: 10,
-                                        right: 10),
-                                    child: Text(
-                                      '₹${foodItem.price.toString()}',
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          ),
+                          title: Text(
+                            foodItem.name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
-                            Expanded(
-                              child: Container(
-                                alignment: AlignmentDirectional.centerEnd,
+                          ),
+                          subtitle: Text(
+                            '₹${foodItem.price.toString()}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                          trailing: GestureDetector(
+                            onTap: () {
+                              CartController.to.addItem(CartItem(
+                                  name: foodItem.name,
+                                  price: foodItem.price.toDouble()));
+                              _addToCart(foodItem);
+                            },
+                            child: Container(
+                              width: 90,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xFFD1D2D3),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(60.0),
+                              ),
+                              child: const Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: OutlinedButton(
-                                    onPressed: () {
-                                      CartController.to.addItem(CartItem(
-                                          name: foodItem.name,
-                                          price: foodItem.price.toDouble()));
-                                      _addToCart(foodItem);
-                                    },
-                                    child: const Text('Add'),
+                                  padding: EdgeInsets.all(5),
+                                  child: Text(
+                                    "Add",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 120),
-        ],
+                          ),
+                        )),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: InkWell(
         onTap: () {
           Get.to(CartPage());
         },
-        child: Container(
-          height: 120,
-          child: Card(
-            elevation: 20, // You can adjust the elevation for the card
-            color: Colors.blue,
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(30), // Customize the border radius
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // Align items at each end of the row
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.amber,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            height: 85,
+            child: Card(
+              elevation: 10, // You can adjust the elevation for the card
+              color: const Color(0xFF2546A9),
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(30), // Customize the border radius
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // Align items at each end of the row
+                  children: [
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/images/cartlogo.svg",
                         ),
-                        child: const Icon(
-                          Icons.shopping_cart,
-                          color: Colors.white,
-                          size: 30,
+                        const SizedBox(width: 60),
+                        const Text(
+                          'View Cart',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 60),
-                      const Text(
-                        'View Cart',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                ],
+                      ],
+                    ),
+                    const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
