@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
-import 'home.dart';
-import 'loginpage.dart';
-
 class Emailverification extends StatefulWidget {
   final String loginMail;
 
@@ -97,8 +94,7 @@ class _EmailverificationState extends State<Emailverification> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const Loginpage()));
+              Navigator.pop(context);
             },
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -147,10 +143,11 @@ class _EmailverificationState extends State<Emailverification> {
             ),
             InkWell(
               onTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const Mainscreen()));
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Mainscreen()),
+                  (route) => false,
+                );
               },
               child: Container(
                 width: 140,
