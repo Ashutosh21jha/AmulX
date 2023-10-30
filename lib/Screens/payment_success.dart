@@ -1,4 +1,6 @@
 import 'package:amul/Screens/foodPage.dart';
+import 'package:amul/Screens/home.dart';
+import 'package:amul/Screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,7 +38,7 @@ class PaymentSuccessScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               // Navigate back to the menu page.
-              Get.offAll(() => FoodPage());
+              Get.offAll(() => Mainscreen());
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(horizontal: 120, vertical: 16),

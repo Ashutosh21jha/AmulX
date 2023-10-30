@@ -30,31 +30,31 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'My Profile',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontFamily: 'Epilogue',
-            fontWeight: FontWeight.w700,
-            height: 0.06,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-        actions: const [
-          SizedBox(width: 48),
-        ],
-      ),
-      extendBodyBehindAppBar: true,
+      // appBar: AppBar(
+      //   title: const Text(
+      //     'My Profile',
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: 18,
+      //       fontFamily: 'Epilogue',
+      //       fontWeight: FontWeight.w700,
+      //       height: 0.06,
+      //     ),
+      //   ),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.transparent,
+      //   leading: IconButton(
+      //     color: Colors.white,
+      //     onPressed: () {
+      //       Navigator.pop(context);
+      //     },
+      //     icon: const Icon(Icons.arrow_back),
+      //   ),
+      //   actions: const [
+      //     SizedBox(width: 48),
+      //   ],
+      // ),
+      // extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           Container(
@@ -76,7 +76,23 @@ class Profile extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 80),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'My Profile',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontFamily: 'Epilogue',
+                          fontWeight: FontWeight.w700,
+                          height: 0.06,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 30),
                   // PROFILE CARD
                   Container(
                     width: 327,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "784594753558",
+    "project_id": "amul-c27e3",
+    "storage_bucket": "amul-c27e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784594753558:android:abe84a0085c95806c77d37",
+        "android_client_info": {
+          "package_name": "com.example.amul"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBk5kdOZNvXQmzFdEv4ykw50423j82uE_4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

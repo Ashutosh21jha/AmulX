@@ -73,7 +73,7 @@ class _HomeState extends State<HomePage> {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          Get.to(FoodPage());
+                          Get.to(FoodPage(cat: "Food",));
                         },
                         child: Container(
                             width: 134.5,
@@ -117,7 +117,7 @@ class _HomeState extends State<HomePage> {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          Get.to(FoodPage());
+                          Get.to(FoodPage(cat:"Drinks" ));
                         },
                         child: Container(
                           width: 134.5,
@@ -165,7 +165,7 @@ class _HomeState extends State<HomePage> {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          Get.to(FoodPage());
+                          Get.to(FoodPage(cat: "Munchies",));
                         },
                         child: Container(
                           width: 134.5,
@@ -210,7 +210,7 @@ class _HomeState extends State<HomePage> {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          Get.to(FoodPage());
+                          Get.to(FoodPage(cat: "Dairy",));
                         },
                         child: Container(
                           width: 134.5,

@@ -21,30 +21,30 @@ class History extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'History',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontFamily: 'Epilogue',
-            fontWeight: FontWeight.w700,
-            height: 0.06,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-        actions: const [
-          SizedBox(width: 48),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: const Text(
+      //     'History',
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: 18,
+      //       fontFamily: 'Epilogue',
+      //       fontWeight: FontWeight.w700,
+      //       height: 0.06,
+      //     ),
+      //   ),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.transparent,
+      //   leading: IconButton(
+      //     color: Colors.white,
+      //     onPressed: () {
+      //       Navigator.pop(context);
+      //     },
+      //     icon: const Icon(Icons.arrow_back),
+      //   ),
+      //   actions: const [
+      //     SizedBox(width: 48),
+      //   ],
+      // ),
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
@@ -66,9 +66,25 @@ class History extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.only(top: 80),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                    Text("History",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: 'Epilogue',
+                        fontWeight: FontWeight.w700,
+                        height: 0.06,
+                      ),
+                    ),
+                  ]
+                  ),
+                ),
                 Expanded(
                   child: ListView(
                     children: items

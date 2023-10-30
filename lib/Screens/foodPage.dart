@@ -16,7 +16,8 @@ class FoodItem {
 }
 
 class FoodPage extends StatefulWidget {
-  const FoodPage({Key? key}) : super(key: key);
+  FoodPage({Key? key,required this.cat}) : super(key: key);
+  String cat;
 
   @override
   State<StatefulWidget> createState() => FoodPageState();
@@ -105,15 +106,12 @@ class FoodPageState extends State<FoodPage> {
           ),
           onPressed: () {
             Navigator.pop(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                ));
+                context);
           },
         ),
         centerTitle: true,
-        title: const Text(
-          "Foods",
+        title:Text(
+          widget.cat,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
         ),
