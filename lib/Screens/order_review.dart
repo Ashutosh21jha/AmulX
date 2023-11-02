@@ -1,16 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'cart_components/cart_controller.dart';
 import 'cart_components/cart_items.dart';
-import 'payment_success.dart';
+import 'mainscreen.dart';
 import 'order_icons.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-class OrderReviewPage extends StatelessWidget {
+class OrderReviewPage extends StatefulWidget {
+  const OrderReviewPage({super.key, required this.cartItems});
+
   final RxList<CartItem> cartItems;
 
-  OrderReviewPage({required this.cartItems});
+  @override
+  State<OrderReviewPage> createState() => _OrderReviewPageState();
+}
+
+void handlePaymentSuccessResponse(PaymentSuccessResponse response) {
+  Get.offAll(() => Mainscreen());
+}
+
+void handlePaymentErrorResponse(PaymentFailureResponse response) {}
+
+void handleExternalWalletSelected(ExternalWalletResponse response) {}
+
+class _OrderReviewPageState extends State<OrderReviewPage> {
+/*
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccessResponse);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }*/
 
   @override
   Widget build(BuildContext context) {
+    final cartItems = widget.cartItems;
     double totalAmount = 0.0;
     for (var item in cartItems) {
       totalAmount += item.price * item.quantity;
@@ -21,20 +52,20 @@ class OrderReviewPage extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.only(top: 60),
-            child: Center(
-              child: const Text(
+            child: const Center(
+              child: Text(
                 'Summary',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           OrderStatusIcons(),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
               height: 300,
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 color: Colors.transparent,
@@ -47,7 +78,7 @@ class OrderReviewPage extends StatelessWidget {
                     'Order Summary',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   ListView.builder(
                     shrinkWrap: true,
                     itemCount: cartItems.length,
@@ -58,13 +89,13 @@ class OrderReviewPage extends StatelessWidget {
                         children: [
                           Text(
                             '${item.name} (${item.quantity} items)',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 17,
                             ),
                           ), // Item name with count
                           Text(
                             '\₹${item.price.toStringAsFixed(2)}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 17,
                             ),
                           ), // Item price
@@ -72,7 +103,7 @@ class OrderReviewPage extends StatelessWidget {
                       );
                     },
                   ),
-                  Divider(
+                  const Divider(
                     thickness: 2,
                   ),
                   Expanded(
@@ -81,15 +112,15 @@ class OrderReviewPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Total',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
                             '\₹${totalAmount.toStringAsFixed(2)}',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                           ),
                         ],
@@ -100,21 +131,52 @@ class OrderReviewPage extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               //upi
-              Get.to(() => PaymentSuccessScreen());
+              /* Get.to(() => PaymentSuccessScreen());*/
+
+              Razorpay razorpay = Razorpay();
+
+              var options = {
+                /*          'key': 'rzp_test_Hy9f4oAIXRyJIw',*/
+                'key': 'rzp_test_Hy9f4oAIXRyJIw',
+                'amount': (totalAmount * 100).toInt(),
+                'name': 'Amul powered by Devcomm',
+                'image': 'https://example.com/your_image.png',
+                'description': 'Amul Nsut',
+                'timeout': 90,
+                'currency': 'INR',
+                'retry': {'enabled': true, 'max_count': 1},
+                'send_sms_hash': true,
+                'external': {
+                  'wallets': ['paytm']
+                },
+                'prefill': {
+                  'contact': '8178600597',
+                  'email': 'devcomm.nsut@nsut.ac.in'
+                }
+              };
+
+              razorpay.on(
+                  Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
+              razorpay.on(
+                  Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccessResponse);
+              razorpay.on(
+                  Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
+              razorpay.open(options);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.indigo,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 130, vertical: 20),
-              textStyle: TextStyle(fontSize: 20),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
+              textStyle: const TextStyle(fontSize: 20),
             ),
-            child: Text('Pay via UPI'),
+            child: const Text('Pay via UPI'),
           ),
         ],
       ),

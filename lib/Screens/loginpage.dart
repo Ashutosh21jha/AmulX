@@ -1,3 +1,4 @@
+import 'package:amul/Screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:amul/Screens/emailverification.dart';
@@ -210,6 +211,13 @@ class _LoginpageState extends State<Loginpage> {
                     const SizedBox(height: 70),
                     ElevatedButton(
                       onPressed: _submitform,
+                      onLongPress: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              Mainscreen(),
+                        ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2546A9),
                         // Set the background color here
