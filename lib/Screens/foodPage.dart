@@ -11,12 +11,22 @@ class FoodItem {
   String name;
   int price;
   String imageAsset;
+  int itemCount;
 
-  FoodItem(this.name, this.price, this.imageAsset);
+  FoodItem(this.name, this.price, this.imageAsset, {this.itemCount = 1});
+  void incrementItemCount() {
+    itemCount++;
+  }
+
+  void decrementItemCount() {
+    if (itemCount > 1) {
+      itemCount--;
+    }
+  }
 }
 
 class FoodPage extends StatefulWidget {
-  FoodPage({Key? key,required this.cat}) : super(key: key);
+  FoodPage({Key? key, required this.cat}) : super(key: key);
   String cat;
 
   @override
@@ -48,24 +58,102 @@ class FoodPageState extends State<FoodPage> {
   }
 
   void _addToCart(FoodItem item) {
-    setState(() {
-      _selectedItem = item;
-    });
+    int itemCount = item.itemCount; // Store the initial count
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Item Added to Cart'),
-          content: Text('${item.name} - ₹${item.price}'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.grey[300],
+              title: Text('Add to Cart'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      'Item: ${item.name}',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Price: ₹${item.price}',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green),
+                  ),
+                  SizedBox(height: 10),
+                  Text('Enter the item count:'),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.remove),
+                        color: Colors.indigo,
+                        onPressed: () {
+                          setState(() {
+                            if (itemCount > 1) {
+                              itemCount--;
+                            }
+                          });
+                        },
+                      ),
+                      Text(
+                        '$itemCount',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        color: Colors.indigo,
+                        onPressed: () {
+                          setState(() {
+                            itemCount++;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.indigo, fontSize: 16),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    for (int i = 0; i < itemCount; i++) {
+                      CartController.to.addItem(CartItem(
+                        name: item.name,
+                        price: item.price.toDouble(),
+                      ));
+                    }
+                    // Close the dialog
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Add to Cart',
+                    style: TextStyle(color: Colors.indigo, fontSize: 16),
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -105,12 +193,11 @@ class FoodPageState extends State<FoodPage> {
             color: Colors.black,
           ),
           onPressed: () {
-            Navigator.pop(
-                context);
+            Navigator.pop(context);
           },
         ),
         centerTitle: true,
-        title:Text(
+        title: Text(
           widget.cat,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
@@ -218,81 +305,81 @@ class FoodPageState extends State<FoodPage> {
               height: 20,
             ),
             Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemCount: _foodItems.length,
-                itemBuilder: (context, index) {
-                  final foodItem = _foodItems[index];
-                  return Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8, right: 8, bottom: 5),
-                    child: Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ListTile(
-                          leading: ClipRRect(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 95),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: _foodItems.length,
+                  itemBuilder: (context, index) {
+                    final foodItem = _foodItems[index];
+                    return Padding(
+                      padding:
+                          const EdgeInsets.only(left: 8, right: 8, bottom: 5),
+                      child: Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              width: 70,
-                              height: 70,
-                              child: Image.asset(
-                                foodItem.imageAsset,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
                           ),
-                          title: Text(
-                            foodItem.name,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '₹${foodItem.price.toString()}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
-                            ),
-                          ),
-                          trailing: GestureDetector(
-                            onTap: () {
-                              CartController.to.addItem(CartItem(
-                                  name: foodItem.name,
-                                  price: foodItem.price.toDouble()));
-                              _addToCart(foodItem);
-                            },
-                            child: Container(
-                              width: 90,
-                              height: 45,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: const Color(0xFFD1D2D3),
-                                  width: 1,
+                          child: ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                width: 70,
+                                height: 70,
+                                child: Image.asset(
+                                  foodItem.imageAsset,
+                                  fit: BoxFit.fill,
                                 ),
-                                borderRadius: BorderRadius.circular(60.0),
                               ),
-                              child: const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: Text(
-                                    "Add",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                            ),
+                            title: Text(
+                              foodItem.name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text(
+                              '₹${foodItem.price.toString()}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
+                            trailing: GestureDetector(
+                              onTap: () {
+                                _addToCart(foodItem);
+                              },
+                              child: Container(
+                                width: 90,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: const Color(0xFFD1D2D3),
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(60.0),
+                                ),
+                                child: const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: Text(
+                                      "Add",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        )),
-                  );
-                },
+                          )),
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -303,7 +390,7 @@ class FoodPageState extends State<FoodPage> {
           Get.to(CartPage());
         },
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Container(
             height: 85,
             child: Card(
