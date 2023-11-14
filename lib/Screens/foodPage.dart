@@ -1,11 +1,9 @@
 import 'package:flutter_svg/svg.dart';
-
 import 'cart_components/cart_controller.dart';
 import 'cart_components/cart_items.dart';
 import 'package:amul/Screens/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'home.dart';
 
 class FoodItem {
   String name;
@@ -14,6 +12,7 @@ class FoodItem {
   int itemCount;
 
   FoodItem(this.name, this.price, this.imageAsset, {this.itemCount = 1});
+
   void incrementItemCount() {
     itemCount++;
   }
@@ -34,7 +33,7 @@ class FoodPage extends StatefulWidget {
 }
 
 class FoodPageState extends State<FoodPage> {
-  List<FoodItem> _cartItems = [];
+  final List<FoodItem> _cartItems = [];
   FoodItem? _selectedItem;
   List<FoodItem> _defaultOrder = [];
   List<FoodItem> _foodItems = [
@@ -50,11 +49,15 @@ class FoodPageState extends State<FoodPage> {
     FoodItem('Chocolate\nBrownie', 55, 'assets/images/brownie.jpg'),
   ];
 
+  int selected = 0;
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _defaultOrder = List<FoodItem>.from(_foodItems);
     _sortListByDefaultOrder();
+    selected = 0;
   }
 
   void _addToCart(FoodItem item) {
@@ -67,7 +70,7 @@ class FoodPageState extends State<FoodPage> {
           builder: (context, setState) {
             return AlertDialog(
               backgroundColor: Colors.grey[300],
-              title: Text('Add to Cart'),
+              title: const Text('Add to Cart'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,28 +79,28 @@ class FoodPageState extends State<FoodPage> {
                     scrollDirection: Axis.horizontal,
                     child: Text(
                       'Item: ${item.name}',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Text(
                     'Price: ₹${item.price}',
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.green),
                   ),
-                  SizedBox(height: 10),
-                  Text('Enter the item count:'),
+                  const SizedBox(height: 10),
+                  const Text('Enter the item count:'),
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.remove),
+                        icon: const Icon(Icons.remove),
                         color: Colors.indigo,
                         onPressed: () {
                           setState(() {
@@ -109,11 +112,11 @@ class FoodPageState extends State<FoodPage> {
                       ),
                       Text(
                         '$itemCount',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       ),
                       IconButton(
-                        icon: Icon(Icons.add),
+                        icon: const Icon(Icons.add),
                         color: Colors.indigo,
                         onPressed: () {
                           setState(() {
@@ -130,7 +133,7 @@ class FoodPageState extends State<FoodPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text(
+                  child: const Text(
                     'Cancel',
                     style: TextStyle(color: Colors.indigo, fontSize: 16),
                   ),
@@ -146,7 +149,7 @@ class FoodPageState extends State<FoodPage> {
                     // Close the dialog
                     Navigator.pop(context);
                   },
-                  child: Text(
+                  child: const Text(
                     'Add to Cart',
                     style: TextStyle(color: Colors.indigo, fontSize: 16),
                   ),
@@ -161,12 +164,6 @@ class FoodPageState extends State<FoodPage> {
 
   void _viewCart() {
     Get.to(CartPage());
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => CartPage(cartItems: _cartItems),
-    //   ),
-    // );
   }
 
   bool _isSortedByPriceLowestToHighest = false;
@@ -180,11 +177,14 @@ class FoodPageState extends State<FoodPage> {
 
   @override
   Widget build(BuildContext context) {
+    int index1 = 0;
+    int index2 = 1;
+    int index3 = 2;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        toolbarHeight: 100,
+        toolbarHeight: 70,
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -199,14 +199,55 @@ class FoodPageState extends State<FoodPage> {
         centerTitle: true,
         title: Text(
           widget.cat,
-          style: TextStyle(
+          style: const TextStyle(
               fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            Container(
+            SizedBox(
+              height: 45,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 15, left: 15),
+                child: TextFormField(
+                  controller: _searchController,
+                  textAlign: TextAlign.justify,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(
+                      Icons.search_rounded,
+                      color: Colors.black,
+                    ),
+                    hintText: 'Search',
+                    hintStyle: const TextStyle(color: Color(0xFF57585B)),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                    // Adjust the vertical padding as needed
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    fillColor: const Color(0xFFE6E6E6),
+                    filled: true,
+                  ),
+                  onChanged: (value) {
+                    // Filter the list based on the search input
+                    setState(() {
+                      _foodItems = _defaultOrder
+                          .where((item) => item.name
+                              .toLowerCase()
+                              .contains(value.toLowerCase()))
+                          .toList();
+                    });
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
               height: 50,
               child: ListView(
                 scrollDirection: Axis.horizontal,
@@ -215,22 +256,33 @@ class FoodPageState extends State<FoodPage> {
                   GestureDetector(
                     onTap: () {
                       _sortListByDefaultOrder(); // Sort by default order
+                      setState(() {
+                        selected = index1;
+                      });
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Container(
                         width: 160,
                         decoration: BoxDecoration(
+                          color: selected == index1
+                              ? const Color(0xFF2546A9)
+                              : Colors.white,
                           border: Border.all(
-                            color: const Color(0xFFD1D2D3), // Border color
+                            color: const Color(0xFF2546A9),
                             width: 1, // Border width
                           ),
                           borderRadius:
                               BorderRadius.circular(32.0), // Border radius
                         ),
-                        child: const Center(
+                        child: Center(
                             child: Text(
                           "Most Popular",
+                          style: TextStyle(
+                            color: selected == index1
+                                ? Colors.white
+                                : const Color(0xFF2546A9),
+                          ),
                           //style: TextStyle(color: Colors.white),
                         )),
                       ),
@@ -239,6 +291,7 @@ class FoodPageState extends State<FoodPage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
+                        selected = index2;
                         _isSortedByPriceLowestToHighest =
                             !_isSortedByPriceLowestToHighest;
                         _isSortedByPriceHighestToLowest =
@@ -254,16 +307,24 @@ class FoodPageState extends State<FoodPage> {
                       child: Container(
                         width: 240,
                         decoration: BoxDecoration(
+                          color: selected == index2
+                              ? const Color(0xFF2546A9)
+                              : Colors.white,
                           border: Border.all(
-                            color: const Color(0xFFD1D2D3), // Border color
+                            color: const Color(0xFF2546A9), // Border color
                             width: 1, // Border width
                           ),
                           borderRadius:
                               BorderRadius.circular(32.0), // Border radius
                         ),
-                        child: const Center(
+                        child: Center(
                             child: Text(
                           "Price: Lowest - Highest",
+                          style: TextStyle(
+                            color: selected == index2
+                                ? Colors.white
+                                : const Color(0xFF2546A9),
+                          ),
                           // style: TextStyle(color: Colors.white),
                         )),
                       ),
@@ -272,6 +333,7 @@ class FoodPageState extends State<FoodPage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
+                        selected = index3;
                         if (_isSortedByPriceHighestToLowest) {
                           _foodItems.sort((a, b) => b.price.compareTo(a.price));
                         }
@@ -286,15 +348,25 @@ class FoodPageState extends State<FoodPage> {
                       child: Container(
                         width: 240,
                         decoration: BoxDecoration(
+                          color: selected == index3
+                              ? const Color(0xFF2546A9)
+                              : Colors.white,
                           border: Border.all(
-                            color: const Color(0xFFD1D2D3), // Border color
+                            color: const Color(0xFF2546A9), // Border color
                             width: 1, // Border width
                           ),
                           borderRadius:
                               BorderRadius.circular(32.0), // Border radius
                         ),
-                        child: const Center(
-                            child: Text("Price: Highest - Lowest")),
+                        child: Center(
+                            child: Text(
+                          "Price: Highest - Lowest",
+                          style: TextStyle(
+                            color: selected == index3
+                                ? Colors.white
+                                : const Color(0xFF2546A9),
+                          ),
+                        )),
                       ),
                     ),
                   ),
@@ -302,7 +374,7 @@ class FoodPageState extends State<FoodPage> {
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             Expanded(
               child: Padding(
@@ -324,7 +396,7 @@ class FoodPageState extends State<FoodPage> {
                           child: ListTile(
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: Container(
+                              child: SizedBox(
                                 width: 70,
                                 height: 70,
                                 child: Image.asset(
@@ -391,7 +463,7 @@ class FoodPageState extends State<FoodPage> {
         },
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
-          child: Container(
+          child: SizedBox(
             height: 85,
             child: Card(
               elevation: 10, // You can adjust the elevation for the card
