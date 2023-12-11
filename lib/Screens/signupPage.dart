@@ -1,50 +1,41 @@
-import 'package:amul/Screens/mainscreen.dart';
+import 'package:amul/Screens/loginpage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/*
-// Function to send email verification
-Future<void> sendEmailVerification() async {
-  User? user = FirebaseAuth.instance.currentUser;
+FirebaseFirestore db = FirebaseFirestore.instance;
+FirebaseAuth auth = FirebaseAuth.instance;
 
-  // Check if the user is signed in
-  if (user != null) {
-    await user.sendEmailVerification();
+Future<void> authentication(
+    BuildContext context, String emailAddress, String password) async {
 
-    // Optionally, you can show a message to the user
-    print('Verification email sent to ${user.email}');
-  } else {
-    // Handle the case where the user is not signed in
-    print('No user is currently signed in');
+  try {
+    auth.createUserWithEmailAndPassword(
+      email: emailAddress,
+      password: password,
+    );
+  } on FirebaseAuthException catch (e) {
+    /* if (e.code == 'weak-password') {
+      print('The password provided is too weak.');
+    }
+    else*/
+    if (e.code == 'email-already-in-use') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Account already exists : ${emailAddress}"),
+        ),
+      );
+      print('The account already exists for that email.');
+    }
+  } catch (e) {
+    print(e);
   }
 }
-*/
 
-// Check email verification status when needed
-/*void checkEmailVerificationStatus() {
-  User? user = FirebaseAuth.instance.currentUser;
-
-  // Check if the user is signed in
-  if (user != null) {
-    if (user.emailVerified) {
-      // Email is verified, proceed to the main screen
-      print('Email is verified');
-    } else {
-      // Email is not verified, show a message or navigate to a verification screen
-      print('Email is not verified');
-    }
-  } else {
-    // Handle the case where the user is not signed in
-    print('No user is currently signed in');
-  }
-}*/
-
-/*
 Future<void> addUserInFirebase(
     String name, String rollno, String password, String email) async {
-  CollectionReference collection =
-      FirebaseFirestore.instance.collection('User');
+  CollectionReference collection = db.collection('User');
   String documentId = email;
 
 // Check if the document with the specified ID already exists
@@ -63,60 +54,21 @@ Future<void> addUserInFirebase(
       print("Error adding data: $error");
     });
   }
-
-  var acs = ActionCodeSettings(
-      handleCodeInApp: true,
-      iOSBundleId: 'com.example.amul',
-      androidPackageName: 'com.example.amul ',
-      androidInstallApp: true,
-      androidMinimumVersion: '12',
-      url: '');
-
-  var emailAuth = email;
-  FirebaseAuth.instance
-      .sendSignInLinkToEmail(email: emailAuth, actionCodeSettings: acs)
-      .then((value) => print('Successfully sent email verification'))
-      .catchError(
-          (onError) => print('Error sending email verification $onError'));
-}
-*/
-
-FirebaseAuth auth = FirebaseAuth.instance;
-
-Future<bool> signIn(
-    BuildContext context, String emailAddress, String password) async {
-  try {
-    final credential = await auth.signInWithEmailAndPassword(
-        email: emailAddress, password: password);
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("No user found : ${emailAddress}\n Please SignIn"),
-        ),
-      );
-    } else if (e.code == 'wrong-password') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Wrong password'),
-        ),
-      );
-    }
-  }
-  return true;
 }
 
-class Loginpage extends StatefulWidget {
-  const Loginpage({super.key});
+class signupPage extends StatefulWidget {
+  const signupPage({super.key});
 
   @override
-  State<Loginpage> createState() => _LoginpageState();
+  State<signupPage> createState() => _signupPageState();
 }
 
-class _LoginpageState extends State<Loginpage> {
+class _signupPageState extends State<signupPage> {
   bool passwordVisible = false;
+  final _id = TextEditingController();
   final _emailController = TextEditingController();
   final _password = TextEditingController();
+  final _name = TextEditingController();
 
   // student id pattern
   RegExp pattern = RegExp(r'^\d{4}[A-Za-z]{3}\d{4}$');
@@ -129,16 +81,18 @@ class _LoginpageState extends State<Loginpage> {
   void _submitform() {
     if (_formKey.currentState!.validate()) {
       String email = _emailController.text.toString();
+      String name = _name.text.toString();
+      String rollno = _id.text.toString();
       String password = _password.text.toString();
 
-      /*signIn(context, email, password);*/
+      addUserInFirebase(name, rollno, password, email);
+      authentication(context, email, password);
 
-      auth.signInWithEmailAndPassword(email: email, password: password);
-
-      Navigator.pushAndRemoveUntil(
+      Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const Mainscreen()),
-        (route) => false,
+        MaterialPageRoute(
+          builder: (context) => const Loginpage(),
+        ),
       );
     }
   }
@@ -196,7 +150,7 @@ class _LoginpageState extends State<Loginpage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 70),
+              const SizedBox(height: 30),
               Form(
                 key: _formKey,
                 child: Column(
@@ -204,7 +158,38 @@ class _LoginpageState extends State<Loginpage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const Text(
-                      "Nsut e-mail",
+                      "Name",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        color: Color(0xFF141414),
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 2, left: 2),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "can't be empty";
+                          }
+                          return null;
+                        },
+                        controller: _name,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          fillColor: Colors.white,
+                          hintText: "e.g. userName",
+                          alignLabelWithHint: false,
+                          filled: true,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Student ID",
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         color: Color(0xFF141414),
@@ -216,21 +201,30 @@ class _LoginpageState extends State<Loginpage> {
                       padding: const EdgeInsets.only(right: 2, left: 2),
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: _emailController,
-                        validator: _validteEmail,
-                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "can't be empty";
+                          }
+                          if (!pattern.hasMatch(value)) {
+                            return "Please enter a valid Id";
+                          }
+                          return null;
+                        },
+                        controller: _id,
                         decoration: InputDecoration(
-                          hintText: 'e.g. Student@nsut.ac.in',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                           fillColor: Colors.white,
+                          hintText: "e.g. 2022UME2022",
                           alignLabelWithHint: false,
                           filled: true,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     const Text(
                       "Password",
                       textAlign: TextAlign.start,
@@ -278,6 +272,34 @@ class _LoginpageState extends State<Loginpage> {
                         textInputAction: TextInputAction.done,
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Nsut e-mail",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        color: Color(0xFF141414),
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 2, left: 2),
+                      child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: _emailController,
+                        validator: _validteEmail,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          hintText: 'e.g. Student@nsut.ac.in',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          fillColor: Colors.white,
+                          alignLabelWithHint: false,
+                          filled: true,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 50),
                     ElevatedButton(
                       onPressed: () => _submitform(),
@@ -293,7 +315,7 @@ class _LoginpageState extends State<Loginpage> {
                         padding: EdgeInsets.symmetric(vertical: 15),
                         child: Center(
                           child: Text(
-                            "Login",
+                            "Sign In",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -306,7 +328,7 @@ class _LoginpageState extends State<Loginpage> {
                       height: 10,
                     ),
                     GestureDetector(
-                      onTap: () => Navigator.pop(
+                      onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const Loginpage(),
@@ -314,7 +336,7 @@ class _LoginpageState extends State<Loginpage> {
                       ),
                       child: const Center(
                         child: Text(
-                          "Not having an Account?",
+                          "Already having an Account?",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 14,

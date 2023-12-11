@@ -36,7 +36,7 @@ class _HomeState extends State<HomePage> {
                         width: 85,
                         height: 30,
                       ),
-                      CircleAvatar(
+                      const CircleAvatar(
                         backgroundImage: AssetImage("assets/images/avatar.png"),
                         backgroundColor: Colors.transparent,
                         radius: 22,

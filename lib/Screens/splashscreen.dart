@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:amul/Screens/loginpage.dart';
+import 'package:amul/Screens/signupPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void _navigateToNextScreen() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const Loginpage()),
+      MaterialPageRoute(builder: (context) => const signupPage()),
     );
   }
 

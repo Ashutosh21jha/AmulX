@@ -1,12 +1,34 @@
 import 'package:amul/Screens/mainscreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
+FirebaseAuth auth = FirebaseAuth.instance;
+
+Future<void> authentication(String emailAddress, String password) async {
+  try {
+    final credential =
+        await auth.createUserWithEmailAndPassword(
+      email: emailAddress,
+      password: password,
+    );
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'weak-password') {
+      print('The password provided is too weak.');
+    } else if (e.code == 'email-already-in-use') {
+      print('The account already exists for that email.');
+    }
+  } catch (e) {
+    print(e);
+  }
+}
+
 class Emailverification extends StatefulWidget {
   final String loginMail;
+  final String loginpass;
 
-  Emailverification(this.loginMail);
+  Emailverification(this.loginMail, this.loginpass);
 
   @override
   State<Emailverification> createState() => _EmailverificationState();
@@ -143,6 +165,8 @@ class _EmailverificationState extends State<Emailverification> {
             ),
             InkWell(
               onTap: () {
+                authentication(widget.loginMail, widget.loginpass);
+
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const Mainscreen()),
