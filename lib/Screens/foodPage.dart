@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'cart_components/cart_controller.dart';
 import 'cart_components/cart_items.dart';
 import 'package:amul/Screens/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+FirebaseFirestore db = FirebaseFirestore.instance;
+FirebaseAuth auth = FirebaseAuth.instance;
 
 class FoodItem {
   String name;
@@ -49,6 +54,8 @@ class FoodPageState extends State<FoodPage> {
     FoodItem('Chocolate\nBrownie', 55, 'assets/images/brownie.jpg'),
   ];
 
+  String get userId => auth.currentUser?.email ?? '';
+
   int selected = 0;
   final TextEditingController _searchController = TextEditingController();
 
@@ -58,6 +65,32 @@ class FoodPageState extends State<FoodPage> {
     _defaultOrder = List<FoodItem>.from(_foodItems);
     _sortListByDefaultOrder();
     selected = 0;
+  }
+
+  // Function to add a cart item to Firestore
+  Future<void> _addToFirestore(FoodItem item, int itemCount) async {
+    String documentId = userId; // Use user's email as document ID
+    CollectionReference cartCollection =
+        db.collection('User').doc(documentId).collection('cart');
+
+    // Generate a random document ID for each cart entry
+    String cartEntryId = cartCollection.doc().id;
+
+    // Create a map for the cart entry
+    Map<String, dynamic> cartEntry = {
+      'name': item.name,
+      'price': item.price,
+      'count': itemCount,
+    };
+
+    // Create a map for the cart item (using a random document ID)
+    Map<String, dynamic> cartItem = {
+      'cartEntryId': cartEntryId,
+      'item': cartEntry,
+    };
+
+    // Add the cart item to Firestore
+    await cartCollection.doc(cartEntryId).set(cartItem);
   }
 
   void _addToCart(FoodItem item) {
@@ -139,7 +172,8 @@ class FoodPageState extends State<FoodPage> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    await _addToFirestore(item, itemCount);
                     for (int i = 0; i < itemCount; i++) {
                       CartController.to.addItem(CartItem(
                         name: item.name,
