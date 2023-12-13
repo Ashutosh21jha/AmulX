@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'package:amul/Screens/mainscreen.dart';
 import 'package:amul/Screens/signupPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+final auth = FirebaseAuth.instance;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key});
@@ -46,10 +50,18 @@ class _SplashScreenState extends State<SplashScreen> {
 
   // Function to navigate to the next screen
   void _navigateToNextScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const signupPage()),
-    );
+    if (auth.currentUser != null) {
+      print(auth.currentUser?.uid);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Mainscreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const signupPage()),
+      );
+    }
   }
 
   @override
@@ -88,7 +100,8 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const Expanded(
               child: Padding(
-                padding: EdgeInsets.only(bottom: 60), // Add padding to the bottom
+                padding: EdgeInsets.only(bottom: 60),
+                // Add padding to the bottom
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Text(

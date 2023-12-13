@@ -1,3 +1,6 @@
+import 'package:amul/Screens/signupPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'profile_screens/about.dart';
 import 'profile_screens/terms.dart';
@@ -6,8 +9,22 @@ import 'profile_screens/editprofile.dart';
 import 'profile_screens/faq.dart';
 import 'profile_screens/profile_card.dart';
 
+final auth = FirebaseAuth.instance;
+final db = FirebaseFirestore.instance;
+
+String get userId => auth.currentUser?.email ?? '';
+
+Future<void> signOut() async {
+  try {
+    print(auth.currentUser?.uid);
+    await auth.signOut();
+  } catch (e) {
+    throw Exception(e);
+  }
+}
+
 const EdgeInsets _paddingButtons =
-    EdgeInsets.symmetric(horizontal: 12, vertical: 8);
+EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 
 const List<BoxShadow> _shadows = [
   BoxShadow(
@@ -24,41 +41,44 @@ const List<BoxShadow> _shadows = [
   )
 ];
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({super.key});
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  String name = "";
+  String s_id = "";
+
+  @override
+  void initState() {
+    super.initState();
+    receivedata();
+  }
+
+  Future<void> receivedata() async {
+    final docRef = await db.collection("User").doc(userId).get();
+    Map<String, dynamic>? userData = docRef.data() as Map<String, dynamic>?;
+    if (userData != null) {
+      setState(() {
+        name = userData['name'] ?? '';
+        s_id = userData['roll number'] ?? '';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text(
-      //     'My Profile',
-      //     style: TextStyle(
-      //       color: Colors.white,
-      //       fontSize: 18,
-      //       fontFamily: 'Epilogue',
-      //       fontWeight: FontWeight.w700,
-      //       height: 0.06,
-      //     ),
-      //   ),
-      //   centerTitle: true,
-      //   backgroundColor: Colors.transparent,
-      //   leading: IconButton(
-      //     color: Colors.white,
-      //     onPressed: () {
-      //       Navigator.pop(context);
-      //     },
-      //     icon: const Icon(Icons.arrow_back),
-      //   ),
-      //   actions: const [
-      //     SizedBox(width: 48),
-      //   ],
-      // ),
-      // extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height * 0.25,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -77,7 +97,7 @@ class Profile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 80),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
@@ -92,12 +112,12 @@ class Profile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   // PROFILE CARD
                   Container(
                     width: 327,
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: ShapeDecoration(
                       color: const Color.fromARGB(255, 255, 255, 255),
                       shape: RoundedRectangleBorder(
@@ -142,22 +162,22 @@ class Profile extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(width: 16),
-                        const Column(
+                        Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Akhil Marks',
-                                style: TextStyle(
+                            Text(name,
+                                style: const TextStyle(
                                   color: Color(0xFF57585B),
                                   fontSize: 14,
                                   fontFamily: 'Epilogue',
                                   fontWeight: FontWeight.w400,
                                   height: 0.07,
                                 )),
-                            SizedBox(height: 20),
-                            Text('2022UPD9505',
-                                style: TextStyle(
+                            const SizedBox(height: 20),
+                            Text(s_id,
+                                style: const TextStyle(
                                   color: Color(0xFF57585B),
                                   fontSize: 14,
                                   fontFamily: 'Epilogue',
@@ -268,16 +288,26 @@ class Profile extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        const Expanded(
-                          child: SizedBox(
-                            child: Text(
-                              'Logout',
-                              style: TextStyle(
-                                color: Color(0xFFF46363),
-                                fontSize: 16,
-                                fontFamily: 'Epilogue',
-                                fontWeight: FontWeight.w400,
-                                height: 0.08,
+                        GestureDetector(
+                          onTap: () =>
+                              signOut().then((value) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const signupPage(),
+                                    ));
+                              }),
+                          child: const Expanded(
+                            child: SizedBox(
+                              child: Text(
+                                'Logout',
+                                style: TextStyle(
+                                  color: Color(0xFFF46363),
+                                  fontSize: 16,
+                                  fontFamily: 'Epilogue',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.08,
+                                ),
                               ),
                             ),
                           ),

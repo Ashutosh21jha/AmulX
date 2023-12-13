@@ -8,8 +8,7 @@ FirebaseAuth auth = FirebaseAuth.instance;
 
 Future<void> authentication(String emailAddress, String password) async {
   try {
-    final credential =
-        await auth.createUserWithEmailAndPassword(
+    final credential = await auth.createUserWithEmailAndPassword(
       email: emailAddress,
       password: password,
     );
