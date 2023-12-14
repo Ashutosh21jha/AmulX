@@ -67,30 +67,39 @@ class FoodPageState extends State<FoodPage> {
     selected = 0;
   }
 
-  // Function to add a cart item to Firestore
   Future<void> _addToFirestore(FoodItem item, int itemCount) async {
-    String documentId = userId; // Use user's email as document ID
+    String documentId = userId;
     CollectionReference cartCollection =
         db.collection('User').doc(documentId).collection('cart');
 
-    // Generate a random document ID for each cart entry
-    String cartEntryId = cartCollection.doc().id;
+    // Check if the item already exists
+    final existingItem =
+        await cartCollection.where('name', isEqualTo: item.name).limit(1).get();
 
-    // Create a map for the cart entry
-    Map<String, dynamic> cartEntry = {
-      'name': item.name,
-      'price': item.price,
-      'count': itemCount,
-    };
+    if (existingItem.docs.isNotEmpty) {
+      // Item exists, update the quantity
+      final docId = existingItem.docs.first.id;
+      await cartCollection.doc(docId).update({
+        'count': FieldValue.increment(itemCount),
+      });
+    } else {
+      // Item does not exist, create a new document
+      String cartEntryId = cartCollection.doc().id;
 
-    // Create a map for the cart item (using a random document ID)
-    Map<String, dynamic> cartItem = {
-      'cartEntryId': cartEntryId,
-      'item': cartEntry,
-    };
+      Map<String, dynamic> cartEntry = {
+        'name': item.name,
+        'price': item.price,
+        'count': itemCount,
+      };
 
-    // Add the cart item to Firestore
-    await cartCollection.doc(cartEntryId).set(cartItem);
+      Map<String, dynamic> cartItem = {
+        'cartEntryId': cartEntryId,
+        'item': cartEntry,
+      };
+
+      // Add the cart item to Firestore
+      await cartCollection.doc(cartEntryId).set(cartItem);
+    }
   }
 
   void _addToCart(FoodItem item) {
@@ -493,7 +502,7 @@ class FoodPageState extends State<FoodPage> {
       ),
       floatingActionButton: InkWell(
         onTap: () {
-          Get.to(CartPage());
+          Get.to(() => CartPage());
         },
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),

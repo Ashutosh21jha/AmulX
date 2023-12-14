@@ -14,7 +14,8 @@ class _CartPageState extends State<CartPage> {
   // Method to update item count
   void updateItemCount() {
     setState(() {
-      itemCount = calculateItemCount();
+      itemCount =
+          CartController.to.calculateItemCount(CartController.to.cartItems);
     });
   }
 
@@ -28,6 +29,7 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     itemCount = calculateItemCount(); // Initialized item count
+    updateItemCount();
   }
 
   @override
@@ -240,9 +242,17 @@ class _CartPageState extends State<CartPage> {
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
                       onPressed: () {
-                        Get.to(OrderReviewPage(
-                          cartItems: CartController.to.cartItems,
-                        ));
+                        final cartController = CartController.to;
+                        if (cartController.cartItems.isNotEmpty) {
+                          Get.to(OrderReviewPage(
+                            cartItems: cartController.cartItems,
+                          ));
+                        } else {
+                          Get.snackbar(
+                            'Cart is Empty',
+                            'Please add items to the cart first',
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         textStyle: const TextStyle(fontSize: 22),

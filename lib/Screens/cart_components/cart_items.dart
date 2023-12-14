@@ -10,12 +10,12 @@ class CartItem {
   });
 
   void incrementQuantity() {
-    quantity++;
+    quantity += 1;
   }
 
   void decrementQuantity() {
-    if (quantity > 1) {
-      quantity--;
+    if (quantity > 0) {
+      quantity -= 1;
     }
   }
 }
