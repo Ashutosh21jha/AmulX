@@ -1,6 +1,6 @@
-import 'package:amul/Screens/foodPage.dart';
-import 'package:amul/Screens/home.dart';
-import 'package:amul/Screens/mainscreen.dart';
+import 'package:amul/screens/foodPage.dart';
+import 'package:amul/screens/home.dart';
+import 'package:amul/screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

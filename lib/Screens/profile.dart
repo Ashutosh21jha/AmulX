@@ -1,4 +1,4 @@
-import 'package:amul/Screens/signupPage.dart';
+import 'package:amul/screens/signupPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ Future<void> signOut() async {
 }
 
 const EdgeInsets _paddingButtons =
-EdgeInsets.symmetric(horizontal: 12, vertical: 8);
+    EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 
 const List<BoxShadow> _shadows = [
   BoxShadow(
@@ -75,10 +75,7 @@ class _ProfileState extends State<Profile> {
       body: Stack(
         children: [
           Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height * 0.25,
+            height: MediaQuery.of(context).size.height * 0.25,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -117,7 +114,7 @@ class _ProfileState extends State<Profile> {
                   Container(
                     width: 327,
                     padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: ShapeDecoration(
                       color: const Color.fromARGB(255, 255, 255, 255),
                       shape: RoundedRectangleBorder(
@@ -289,14 +286,13 @@ class _ProfileState extends State<Profile> {
                         ),
                         const SizedBox(width: 16),
                         GestureDetector(
-                          onTap: () =>
-                              signOut().then((value) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const signupPage(),
-                                    ));
-                              }),
+                          onTap: () => signOut().then((value) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const signupPage(),
+                                ));
+                          }),
                           child: const Expanded(
                             child: SizedBox(
                               child: Text(

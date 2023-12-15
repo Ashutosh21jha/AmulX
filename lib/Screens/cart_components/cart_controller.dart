@@ -1,5 +1,5 @@
-import 'package:amul/Screens/cart_components/cart_items.dart';
-import 'package:amul/Screens/emailverification.dart';
+import 'package:amul/screens/cart_components/cart_items.dart';
+import 'package:amul/screens/emailverification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 

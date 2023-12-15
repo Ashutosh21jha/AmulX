@@ -1,4 +1,4 @@
-import 'package:amul/Screens/cart_components/cart_controller.dart';
+import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'order_review.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

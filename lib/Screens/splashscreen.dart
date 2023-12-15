@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:amul/Screens/mainscreen.dart';
-import 'package:amul/Screens/signupPage.dart';
+import 'package:amul/screens/mainscreen.dart';
+import 'package:amul/screens/signupPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,10 +11,10 @@ class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key});
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  _Splashscreenstate createState() => _Splashscreenstate();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _Splashscreenstate extends State<SplashScreen> {
   double _imageOffset = 0.0;
   bool _animationStarted = false;
 

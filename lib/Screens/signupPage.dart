@@ -1,4 +1,4 @@
-import 'package:amul/Screens/mainscreen.dart';
+import 'package:amul/screens/mainscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 FirebaseFirestore db = FirebaseFirestore.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
-Future<void> sendEmailVerification()async {
-
-  await  auth.currentUser?.sendEmailVerification();
-
+Future<void> sendEmailVerification() async {
+  await auth.currentUser?.sendEmailVerification();
 }
 
 Future<void> signUp(
@@ -27,7 +25,7 @@ Future<void> signUp(
     var existingDocument = await collection.doc(documentId).get();
 
     if (existingDocument.exists) {
-     /* print('Document with ID $documentId already exists');*/
+      /* print('Document with ID $documentId already exists');*/
       /*ScaffoldMessenger.of(context).showSnackBar(
          SnackBar(
           content: Text("Document with ID  ${email} already exists "),

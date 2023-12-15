@@ -1,4 +1,4 @@
-import 'package:amul/Screens/mainscreen.dart';
+import 'package:amul/screens/mainscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
