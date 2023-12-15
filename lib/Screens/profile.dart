@@ -87,6 +87,10 @@ class _ProfileState extends State<Profile> {
                   Color(0xFF138BF9)
                 ],
               ),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              ),
             ),
           ),
           Align(
@@ -187,14 +191,17 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  const Text(
-                    'Account',
-                    style: TextStyle(
-                      color: Color(0xFF57585B),
-                      fontSize: 14,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w500,
-                      height: 0.08,
+                  const SizedBox(
+                    width: 327,
+                    child: Text(
+                      'Account',
+                      style: TextStyle(
+                        color: Color(0xFF57585B),
+                        fontSize: 14,
+                        fontFamily: 'Epilogue',
+                        fontWeight: FontWeight.w500,
+                        height: 0.08,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -234,71 +241,71 @@ class _ProfileState extends State<Profile> {
                       color: const Color(0xFFFBBC04)),
                   const SizedBox(height: 16),
                   // LOGOUT
-                  Container(
-                    width: 327,
-                    padding: _paddingButtons,
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(
-                            width: 1, color: Color(0xFFF3F3F3)),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      shadows: _shadows,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFFF57878),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 24,
-                                    height: 24,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: const BoxDecoration(),
-                                    child: const Icon(
-                                      Icons.logout,
-                                      color: Colors.white,
-                                      size: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                  InkWell(
+                    onTap: () => signOut().then((value) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const signupPage(),
+                          ));
+                    }),
+                    child: Container(
+                      width: 327,
+                      padding: _paddingButtons,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                              width: 1, color: Color(0xFFF3F3F3)),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        const SizedBox(width: 16),
-                        GestureDetector(
-                          onTap: () => signOut().then((value) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const signupPage(),
-                                ));
-                          }),
-                          child: const Expanded(
+                        shadows: _shadows,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFFFC6DBB),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 24,
+                                      height: 24,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: const BoxDecoration(),
+                                      child: const Icon(
+                                        Icons.info_outline,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          const Expanded(
                             child: SizedBox(
                               child: Text(
                                 'Logout',
                                 style: TextStyle(
-                                  color: Color(0xFFF46363),
+                                  color: Color(0xFF282828),
                                   fontSize: 16,
                                   fontFamily: 'Epilogue',
                                   fontWeight: FontWeight.w400,
@@ -307,15 +314,36 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 16),
+                          const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: Icon(
+                                    Icons.forward,
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    size: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 16),
                 ]),
-          )
+          ),
         ],
       ),
-      // bottomNavigationBar: const BottomNav(),
     );
   }
 }
