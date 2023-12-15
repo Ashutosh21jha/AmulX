@@ -269,7 +269,7 @@ class _ProfileState extends State<Profile> {
                           Container(
                             padding: const EdgeInsets.all(4),
                             decoration: ShapeDecoration(
-                              color: const Color(0xFFFC6DBB),
+                              color: const Color(0xFFF57878),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8)),
                             ),
@@ -289,7 +289,7 @@ class _ProfileState extends State<Profile> {
                                       clipBehavior: Clip.antiAlias,
                                       decoration: const BoxDecoration(),
                                       child: const Icon(
-                                        Icons.info_outline,
+                                        Icons.logout,
                                         color: Colors.white,
                                         size: 20,
                                       ),
@@ -305,7 +305,7 @@ class _ProfileState extends State<Profile> {
                               child: Text(
                                 'Logout',
                                 style: TextStyle(
-                                  color: Color(0xFF282828),
+                                  color: Color(0xFFF46363),
                                   fontSize: 16,
                                   fontFamily: 'Epilogue',
                                   fontWeight: FontWeight.w400,
@@ -322,17 +322,6 @@ class _ProfileState extends State<Profile> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: Icon(
-                                    Icons.forward,
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    size: 16,
-                                  ),
-                                ),
-                              ],
                             ),
                           ),
                         ],
