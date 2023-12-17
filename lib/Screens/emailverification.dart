@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:amul/Screens/mainscreen.dart';
+import 'package:amul/screens/mainscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,18 +35,17 @@ Future<void> signIn(BuildContext context, String email, String name,
         (route) => false);
   }
 }
-Future<void> deleteUserAfterDelay() async {
 
+Future<void> deleteUserAfterDelay() async {
   await Future.delayed(Duration(seconds: 180));
 
   try {
-
-    if (auth.currentUser?.emailVerified == false || auth.currentUser?.emailVerified == null) {
+    if (auth.currentUser?.emailVerified == false ||
+        auth.currentUser?.emailVerified == null) {
       // Delete the user
       await auth.currentUser?.delete();
       print("User deleted successfully.");
       await auth.signOut();
-
     } else {
       print("User is verified. No deletion needed.");
     }
@@ -54,7 +53,6 @@ Future<void> deleteUserAfterDelay() async {
     print("Error deleting user: $e");
   }
 }
-
 
 Future<void> autoredirect(BuildContext context, String loginMail, String name,
     String s_id, String password) async {

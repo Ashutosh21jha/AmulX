@@ -1,6 +1,6 @@
-import 'package:amul/Screens/emailverification.dart';
-import 'package:amul/Screens/forgetpassword.dart';
-import 'package:amul/Screens/mainscreen.dart';
+import 'package:amul/screens/emailverification.dart';
+import 'package:amul/screens/forgetpassword.dart';
+import 'package:amul/screens/mainscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
