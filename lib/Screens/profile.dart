@@ -64,7 +64,7 @@ class _ProfileState extends State<Profile> {
     if (userData != null) {
       setState(() {
         name = userData['name'] ?? '';
-        s_id = userData['roll number'] ?? '';
+        s_id = userData['student id'] ?? '';
       });
     }
   }

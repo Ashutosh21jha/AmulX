@@ -1,39 +1,92 @@
-import 'package:amul/screens/mainscreen.dart';
+import 'dart:async';
+import 'package:amul/Screens/mainscreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
-FirebaseAuth auth = FirebaseAuth.instance;
+final auth = FirebaseAuth.instance;
+final db = FirebaseFirestore.instance;
+late Timer _timer;
 
-Future<void> authentication(String emailAddress, String password) async {
+Future<void> resendlink() async {
+  await auth.currentUser?.sendEmailVerification();
+  print("re-Verification email sent successfully");
+}
+
+Future<void> signIn(BuildContext context, String email, String name,
+    String s_id, String password) async {
+  if (auth.currentUser?.emailVerified ?? false) {
+    auth.createUserWithEmailAndPassword(email: email, password: password);
+    String? userUid = auth.currentUser?.uid;
+    print(auth.currentUser?.email);
+
+    await db.collection('User').doc(email).set({
+      "name": name,
+      "student id": s_id,
+      "userUid": userUid,
+    }).catchError((error) {
+      print("Error adding data: $error");
+    });
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Mainscreen()),
+        (route) => false);
+  }
+}
+Future<void> deleteUserAfterDelay() async {
+
+  await Future.delayed(Duration(seconds: 180));
+
   try {
-    final credential = await auth.createUserWithEmailAndPassword(
-      email: emailAddress,
-      password: password,
-    );
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'weak-password') {
-      print('The password provided is too weak.');
-    } else if (e.code == 'email-already-in-use') {
-      print('The account already exists for that email.');
+
+    if (auth.currentUser?.emailVerified == false || auth.currentUser?.emailVerified == null) {
+      // Delete the user
+      await auth.currentUser?.delete();
+      print("User deleted successfully.");
+      await auth.signOut();
+
+    } else {
+      print("User is verified. No deletion needed.");
     }
   } catch (e) {
-    print(e);
+    print("Error deleting user: $e");
   }
 }
 
-class Emailverification extends StatefulWidget {
-  final String loginMail;
-  final String loginpass;
 
-  Emailverification(this.loginMail, this.loginpass);
+Future<void> autoredirect(BuildContext context, String loginMail, String name,
+    String s_id, String password) async {
+  _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    auth.currentUser?.reload();
+    if (auth.currentUser?.emailVerified ?? false) {
+      timer.cancel();
+      signIn(context, loginMail, name, s_id, password);
+    } else {
+      print("email is not verified yet!");
+    }
+  });
+}
+
+class Emailverification extends StatefulWidget {
+  final String loginMail, name, s_id, password;
+
+  Emailverification(this.loginMail, this.name, this.s_id, this.password);
 
   @override
   State<Emailverification> createState() => _EmailverificationState();
 }
 
 class _EmailverificationState extends State<Emailverification> {
+  @override
+  void initState() {
+    super.initState();
+    autoredirect(
+        context, widget.loginMail, widget.name, widget.s_id, widget.password);
+    deleteUserAfterDelay();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,26 +204,24 @@ class _EmailverificationState extends State<Emailverification> {
                   width: 1, // Border width
                 ),
               ),
-              child: const Center(
-                child: Text(
-                  "Resend Link",
-                  style: TextStyle(
-                      letterSpacing: 1.0,
-                      color: Color(0xFF2546A9),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14),
+              child: InkWell(
+                onTap: () => resendlink(),
+                child: const Center(
+                  child: Text(
+                    "Resend Link",
+                    style: TextStyle(
+                        letterSpacing: 1.0,
+                        color: Color(0xFF2546A9),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
+                  ),
                 ),
               ),
             ),
             InkWell(
               onTap: () {
-                authentication(widget.loginMail, widget.loginpass);
-
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Mainscreen()),
-                  (route) => false,
-                );
+                signIn(context, widget.loginMail, widget.name, widget.s_id,
+                    widget.password);
               },
               child: Container(
                 width: 140,

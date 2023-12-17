@@ -50,6 +50,17 @@ class _Splashscreenstate extends State<SplashScreen> {
 
   // Function to navigate to the next screen
   void _navigateToNextScreen() {
+    /*StreamBuilder<User?>(
+        stream: auth.authStateChanges(),
+        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+          if (snapshot.hasData) {
+            return const Mainscreen();
+          } else {
+            return const signupPage(); // Assuming SignupPage is a widget
+          }
+        }
+    );*/
+
     if (auth.currentUser != null) {
       print(auth.currentUser?.uid);
       Navigator.pushReplacement(
