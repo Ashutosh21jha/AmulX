@@ -1,11 +1,11 @@
+import 'package:amul/screens/cartPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
-import 'cart_components/cart_controller.dart';
-import 'cart_components/cart_items.dart';
-import 'package:amul/screens/cart_page.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+import 'package:amul/screens/cart_components/cart_items.dart';
+import 'package:amul/screens/cart_components/cart_controller.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 FirebaseAuth auth = FirebaseAuth.instance;

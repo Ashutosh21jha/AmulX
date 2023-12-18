@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'cart_items.dart';
-import 'cart_action.dart';
+import 'package:amul/screens/cart_components/cart_items.dart';
+import 'package:amul/screens/cart_components/cart_action.dart';
 
 class CartItemWidget extends StatelessWidget {
   final CartItem item;

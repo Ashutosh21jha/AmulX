@@ -71,19 +71,19 @@ class History extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 80),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                    Text("History",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontFamily: 'Epilogue',
-                        fontWeight: FontWeight.w700,
-                        height: 0.06,
-                      ),
-                    ),
-                  ]
-                  ),
+                        Text(
+                          "History",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontFamily: 'Epilogue',
+                            fontWeight: FontWeight.w700,
+                            height: 0.06,
+                          ),
+                        ),
+                      ]),
                 ),
                 Expanded(
                   child: ListView(
