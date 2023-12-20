@@ -567,7 +567,7 @@ class FoodPageState extends State<FoodPage> {
                                         setState(() {
                                           tappedList[index] =
                                               !tappedList[index];
-                                          countList[index]=1;
+                                          countList[index] = 1;
                                         });
                                         if (!unavailable) {
                                           CartController.to.addItem(CartItem(
@@ -605,6 +605,12 @@ class FoodPageState extends State<FoodPage> {
                                                           1) {
                                                         countList[index]--;
                                                       }
+                                                      CartController.to
+                                                          .removeItem(CartItem(
+                                                        name: itemname,
+                                                        price: double.parse(
+                                                            itemprice),
+                                                      ));
                                                     });
                                                   },
                                                 ),
@@ -622,6 +628,12 @@ class FoodPageState extends State<FoodPage> {
                                                   onPressed: () {
                                                     setState(() {
                                                       countList[index]++;
+                                                      CartController.to
+                                                          .addItem(CartItem(
+                                                        name: itemname,
+                                                        price: double.parse(
+                                                            itemprice),
+                                                      ));
                                                     });
                                                   },
                                                 ),

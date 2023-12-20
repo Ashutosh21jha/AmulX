@@ -44,28 +44,24 @@ class CartController extends GetxController {
           .get();
 
       if (cartItemDoc.docs.isNotEmpty) {
-        // Item exists, update the quantity
         final docId = cartItemDoc.docs.first.id;
         await userCartCollection.doc(docId).update({
           'count': FieldValue.increment(1),
         });
       } else {
-        // Item does not exist, create a new document
         await userCartCollection.add({
           'name': item.name,
           'count': 1,
         });
       }
 
-      // Update the local cart
       final existingItemIndex =
           cartItems.indexWhere((element) => element.name == item.name);
 
       if (existingItemIndex != -1) {
-        // Item already exists, update the quantity
+        //update the quantity
         cartItems[existingItemIndex].incrementQuantity();
       } else {
-        // Item does not exist, add it to the local cart
         cartItems.add(item);
       }
     } catch (e) {
@@ -86,7 +82,6 @@ class CartController extends GetxController {
           .get();
 
       if (cartItemDoc.docs.isNotEmpty) {
-        // Item exists, update or delete
         final docId = cartItemDoc.docs.first.id;
         final existingQuantity = cartItemDoc.docs.first['count'] as int;
 
@@ -96,12 +91,9 @@ class CartController extends GetxController {
             'count': FieldValue.increment(-1),
           });
         } else {
-          // Delete the document if the quantity is 1
           await userCartCollection.doc(docId).delete();
         }
       }
-
-      // Update the local cart
       final existingItem = cartItems.firstWhere(
         (element) => element.name == item.name,
         orElse: () => CartItem(name: '', price: 0.0, quantity: 0),
@@ -124,7 +116,6 @@ class CartController extends GetxController {
       final userCartCollection =
           _firestore.collection('User').doc(userId).collection('cart');
 
-      // Check if the item exists
       final cartItemDoc = await userCartCollection
           .where('name', isEqualTo: item.name)
           .limit(1)
