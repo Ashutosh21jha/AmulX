@@ -1,8 +1,8 @@
+import 'package:amul/Screens/profile.dart';
+import 'package:amul/screens/cartPage.dart';
 import 'package:flutter/material.dart';
-
-import 'history.dart';
 import 'home.dart';
-import 'profile.dart';
+
 
 class Mainscreen extends StatefulWidget {
   const Mainscreen({super.key});
@@ -13,11 +13,11 @@ class Mainscreen extends StatefulWidget {
 
 class _MainscreenState extends State<Mainscreen> {
   int myindex = 0;
-  PageController _pageController = PageController(initialPage: 0);
-  List<Widget> widgetList = const [
-    HomePage(),
-    History(),
-    Profile(),
+  final PageController _pageController = PageController(initialPage: 0);
+  List<Widget> widgetList =  [
+    const HomePage(),
+    CartPage(),
+    const Profile(),
   ];
 
   @override
@@ -39,8 +39,8 @@ class _MainscreenState extends State<Mainscreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
+            icon: Icon(Icons.shopping_cart),
+            label: 'Cart',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -52,7 +52,7 @@ class _MainscreenState extends State<Mainscreen> {
           setState(() {
             myindex = index;
             _pageController.animateToPage(index,
-                duration: Duration(milliseconds: 50), curve: Curves.ease);
+                duration: const Duration(milliseconds: 50), curve: Curves.ease);
           });
         },
         selectedItemColor: const Color(0xFF2546A9),

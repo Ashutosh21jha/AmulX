@@ -22,7 +22,6 @@ class _Splashscreenstate extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // After 3000 milliseconds (3 seconds), navigate to the next screen
     Future.delayed(const Duration(milliseconds: 1000), () {
       if (!_animationStarted) {
         _startImageAnimation();
@@ -32,35 +31,20 @@ class _Splashscreenstate extends State<SplashScreen> {
     });
   }
 
-  // Function to start the image animation
   void _startImageAnimation() {
-    // After 500 milliseconds (0.5 seconds), start the animation
     Future.delayed(const Duration(milliseconds: 700), () {
       setState(() {
-        _imageOffset = -175.0; // Move the image up by 200 pixels
+        _imageOffset = -175.0;
         _animationStarted = true;
       });
     });
 
-    // After 2500 milliseconds (2.5 seconds), navigate to the next screen
     Future.delayed(const Duration(milliseconds: 1000), () {
       _navigateToNextScreen();
     });
   }
 
-  // Function to navigate to the next screen
   void _navigateToNextScreen() {
-    /*StreamBuilder<User?>(
-        stream: auth.authStateChanges(),
-        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-          if (snapshot.hasData) {
-            return const Mainscreen();
-          } else {
-            return const signupPage(); // Assuming SignupPage is a widget
-          }
-        }
-    );*/
-
     if (auth.currentUser != null) {
       print(auth.currentUser?.uid);
       Navigator.pushReplacement(

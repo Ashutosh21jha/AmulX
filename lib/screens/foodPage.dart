@@ -46,6 +46,32 @@ class FoodPage extends StatefulWidget {
 }
 
 class FoodPageState extends State<FoodPage> {
+  Map<String, List<Map<String, dynamic>>> Filterlist = {
+    'availableItems': [],
+    'unavailableItems': [],
+    /*'lowest-highest': [],
+    'highest-lowest': [],*/
+  };
+
+  void separateItems() {
+    Filterlist.values.forEach((list) => list.clear());
+    for (Map<String, dynamic> itemData in widget.itemList) {
+      bool available = itemData['available'];
+      if (available == true) {
+        Filterlist['availableItems']?.add(itemData);
+      } else {
+        Filterlist['unavailableItems']?.add(itemData);
+      }
+    }
+  }
+
+  List<Map<String, dynamic>> perfectlist() {
+    return [
+      ...Filterlist['availableItems'] ?? [],
+      ...Filterlist['unavailableItems'] ?? [],
+    ];
+  }
+
 /*  void fetchData() async {
     List<ItemsModel> availableItems = await ItemsModel.fetchAvailableItems();
 
@@ -89,7 +115,7 @@ class FoodPageState extends State<FoodPage> {
   @override
   void initState() {
     super.initState();
-
+    separateItems();
     /*_defaultOrder = List<FoodItem>.from(_foodItems);
     _sortListByDefaultOrder();*/
     selected = 0;
@@ -455,98 +481,122 @@ class FoodPageState extends State<FoodPage> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  itemCount: widget.itemCount,
+                  itemCount: perfectlist().length,
                   itemBuilder: (context, index) {
-                    Map<String, dynamic> itemData = widget.itemList[index];
+                    List<Map<String, dynamic>> mergedList = perfectlist();
+                    Map<String, dynamic> itemData = mergedList[index];
+                    bool available = itemData['available'];
+                    bool unavailable = !available;
+
                     String itemname = itemData['name'];
                     String itemprice = itemData['price'];
                     String itemimage = itemData['image'];
-                    /*final foodItem = _foodItems[index];*/
+
+                    /*Map<String, dynamic> itemData = widget.itemList[index];
+                    bool available = itemData['available'];
+                    print(available);
+                    bool unavailable = !available;
+
+                    String itemname = itemData['name'];
+                    String itemprice = itemData['price'];
+                    String itemimage = itemData['image'];*/
+
                     return Padding(
                       padding:
                           const EdgeInsets.only(left: 8, right: 8, bottom: 5),
-                      child: Card(
-                          elevation: 2,
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            leading: ClipRRect(
+                      child: Opacity(
+                        opacity: unavailable ? .5 : 1.0,
+                        child: Card(
+                            elevation: 2,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
-                              child: SizedBox(
-                                width: 70,
-                                height: 70,
-                                child: itemimage.isNotEmpty
-                                    ? Image.network(
-                                        itemimage,
-                                        fit: BoxFit.fill,
-                                      )
-                                    : const CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.blue),
-                                      ),
-                              ),
                             ),
-                            title: Text(
-                              itemname,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: RichText(
-                              text: TextSpan(
-                                children: [
-                                  const WidgetSpan(
-                                    child: Icon(
-                                      Icons.currency_rupee_outlined,
-                                      color: Colors.green,
-                                      size: 17,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: itemprice,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors
-                                          .green, // Change color if needed
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            trailing: GestureDetector(
-                              onTap: () {
-                                /* _addToCart(foodItem);*/
-                              },
-                              child: Container(
-                                width: 90,
-                                height: 45,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: const Color(0xFFD1D2D3),
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(60.0),
+                            child: ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: SizedBox(
+                                  width: 70,
+                                  height: 70,
+                                  child: itemimage.isNotEmpty
+                                      ? Image.network(
+                                          itemimage,
+                                          fit: BoxFit.fill,
+                                        )
+                                      : const CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.blue),
+                                        ),
                                 ),
-                                child: const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: Text(
-                                      "Add",
-                                      style: TextStyle(
+                              ),
+                              title: Text(
+                                itemname,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    const WidgetSpan(
+                                      child: Icon(
+                                        Icons.currency_rupee_outlined,
+                                        color: Colors.green,
+                                        size: 17,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: itemprice,
+                                      style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
+                                        color: Colors
+                                            .green, // Change color if needed
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                               ),
-                            ),
-                          )),
+                              trailing: unavailable
+                                  ? Text(
+                                      "Out of Stoke",
+                                      style: TextStyle(
+                                        color: Color(0xFFDD4040),
+                                      ),
+                                    )
+                                  : GestureDetector(
+                                      onTap: () {
+                                        /* _addToCart(foodItem);*/
+                                      },
+                                      child: Container(
+                                        width: 90,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: const Color(0xFFD1D2D3),
+                                            width: 1,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(60.0),
+                                        ),
+                                        child: const Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(5),
+                                            child: Text(
+                                              "Add",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                            )),
+                      ),
                     );
                   },
                 ),

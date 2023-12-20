@@ -38,34 +38,11 @@ class _CartPageState extends State<CartPage> {
       backgroundColor: Colors.grey.shade200,
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: const Icon(Icons.arrow_back_ios),
-                      color: Colors.indigo,
-                    ),
-                    Text("Back", style: TextStyle(color: Colors.indigo))
-                  ],
-                ),
-                const Expanded(
-                  child: Center(
-                    child: Text(
-                      'Cart',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 82),
-              ],
+          SizedBox(height: 45),
+          Center(
+            child: Text(
+              'Cart',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(
@@ -256,7 +233,7 @@ class _CartPageState extends State<CartPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         textStyle: const TextStyle(fontSize: 22),
-                        backgroundColor: Colors.indigo,
+                        backgroundColor: const Color(0xFF2546A9),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 10,
@@ -265,7 +242,10 @@ class _CartPageState extends State<CartPage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      child: const Text('Order Now'),
+                      child: const Text(
+                        'Order Now',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),

@@ -1,3 +1,4 @@
+import 'package:amul/screens/history.dart';
 import 'package:amul/models/items_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,6 +40,7 @@ class _HomeState extends State<HomePage> {
         'name': item.id!,
         'price': item.price,
         'image': item.imageUrl,
+        'available':item.availability,
       };
 
       itemsMap[itemType]!.add(itemData);
@@ -83,11 +85,19 @@ class _HomeState extends State<HomePage> {
                         width: 85,
                         height: 30,
                       ),
-                      const CircleAvatar(
+                      GestureDetector(
+                        onTap: () => Get.to(History()),
+                        child: Icon(
+                          Icons.history,
+                          size: 30,
+                        ),
+                      )
+
+                      /*const CircleAvatar(
                         backgroundImage: AssetImage("assets/images/avatar.png"),
                         backgroundColor: Colors.transparent,
                         radius: 22,
-                      ),
+                      ),*/
                     ],
                   ),
                 ),
