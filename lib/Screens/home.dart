@@ -1,3 +1,6 @@
+import 'package:amul/models/items_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -11,6 +14,50 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomeState extends State<HomePage> {
+  final db = FirebaseFirestore.instance;
+  final auth = FirebaseAuth.instance;
+  int foodCount = 0;
+  int drinkCount = 0;
+  int munchiesCount = 0;
+  int dairyCount = 0;
+
+  Map<String, List<Map<String, dynamic>>> itemsMap = {
+    'food': [],
+    'drink': [],
+    'munchies': [],
+    'dairy': [],
+  };
+
+  void fetchData() async {
+    List<ItemsModel> availableItems = await ItemsModel.fetchAvailableItems();
+
+    itemsMap.values.forEach((list) => list.clear());
+
+    for (ItemsModel item in availableItems) {
+      String itemType = item.type;
+      Map<String, dynamic> itemData = {
+        'name': item.id!,
+        'price': item.price,
+        'image': item.imageUrl,
+      };
+
+      itemsMap[itemType]!.add(itemData);
+    }
+
+    setState(() {
+      foodCount = itemsMap['food']!.length;
+      drinkCount = itemsMap['drink']!.length;
+      munchiesCount = itemsMap['munchies']!.length;
+      dairyCount = itemsMap['dairy']!.length;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,8 +70,8 @@ class _HomeState extends State<HomePage> {
 
             // logo and avatar container
             Padding(
-              padding:
-                  const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
+              padding: const EdgeInsets.only(
+                  left: 24, right: 30, top: 10, bottom: 10),
               child: SizedBox(
                 height: 92,
                 child: Center(
@@ -55,9 +102,7 @@ class _HomeState extends State<HomePage> {
                 color: Color(0xFF414042),
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                letterSpacing: 0.02 *
-                    16, // 2% of the font size (16 logical pixels in this case)
-                // Line height (32 / 16 = 2.0)
+                letterSpacing: 0.02 * 16,
               ),
               textAlign: TextAlign.center,
             ),
@@ -73,7 +118,11 @@ class _HomeState extends State<HomePage> {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          Get.to(FoodPage(cat: "Food",));
+                          Get.to(FoodPage(
+                            cat: "Food",
+                            itemList: itemsMap['food']!,
+                            itemCount: foodCount,
+                          ));
                         },
                         child: Container(
                             width: 134.5,
@@ -117,7 +166,11 @@ class _HomeState extends State<HomePage> {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          Get.to(FoodPage(cat:"Drinks" ));
+                          Get.to(FoodPage(
+                            cat: "Drinks",
+                            itemList: itemsMap['drink']!,
+                            itemCount: drinkCount,
+                          ));
                         },
                         child: Container(
                           width: 134.5,
@@ -165,7 +218,11 @@ class _HomeState extends State<HomePage> {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          Get.to(FoodPage(cat: "Munchies",));
+                          Get.to(FoodPage(
+                            cat: "Munchies",
+                            itemList: itemsMap['munchies']!,
+                            itemCount: munchiesCount,
+                          ));
                         },
                         child: Container(
                           width: 134.5,
@@ -210,7 +267,11 @@ class _HomeState extends State<HomePage> {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          Get.to(FoodPage(cat: "Dairy",));
+                          Get.to(FoodPage(
+                            cat: "Dairy",
+                            itemCount: dairyCount,
+                            itemList: itemsMap['dairy']!,
+                          ));
                         },
                         child: Container(
                           width: 134.5,

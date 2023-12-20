@@ -1,3 +1,4 @@
+import 'package:amul/models/items_model.dart';
 import 'package:amul/screens/cartPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +11,7 @@ import 'package:amul/screens/cart_components/cart_controller.dart';
 FirebaseFirestore db = FirebaseFirestore.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
-class FoodItem {
+/*class FoodItem {
   String name;
   int price;
   String imageAsset;
@@ -27,18 +28,44 @@ class FoodItem {
       itemCount--;
     }
   }
-}
+}*/
 
 class FoodPage extends StatefulWidget {
-  FoodPage({Key? key, required this.cat}) : super(key: key);
+  FoodPage(
+      {Key? key,
+      required this.cat,
+      required this.itemList,
+      required this.itemCount})
+      : super(key: key);
   String cat;
+  List<Map<String, dynamic>> itemList;
+  int itemCount;
 
   @override
   State<StatefulWidget> createState() => FoodPageState();
 }
 
 class FoodPageState extends State<FoodPage> {
-  final List<FoodItem> _cartItems = [];
+/*  void fetchData() async {
+    List<ItemsModel> availableItems = await ItemsModel.fetchAvailableItems();
+
+    itemList.clear();
+    for (ItemsModel item in availableItems) {
+      print(item.id);
+      print(item.price);
+      itemList.add({
+        'name': item.id!,
+        'price': item.price,
+        'image': item.imageUrl,
+      });
+    }
+
+    setState(() {
+      itemCount = itemList.length;
+    });
+  }*/
+
+/*  final List<FoodItem> _cartItems = [];
   FoodItem? _selectedItem;
   List<FoodItem> _defaultOrder = [];
   List<FoodItem> _foodItems = [
@@ -52,7 +79,7 @@ class FoodPageState extends State<FoodPage> {
     FoodItem('Egg Maggi', 35, 'assets/images/eggmaggie.jpg'),
     FoodItem('2 Egg Maggi', 50, 'assets/images/eggmaggie.jpg'),
     FoodItem('Chocolate\nBrownie', 55, 'assets/images/brownie.jpg'),
-  ];
+  ];*/
 
   String get userId => auth.currentUser?.email ?? '';
 
@@ -62,12 +89,13 @@ class FoodPageState extends State<FoodPage> {
   @override
   void initState() {
     super.initState();
-    _defaultOrder = List<FoodItem>.from(_foodItems);
-    _sortListByDefaultOrder();
+
+    /*_defaultOrder = List<FoodItem>.from(_foodItems);
+    _sortListByDefaultOrder();*/
     selected = 0;
   }
 
-  Future<void> _addToFirestore(FoodItem item, int itemCount) async {
+/*  Future<void> _addToFirestore(FoodItem item, int itemCount) async {
     String documentId = userId;
     CollectionReference cartCollection =
         db.collection('User').doc(documentId).collection('cart');
@@ -100,9 +128,9 @@ class FoodPageState extends State<FoodPage> {
       // Add the cart item to Firestore
       await cartCollection.doc(cartEntryId).set(cartItem);
     }
-  }
+  }*/
 
-  void _addToCart(FoodItem item) {
+  /* void _addToCart(FoodItem item) {
     int itemCount = item.itemCount; // Store the initial count
 
     showDialog(
@@ -203,20 +231,22 @@ class FoodPageState extends State<FoodPage> {
         );
       },
     );
-  }
+  }*/
 
+/*
   void _viewCart() {
     Get.to(CartPage());
   }
+*/
 
-  bool _isSortedByPriceLowestToHighest = false;
+  /* bool _isSortedByPriceLowestToHighest = false;
   bool _isSortedByPriceHighestToLowest = false;
 
   void _sortListByDefaultOrder() {
     setState(() {
       _foodItems = List<FoodItem>.from(_defaultOrder);
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -277,11 +307,11 @@ class FoodPageState extends State<FoodPage> {
                   onChanged: (value) {
                     // Filter the list based on the search input
                     setState(() {
-                      _foodItems = _defaultOrder
+                      /* _foodItems = _defaultOrder
                           .where((item) => item.name
                               .toLowerCase()
                               .contains(value.toLowerCase()))
-                          .toList();
+                          .toList();*/
                     });
                   },
                 ),
@@ -298,10 +328,10 @@ class FoodPageState extends State<FoodPage> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      _sortListByDefaultOrder(); // Sort by default order
+                      /* _sortListByDefaultOrder(); // Sort by default order
                       setState(() {
                         selected = index1;
-                      });
+                      });*/
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -332,7 +362,7 @@ class FoodPageState extends State<FoodPage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
+                    /* onTap: () {
                       setState(() {
                         selected = index2;
                         _isSortedByPriceLowestToHighest =
@@ -344,7 +374,7 @@ class FoodPageState extends State<FoodPage> {
                               a.price.compareTo(b.price)); // Ascending order
                         }
                       });
-                    },
+                    },*/
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Container(
@@ -374,7 +404,7 @@ class FoodPageState extends State<FoodPage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
+                    /*onTap: () {
                       setState(() {
                         selected = index3;
                         if (_isSortedByPriceHighestToLowest) {
@@ -385,7 +415,7 @@ class FoodPageState extends State<FoodPage> {
                         _isSortedByPriceLowestToHighest =
                             !_isSortedByPriceLowestToHighest;
                       });
-                    },
+                    },*/
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Container(
@@ -425,14 +455,19 @@ class FoodPageState extends State<FoodPage> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  itemCount: _foodItems.length,
+                  itemCount: widget.itemCount,
                   itemBuilder: (context, index) {
-                    final foodItem = _foodItems[index];
+                    Map<String, dynamic> itemData = widget.itemList[index];
+                    String itemname = itemData['name'];
+                    String itemprice = itemData['price'];
+                    String itemimage = itemData['image'];
+                    /*final foodItem = _foodItems[index];*/
                     return Padding(
                       padding:
                           const EdgeInsets.only(left: 8, right: 8, bottom: 5),
                       child: Card(
                           elevation: 2,
+                          color: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -442,30 +477,50 @@ class FoodPageState extends State<FoodPage> {
                               child: SizedBox(
                                 width: 70,
                                 height: 70,
-                                child: Image.asset(
-                                  foodItem.imageAsset,
-                                  fit: BoxFit.fill,
-                                ),
+                                child: itemimage.isNotEmpty
+                                    ? Image.network(
+                                        itemimage,
+                                        fit: BoxFit.fill,
+                                      )
+                                    : const CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.blue),
+                                      ),
                               ),
                             ),
                             title: Text(
-                              foodItem.name,
+                              itemname,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            subtitle: Text(
-                              '₹${foodItem.price.toString()}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
+                            subtitle: RichText(
+                              text: TextSpan(
+                                children: [
+                                  const WidgetSpan(
+                                    child: Icon(
+                                      Icons.currency_rupee_outlined,
+                                      color: Colors.green,
+                                      size: 17,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: itemprice,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors
+                                          .green, // Change color if needed
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             trailing: GestureDetector(
                               onTap: () {
-                                _addToCart(foodItem);
+                                /* _addToCart(foodItem);*/
                               },
                               child: Container(
                                 width: 90,
