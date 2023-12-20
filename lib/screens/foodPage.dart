@@ -1,3 +1,4 @@
+import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/models/items_model.dart';
 import 'package:amul/screens/cartPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,6 +47,9 @@ class FoodPage extends StatefulWidget {
 }
 
 class FoodPageState extends State<FoodPage> {
+  late List<bool> tappedList;
+  late List<int> countList;
+
   Map<String, List<Map<String, dynamic>>> Filterlist = {
     'availableItems': [],
     'unavailableItems': [],
@@ -118,6 +122,8 @@ class FoodPageState extends State<FoodPage> {
     separateItems();
     /*_defaultOrder = List<FoodItem>.from(_foodItems);
     _sortListByDefaultOrder();*/
+    tappedList = List.filled(perfectlist().length, false);
+    countList = List.filled(perfectlist().length, 0);
     selected = 0;
   }
 
@@ -483,23 +489,13 @@ class FoodPageState extends State<FoodPage> {
                   scrollDirection: Axis.vertical,
                   itemCount: perfectlist().length,
                   itemBuilder: (context, index) {
-                    List<Map<String, dynamic>> mergedList = perfectlist();
-                    Map<String, dynamic> itemData = mergedList[index];
+                    Map<String, dynamic> itemData = perfectlist()[index];
                     bool available = itemData['available'];
                     bool unavailable = !available;
 
                     String itemname = itemData['name'];
                     String itemprice = itemData['price'];
                     String itemimage = itemData['image'];
-
-                    /*Map<String, dynamic> itemData = widget.itemList[index];
-                    bool available = itemData['available'];
-                    print(available);
-                    bool unavailable = !available;
-
-                    String itemname = itemData['name'];
-                    String itemprice = itemData['price'];
-                    String itemimage = itemData['image'];*/
 
                     return Padding(
                       padding:
@@ -560,7 +556,7 @@ class FoodPageState extends State<FoodPage> {
                                 ),
                               ),
                               trailing: unavailable
-                                  ? Text(
+                                  ? const Text(
                                       "Out of Stock",
                                       style: TextStyle(
                                         color: Color(0xFFDD4040),
@@ -568,6 +564,11 @@ class FoodPageState extends State<FoodPage> {
                                     )
                                   : GestureDetector(
                                       onTap: () {
+                                        setState(() {
+                                          tappedList[index] =
+                                              !tappedList[index];
+                                          countList[index]=1;
+                                        });
                                         if (!unavailable) {
                                           CartController.to.addItem(CartItem(
                                             name: itemname,
@@ -578,35 +579,80 @@ class FoodPageState extends State<FoodPage> {
                                             SnackBar(
                                               content: Text(
                                                   '$itemname added to cart'),
-                                              duration: Duration(seconds: 2),
+                                              duration:
+                                                  const Duration(seconds: 2),
                                             ),
                                           );
                                         }
                                       },
-                                      child: Container(
-                                        width: 90,
-                                        height: 45,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: const Color(0xFFD1D2D3),
-                                            width: 1,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(60.0),
-                                        ),
-                                        child: const Center(
-                                          child: Padding(
-                                            padding: EdgeInsets.all(5),
-                                            child: Text(
-                                              "Add",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
+                                      child: tappedList[index]
+                                          ? Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                IconButton(
+                                                  icon: const Icon(
+                                                    Icons.remove,
+                                                  ),
+                                                  color: AppColors.blue,
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      if (countList[index] ==
+                                                          1) {
+                                                        tappedList[index] =
+                                                            false;
+                                                      } else if (countList[
+                                                              index] >
+                                                          1) {
+                                                        countList[index]--;
+                                                      }
+                                                    });
+                                                  },
+                                                ),
+                                                Text(
+                                                  countList[index].toString(),
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18,
+                                                      color: AppColors.green),
+                                                ),
+                                                IconButton(
+                                                  icon: const Icon(Icons.add),
+                                                  color: AppColors.blue,
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      countList[index]++;
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            )
+                                          : Container(
+                                              width: 90,
+                                              height: 45,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color:
+                                                      const Color(0xFFD1D2D3),
+                                                  width: 1,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(60.0),
+                                              ),
+                                              child: const Center(
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(5),
+                                                  child: Text(
+                                                    "Add",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
                                     ),
                             )),
                       ),
