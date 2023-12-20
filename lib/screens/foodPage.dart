@@ -561,14 +561,27 @@ class FoodPageState extends State<FoodPage> {
                               ),
                               trailing: unavailable
                                   ? Text(
-                                      "Out of Stoke",
+                                      "Out of Stock",
                                       style: TextStyle(
                                         color: Color(0xFFDD4040),
                                       ),
                                     )
                                   : GestureDetector(
                                       onTap: () {
-                                        /* _addToCart(foodItem);*/
+                                        if (!unavailable) {
+                                          CartController.to.addItem(CartItem(
+                                            name: itemname,
+                                            price: double.parse(itemprice),
+                                          ));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  '$itemname added to cart'),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        }
                                       },
                                       child: Container(
                                         width: 90,
