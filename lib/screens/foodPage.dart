@@ -77,7 +77,7 @@ class FoodPageState extends State<FoodPage> {
 
     Set<String> uniqueKeys = Set<String>();
 
-    // Use 'name' as a unique key
+    // Used name as a unique key
     availableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
     unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
 
