@@ -546,6 +546,13 @@ class FoodPageState extends State<FoodPage> {
                     String itemprice = itemData['price'];
                     String itemimage = itemData['image'];
 
+                    if (_searchController.text.isNotEmpty &&
+                        !itemname.toLowerCase().contains(
+                              _searchController.text.toLowerCase(),
+                            )) {
+                      return Container();
+                    }
+
                     return Padding(
                       padding:
                           const EdgeInsets.only(left: 8, right: 8, bottom: 5),
