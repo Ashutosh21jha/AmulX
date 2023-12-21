@@ -1,7 +1,9 @@
+import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/signupPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'profile_screens/about.dart';
 import 'profile_screens/terms.dart';
 import 'profile_screens/privacy.dart';
@@ -56,6 +58,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     receivedata();
+    /*CartController.to.fetchCart();*/
   }
 
   Future<void> receivedata() async {
@@ -71,6 +74,12 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
     return Scaffold(
       body: Stack(
         children: [

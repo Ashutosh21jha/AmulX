@@ -1,3 +1,4 @@
+import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/history.dart';
 import 'package:amul/models/items_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,6 +59,7 @@ class _HomeState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchData();
+    CartController.to.fetchCart();
   }
 
   @override

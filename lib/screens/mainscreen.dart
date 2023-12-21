@@ -1,6 +1,7 @@
 import 'package:amul/Screens/profile.dart';
 import 'package:amul/screens/cartPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'home.dart';
 
 
@@ -22,6 +23,12 @@ class _MainscreenState extends State<Mainscreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     return Scaffold(
       body: PageView(
         controller: _pageController,

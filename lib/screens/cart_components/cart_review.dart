@@ -1,4 +1,4 @@
-import 'cart_items.dart';
+import 'cartItem_model.dart';
 import 'package:flutter/material.dart';
 
 class CartItemReviewWidget extends StatelessWidget {

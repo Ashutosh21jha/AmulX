@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,27 +12,29 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  int itemCount = 0;
+  late Timer _timer;
 
-  // Method to update item count
+  /* int itemCount = 0;
   void updateItemCount() {
     setState(() {
       itemCount =
           CartController.to.calculateItemCount(CartController.to.cartItems);
     });
-  }
+  }*/
 
-  int calculateItemCount() {
-    return CartController.to.cartItems
-        .map((item) => item.quantity)
-        .fold(0, (prev, current) => prev + current);
+  Future<void> reloadFetchData() async {
+    _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+      CartController.to.fetchCart();
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    itemCount = calculateItemCount(); // Initialized item count
-    updateItemCount();
+    /* itemCount = calculateItemCount(); // Initialized item count
+    updateItemCount();*/
+    CartController.to.fetchCart();
+    reloadFetchData();
   }
 
   @override
@@ -38,8 +43,8 @@ class _CartPageState extends State<CartPage> {
       backgroundColor: Colors.grey.shade200,
       body: Column(
         children: [
-          SizedBox(height: 45),
-          Center(
+          const SizedBox(height: 45),
+          const Center(
             child: Text(
               'Cart',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -56,14 +61,14 @@ class _CartPageState extends State<CartPage> {
                     height: 90,
                     width: 100,
                     margin:
-                        const EdgeInsets.symmetric(vertical: 9, horizontal: 14),
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey, width: 1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ListTile(
                       contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 14),
+                          const EdgeInsets.symmetric(horizontal: 16),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -74,7 +79,7 @@ class _CartPageState extends State<CartPage> {
                                 item.name,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 maxLines: 1,
@@ -86,8 +91,8 @@ class _CartPageState extends State<CartPage> {
                           Text(
                             '\₹${item.price.toStringAsFixed(2)}',
                             style: const TextStyle(
-                              color: Colors.green,
-                              fontSize: 18,
+                              color: AppColors.green,
+                              fontSize: 14,
                               fontWeight: FontWeight.w900,
                             ),
                           ),
@@ -111,11 +116,11 @@ class _CartPageState extends State<CartPage> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.remove),
+                                      icon: const Icon(Icons.remove),
                                       iconSize: 18,
                                       onPressed: () {
                                         cartController.removeItem(item);
-                                        updateItemCount();
+                                        /* updateItemCount();*/
                                       },
                                     ),
                                     Text(
@@ -125,11 +130,11 @@ class _CartPageState extends State<CartPage> {
                                       ),
                                     ),
                                     IconButton(
-                                      icon: Icon(Icons.add),
+                                      icon: const Icon(Icons.add),
                                       iconSize: 18,
                                       onPressed: () {
                                         cartController.addItem(item);
-                                        updateItemCount();
+                                        /*updateItemCount();*/
                                       },
                                     ),
                                   ],
@@ -155,11 +160,11 @@ class _CartPageState extends State<CartPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
+                const Text(
                   'Summary',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Obx(() {
                   final cartController = CartController.to;
                   return Column(
@@ -168,12 +173,12 @@ class _CartPageState extends State<CartPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  '${item.name} (${item.quantity} items)',
-                                  style: TextStyle(fontSize: 17),
+                                  '${item.quantity} ${item.name}',
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                                 Text(
                                   '\₹${(item.price * item.quantity).toStringAsFixed(2)}',
-                                  style: TextStyle(fontSize: 17),
+                                  style: const TextStyle(fontSize: 14),
                                 ), // Item price
                               ],
                             ))
@@ -184,20 +189,24 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
           Container(
-            color: Colors.white,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             child: Row(
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 10),
                       child: Text(
                         'Total Amount',
                         style: TextStyle(
                           color: Colors.indigo,
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -206,8 +215,8 @@ class _CartPageState extends State<CartPage> {
                       final cartController = CartController.to;
                       return Text(
                         '\₹ ${cartController.totalAmount.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontSize: 26,
+                        style: const TextStyle(
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       );
@@ -239,12 +248,12 @@ class _CartPageState extends State<CartPage> {
                           vertical: 10,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(48),
                         ),
                       ),
                       child: const Text(
                         'Order Now',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
                   ),

@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:amul/screens/cart_components/cart_items.dart';
+import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -50,6 +50,8 @@ class FoodPageState extends State<FoodPage> {
   late List<bool> tappedList;
   late List<int> countList;
 
+
+
   Map<String, List<Map<String, dynamic>>> Filterlist = {
     'availableItems': [],
     'unavailableItems': [],
@@ -75,9 +77,10 @@ class FoodPageState extends State<FoodPage> {
     List<Map<String, dynamic>> unavailableItems =
         Filterlist['unavailableItems'] ?? [];
 
+
     Set<String> uniqueKeys = Set<String>();
 
-    // Used name as a unique key
+
     availableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
     unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
 
@@ -557,7 +560,7 @@ class FoodPageState extends State<FoodPage> {
                       padding:
                           const EdgeInsets.only(left: 8, right: 8, bottom: 5),
                       child: Opacity(
-                        opacity: unavailable ? .5 : 1.0,
+                        opacity: unavailable ? .4 : 1.0,
                         child: Card(
                             elevation: 2,
                             color: Colors.white,
@@ -604,8 +607,7 @@ class FoodPageState extends State<FoodPage> {
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors
-                                            .green, // Change color if needed
+                                        color: Colors.green,
                                       ),
                                     ),
                                   ],

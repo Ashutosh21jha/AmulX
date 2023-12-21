@@ -1,12 +1,14 @@
-import 'package:amul/screens/cart_components/cart_items.dart';
+import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:amul/screens/emailverification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class CartController extends GetxController {
   static CartController get to => Get.put(CartController());
+
   final RxList<CartItem> cartItems = <CartItem>[].obs;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final db = FirebaseFirestore.instance;
 
   String get userId => auth.currentUser?.email ?? '';
 
@@ -19,7 +21,7 @@ class CartController extends GetxController {
   Future<void> addItem(CartItem item) async {
     try {
       final userCartCollection =
-          _firestore.collection('User').doc(userId).collection('cart');
+          db.collection('User').doc(userId).collection('cart');
 
       // Check if the item already exists
       final cartItemDoc = await userCartCollection
@@ -36,18 +38,19 @@ class CartController extends GetxController {
         await userCartCollection.add({
           'name': item.name,
           'count': 1,
+          'price': item.price,
         });
       }
 
-      final existingItemIndex =
-          cartItems.indexWhere((element) => element.name == item.name);
+      /* final existingItemIndex =
+            cartItems.indexWhere((element) => element.name == item.name);
 
-      if (existingItemIndex != -1) {
-        //update the quantity
-        cartItems[existingItemIndex].incrementQuantity();
-      } else {
-        cartItems.add(item);
-      }
+        if (existingItemIndex != -1) {
+          //update the quantity
+          cartItems[existingItemIndex].incrementQuantity();
+        } else {
+          cartItems.add(item);
+        }*/
     } catch (e) {
       print('Error adding item to Firestore: $e');
     }
@@ -57,7 +60,7 @@ class CartController extends GetxController {
   Future<void> removeItem(CartItem item) async {
     try {
       final userCartCollection =
-          _firestore.collection('User').doc(userId).collection('cart');
+          db.collection('User').doc(userId).collection('cart');
 
       // Check if the item exists
       final cartItemDoc = await userCartCollection
@@ -79,7 +82,7 @@ class CartController extends GetxController {
         }
       }
 
-      final existingItem = cartItems.firstWhere(
+      /*final existingItem = cartItems.firstWhere(
         (element) => element.name == item.name,
         orElse: () => CartItem(name: '', price: 0.0, quantity: 0),
       );
@@ -89,7 +92,7 @@ class CartController extends GetxController {
         if (existingItem.quantity <= 0) {
           cartItems.remove(existingItem);
         }
-      }
+      }*/
     } catch (e) {
       print('Error removing item from Firestore: $e');
     }
@@ -99,7 +102,7 @@ class CartController extends GetxController {
   Future<void> updateItemQuantity(CartItem item) async {
     try {
       final userCartCollection =
-          _firestore.collection('User').doc(userId).collection('cart');
+          db.collection('User').doc(userId).collection('cart');
 
       // Check if the item exists
       final cartItemDoc = await userCartCollection
@@ -126,4 +129,37 @@ class CartController extends GetxController {
   double get totalAmount {
     return cartItems.fold(0, (sum, item) => sum + item.price * item.quantity);
   }
+
+  Future<void> fetchCart() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> cartref =
+          await db.collection('User').doc(userId).get();
+
+      if (cartref.exists) {
+        QuerySnapshot<Map<String, dynamic>> cartdoc =
+            await db.collection('User').doc(userId).collection('cart').get();
+
+        /*final cartRef = user.collection('cart');
+          final cart = await cartRef.get();
+*/
+        if (cartdoc.docs.isNotEmpty) {
+          cartItems.clear();
+          cartItems.addAll(cartdoc.docs.map((doc) {
+            return CartItem(
+              name: doc['name'] ?? '',
+              price: doc['price']?.toDouble() ?? 0.0,
+              quantity: doc['count'] ?? 1,
+            );
+          }));
+        } else {
+          print('The "cart" collection is empty.');
+        }
+      } else {
+        print('The user document does not exist.');
+      }
+    } catch (e) {
+      print("Error checking cart collection: $e");
+    }
+  }
+
 }
