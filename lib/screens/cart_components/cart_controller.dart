@@ -16,22 +16,6 @@ class CartController extends GetxController {
         .fold(0, (prev, current) => prev + current);
   }
 
-  Stream<List<CartItem>> get cartItemsStream {
-    final userCartCollection =
-        _firestore.collection('User').doc(userId).collection('cart');
-
-    return userCartCollection.snapshots().map((querySnapshot) {
-      return querySnapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return CartItem(
-          name: data['name'] ?? '',
-          price: 0.0,
-          quantity: data['count'] ?? 0,
-        );
-      }).toList();
-    });
-  }
-
   Future<void> addItem(CartItem item) async {
     try {
       final userCartCollection =
@@ -94,6 +78,7 @@ class CartController extends GetxController {
           await userCartCollection.doc(docId).delete();
         }
       }
+
       final existingItem = cartItems.firstWhere(
         (element) => element.name == item.name,
         orElse: () => CartItem(name: '', price: 0.0, quantity: 0),
@@ -116,6 +101,7 @@ class CartController extends GetxController {
       final userCartCollection =
           _firestore.collection('User').doc(userId).collection('cart');
 
+      // Check if the item exists
       final cartItemDoc = await userCartCollection
           .where('name', isEqualTo: item.name)
           .limit(1)
@@ -139,25 +125,5 @@ class CartController extends GetxController {
 
   double get totalAmount {
     return cartItems.fold(0, (sum, item) => sum + item.price * item.quantity);
-  }
-
-  Future<void> fetchCartItems() async {
-    try {
-      final userCartCollection =
-          _firestore.collection('User').doc(userId).collection('cart');
-      final cartSnapshot = await userCartCollection.get();
-
-      cartItems.assignAll(cartSnapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return CartItem(
-          name: data['name'] ?? '',
-          price: 0.0,
-          quantity: data['count'] ?? 0,
-        );
-      }).toList());
-    } catch (e) {
-      print('Error fetching cart items from Firestore: $e');
-    }
-    update();
   }
 }

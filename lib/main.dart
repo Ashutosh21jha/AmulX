@@ -1,3 +1,5 @@
+import 'package:amul/Screens/profile.dart';
+import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/forgetpassword.dart';
 import 'package:amul/screens/home.dart';
 import 'package:amul/screens/splashscreen.dart';

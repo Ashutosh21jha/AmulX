@@ -70,10 +70,41 @@ class FoodPageState extends State<FoodPage> {
   }
 
   List<Map<String, dynamic>> perfectlist() {
-    return [
-      ...Filterlist['availableItems'] ?? [],
-      ...Filterlist['unavailableItems'] ?? [],
-    ];
+    List<Map<String, dynamic>> availableItems =
+        Filterlist['availableItems'] ?? [];
+    List<Map<String, dynamic>> unavailableItems =
+        Filterlist['unavailableItems'] ?? [];
+
+    Set<String> uniqueKeys = Set<String>();
+
+    // Use 'name' as a unique key
+    availableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
+    unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
+
+    return [...availableItems, ...unavailableItems];
+  }
+
+  void _sortListByPriceLowestToHighest() {
+    setState(() {
+      Filterlist['availableItems']?.sort(
+        (a, b) => a['price'].compareTo(b['price']),
+      );
+    });
+  }
+
+  void _sortListByPriceHighestToLowest() {
+    setState(() {
+      Filterlist['availableItems']?.sort(
+        (a, b) => b['price'].compareTo(a['price']),
+      );
+    });
+  }
+
+  void _showDefaultOrder() {
+    setState(() {
+      Filterlist['availableItems']?.clear();
+      Filterlist['availableItems']?.addAll(widget.itemList);
+    });
   }
 
 /*  void fetchData() async {
@@ -360,11 +391,17 @@ class FoodPageState extends State<FoodPage> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      /* _sortListByDefaultOrder(); // Sort by default order
+                      setState(() {
+                        selected = index1;
+                        _showDefaultOrder();
+                      });
+                    },
+
+                    /* _sortListByDefaultOrder(); // Sort by default order
                       setState(() {
                         selected = index1;
                       });*/
-                    },
+
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Container(
@@ -394,6 +431,12 @@ class FoodPageState extends State<FoodPage> {
                     ),
                   ),
                   GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selected = index2;
+                        _sortListByPriceLowestToHighest();
+                      });
+                    },
                     /* onTap: () {
                       setState(() {
                         selected = index2;
@@ -436,6 +479,12 @@ class FoodPageState extends State<FoodPage> {
                     ),
                   ),
                   GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selected = index3;
+                        _sortListByPriceHighestToLowest();
+                      });
+                    },
                     /*onTap: () {
                       setState(() {
                         selected = index3;
