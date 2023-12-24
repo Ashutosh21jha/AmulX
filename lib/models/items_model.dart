@@ -16,7 +16,7 @@ class ItemsModel {
     required this.availability,
   });
 
-  factory ItemsModel.fromSnapshot(
+  /*factory ItemsModel. fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> snapshot) {
     Map<String, dynamic> data = snapshot.data() ?? {};
     return ItemsModel(
@@ -26,9 +26,9 @@ class ItemsModel {
       availability: data['availability'] as bool? ?? false,
       imageUrl: data['imageUrl'] ?? '',
     );
-  }
+  }*/
 
-  static Future<List<ItemsModel>> fetchAvailableItems() async {
+/*  static Future<List<ItemsModel>> fetchAvailableItems() async {
     try {
       final db = FirebaseFirestore.instance;
       DocumentSnapshot<Map<String, dynamic>> menuSnapshot =
@@ -56,5 +56,5 @@ class ItemsModel {
       print("Error fetching available items: $e");
       return [];
     }
-  }
+  }*/
 }

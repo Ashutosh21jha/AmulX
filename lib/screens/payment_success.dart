@@ -13,7 +13,7 @@ class PaymentSuccessScreen extends StatelessWidget {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
@@ -24,31 +24,31 @@ class PaymentSuccessScreen extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 20.0),
-          Text(
+          const SizedBox(height: 20.0),
+          const Text(
             'Payment Successful!',
             style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 20.0),
-          Text(
+          const SizedBox(height: 20.0),
+          const Text(
             'A receipt will be sent directly to your email.',
             style: TextStyle(fontSize: 16.0),
           ),
-          SizedBox(height: 40.0),
+          const SizedBox(height: 40.0),
           ElevatedButton(
             onPressed: () {
               // Navigate back to the menu page.
-              Get.offAll(() => Mainscreen());
+              Get.offAll(() => const Mainscreen());
             },
             style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 120, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 120, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
               backgroundColor: Colors.indigo,
-              textStyle: TextStyle(fontSize: 18),
+              textStyle: const TextStyle(fontSize: 18),
             ),
-            child: Text('Done'),
+            child: const Text('Done'),
           ),
         ],
       ),

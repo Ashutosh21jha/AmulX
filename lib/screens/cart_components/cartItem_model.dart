@@ -9,7 +9,7 @@ class CartItem {
     this.quantity = 1,
   });
 
-/*  void incrementQuantity() {
+  void incrementQuantity() {
     quantity += 1;
   }
 
@@ -17,5 +17,5 @@ class CartItem {
     if (quantity > 0) {
       quantity -= 1;
     }
-  }*/
+  }
 }

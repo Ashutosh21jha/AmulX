@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:amul/controllers/items_controller.dart';
+import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/signupPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,6 +23,7 @@ class _Splashscreenstate extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    ItemController.to.fetchItems();
 
     Future.delayed(const Duration(milliseconds: 1000), () {
       if (!_animationStarted) {

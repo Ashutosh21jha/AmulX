@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:amul/screens/emailverification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,8 +9,10 @@ class CartController extends GetxController {
   static CartController get to => Get.put(CartController());
 
   final RxList<CartItem> cartItems = <CartItem>[].obs;
+  bool isCartEmpty=false;
 
   final db = FirebaseFirestore.instance;
+  late Timer _timer;
 
   String get userId => auth.currentUser?.email ?? '';
 
@@ -148,17 +152,41 @@ class CartController extends GetxController {
             return CartItem(
               name: doc['name'] ?? '',
               price: doc['price']?.toDouble() ?? 0.0,
-              quantity: doc['count'] ?? 1,
+              quantity: doc['count'] ?? 0,
             );
           }));
         } else {
-          print('The "cart" collection is empty.');
+          cartItems.clear();
+          reloadCart();
         }
       } else {
         print('The user document does not exist.');
       }
     } catch (e) {
       print("Error checking cart collection: $e");
+    }
+  }
+  Future<void> reloadCart() async{
+    isCartEmpty = cartItems.isEmpty;
+    update();
+  }
+  Future<void> reloadFetchData() async {
+    _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+      CartController.to.fetchCart();
+      CartController.to.reloadCart();
+    });
+  }
+
+  Future<void> deleteCart() async {
+    try {
+      await db.collection('User').doc(userId).collection('cart').get().then((querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          doc.reference.delete();
+        });
+      });
+      print("Cart deleted successfully!");
+    } catch (e) {
+      print("Error deleting cart: $e");
     }
   }
 

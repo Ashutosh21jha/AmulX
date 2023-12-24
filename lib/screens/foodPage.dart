@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'dart:collection';
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/models/items_model.dart';
 import 'package:amul/screens/cartPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,35 +15,11 @@ import 'package:amul/screens/cart_components/cart_controller.dart';
 FirebaseFirestore db = FirebaseFirestore.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
-/*class FoodItem {
-  String name;
-  int price;
-  String imageAsset;
-  int itemCount;
-
-  FoodItem(this.name, this.price, this.imageAsset, {this.itemCount = 1});
-
-  void incrementItemCount() {
-    itemCount++;
-  }
-
-  void decrementItemCount() {
-    if (itemCount > 1) {
-      itemCount--;
-    }
-  }
-}*/
-
 class FoodPage extends StatefulWidget {
-  FoodPage(
-      {Key? key,
-      required this.cat,
-      required this.itemList,
-      required this.itemCount})
+  FoodPage({Key? key, required this.cat, required this.itemList})
       : super(key: key);
   String cat;
-  List<Map<String, dynamic>> itemList;
-  int itemCount;
+  RxList<ItemsModel> itemList = <ItemsModel>[].obs;
 
   @override
   State<StatefulWidget> createState() => FoodPageState();
@@ -49,102 +28,118 @@ class FoodPage extends StatefulWidget {
 class FoodPageState extends State<FoodPage> {
   late List<bool> tappedList;
   late List<int> countList;
-
-
-
-  Map<String, List<Map<String, dynamic>>> Filterlist = {
-    'availableItems': [],
-    'unavailableItems': [],
-    /*'lowest-highest': [],
-    'highest-lowest': [],*/
-  };
+  final RxList<ItemsModel> availableItems = <ItemsModel>[].obs;
+  final RxList<ItemsModel> unavailableItems = <ItemsModel>[].obs;
+  final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
+  late final Timer _timer;
 
   void separateItems() {
-    Filterlist.values.forEach((list) => list.clear());
-    for (Map<String, dynamic> itemData in widget.itemList) {
-      bool available = itemData['available'];
+    /*Filterlist.values.forEach((rxList) => rxList.clear());*/
+    for (ItemsModel itemData in widget.itemList) {
+      bool available = itemData.availability;
+      ItemsModel item = ItemsModel(
+          id: itemData.id,
+          price: itemData.price,
+          type: itemData.type,
+          availability: itemData.availability,
+          imageUrl: itemData.imageUrl);
       if (available == true) {
-        Filterlist['availableItems']?.add(itemData);
+        availableItems.add(item);
       } else {
-        Filterlist['unavailableItems']?.add(itemData);
+        unavailableItems.add(item);
       }
     }
+    mergedList.clear();
+    mergedList.addAll(availableItems);
+    mergedList.addAll(unavailableItems);
   }
 
-  List<Map<String, dynamic>> perfectlist() {
-    List<Map<String, dynamic>> availableItems =
-        Filterlist['availableItems'] ?? [];
-    List<Map<String, dynamic>> unavailableItems =
-        Filterlist['unavailableItems'] ?? [];
 
+  /*RxMap<String, RxList<Map<String, dynamic>>> Filterlist = {
+    'availableItems': <Map<String, dynamic>>[].obs,
+    'unavailableItems': <Map<String, dynamic>>[].obs,
+  }.obs;*/
 
-    Set<String> uniqueKeys = Set<String>();
+  /*Future<void> getUpdateCount() async {
+    try {
+      final RxList<CartItem> cartItems = CartController.to.cartItems;
+      final List<Map<String, dynamic>>? availableItems =
+          Filterlist['availableItems'];
 
+      for (final Item in cartItems) {
+        final matchingItem = availableItems?.firstWhere(
+          (availableItem) => availableItem['name'] == Item.name,
+        );
+        if (matchingItem != null) {
+          Item.quantity = matchingItem['count'];
+        }
+      }
+    } catch (e) {
+      print("Error updating item count: $e");
+    }
+  }*/
+
+  /* RxList<Map<String, dynamic>> perfectlist() {
+    RxList availableItems = Filterlist['availableItems'] ?? [].obs;
+    RxList unavailableItems = Filterlist['unavailableItems'] ?? [].obs;
+
+    */ /*Set<String> uniqueKeys = Set<String>();
 
     availableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
-    unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
+    unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));*/ /*
 
-    return [...availableItems, ...unavailableItems];
+    RxList<Map<String, dynamic>> result = <Map<String, dynamic>>[].obs;
+    result.addAll(availableItems as Iterable<Map<String, dynamic>>);
+    result.addAll(unavailableItems as Iterable<Map<String, dynamic>>);
+
+    return result;
   }
+*/
+  /* Set<String> uniqueKeys = Set<String>();
+
+  availableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
+  unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
+
+  return [...availableItems, ...unavailableItems];
+*/
 
   void _sortListByPriceLowestToHighest() {
     setState(() {
-      Filterlist['availableItems']?.sort(
-        (a, b) => a['price'].compareTo(b['price']),
+      availableItems?.sort(
+            (a, b) => a.price.compareTo(b.price),
       );
+      mergedList.clear();
+      mergedList.addAll(availableItems);
+      mergedList.addAll(unavailableItems);
     });
   }
 
   void _sortListByPriceHighestToLowest() {
     setState(() {
-      Filterlist['availableItems']?.sort(
-        (a, b) => b['price'].compareTo(a['price']),
+      availableItems?.sort(
+            (a, b) => b.price.compareTo(a.price),
       );
+      mergedList.clear();
+      mergedList.addAll(availableItems);
+      mergedList.addAll(unavailableItems);
     });
   }
 
-  void _showDefaultOrder() {
+
+  /*void _showDefaultOrder() {
     setState(() {
-      Filterlist['availableItems']?.clear();
-      Filterlist['availableItems']?.addAll(widget.itemList);
-    });
-  }
-
-/*  void fetchData() async {
-    List<ItemsModel> availableItems = await ItemsModel.fetchAvailableItems();
-
-    itemList.clear();
-    for (ItemsModel item in availableItems) {
-      print(item.id);
-      print(item.price);
-      itemList.add({
-        'name': item.id!,
-        'price': item.price,
-        'image': item.imageUrl,
-      });
-    }
-
-    setState(() {
-      itemCount = itemList.length;
+      mergedList.clear();
+      mergedList.addAll(widget.itemList);
     });
   }*/
 
-/*  final List<FoodItem> _cartItems = [];
-  FoodItem? _selectedItem;
-  List<FoodItem> _defaultOrder = [];
-  List<FoodItem> _foodItems = [
-    FoodItem('Masala\nMaggi', 40, 'assets/images/masalamaggi.jpg'),
-    FoodItem('Plain Maggi', 30, 'assets/images/maggi2.jpg'),
-    FoodItem('Egg Maggi', 35, 'assets/images/eggmaggie.jpg'),
-    FoodItem('2 Egg Maggi', 50, 'assets/images/eggmaggie.jpg'),
-    FoodItem('Chocolate\nBrownie', 55, 'assets/images/brownie.jpg'),
-    FoodItem('Masala\nMaggi', 40, 'assets/images/masalamaggi.jpg'),
-    FoodItem('Plain Maggi', 30, 'assets/images/maggi2.jpg'),
-    FoodItem('Egg Maggi', 35, 'assets/images/eggmaggie.jpg'),
-    FoodItem('2 Egg Maggi', 50, 'assets/images/eggmaggie.jpg'),
-    FoodItem('Chocolate\nBrownie', 55, 'assets/images/brownie.jpg'),
-  ];*/
 
+
+  Future<void> reloadFetchData() async {
+    _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+      ItemController.to.fetchItems();
+    });
+  }
   String get userId => auth.currentUser?.email ?? '';
 
   int selected = 0;
@@ -154,165 +149,15 @@ class FoodPageState extends State<FoodPage> {
   void initState() {
     super.initState();
     separateItems();
-    /*_defaultOrder = List<FoodItem>.from(_foodItems);
-    _sortListByDefaultOrder();*/
-    tappedList = List.filled(perfectlist().length, false);
-    countList = List.filled(perfectlist().length, 0);
+ /*   _defaultOrder = List<F
+    oodItem>.from(_foodItems);*/
+    /*_showDefaultOrder();*/
+    ItemController.to.fetchItems();
+    reloadFetchData();
+    tappedList = List.filled(mergedList.length, false);
+    countList = List.filled(mergedList.length, 0);
     selected = 0;
   }
-
-/*  Future<void> _addToFirestore(FoodItem item, int itemCount) async {
-    String documentId = userId;
-    CollectionReference cartCollection =
-        db.collection('User').doc(documentId).collection('cart');
-
-    // Check if the item already exists
-    final existingItem =
-        await cartCollection.where('name', isEqualTo: item.name).limit(1).get();
-
-    if (existingItem.docs.isNotEmpty) {
-      // Item exists, update the quantity
-      final docId = existingItem.docs.first.id;
-      await cartCollection.doc(docId).update({
-        'count': FieldValue.increment(itemCount),
-      });
-    } else {
-      // Item does not exist, create a new document
-      String cartEntryId = cartCollection.doc().id;
-
-      Map<String, dynamic> cartEntry = {
-        'name': item.name,
-        'price': item.price,
-        'count': itemCount,
-      };
-
-      Map<String, dynamic> cartItem = {
-        'cartEntryId': cartEntryId,
-        'item': cartEntry,
-      };
-
-      // Add the cart item to Firestore
-      await cartCollection.doc(cartEntryId).set(cartItem);
-    }
-  }*/
-
-  /* void _addToCart(FoodItem item) {
-    int itemCount = item.itemCount; // Store the initial count
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              backgroundColor: Colors.grey[300],
-              title: const Text('Add to Cart'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(
-                      'Item: ${item.name}',
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Price: ₹${item.price}',
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text('Enter the item count:'),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove),
-                        color: Colors.indigo,
-                        onPressed: () {
-                          setState(() {
-                            if (itemCount > 1) {
-                              itemCount--;
-                            }
-                          });
-                        },
-                      ),
-                      Text(
-                        '$itemCount',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        color: Colors.indigo,
-                        onPressed: () {
-                          setState(() {
-                            itemCount++;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.indigo, fontSize: 16),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    await _addToFirestore(item, itemCount);
-                    for (int i = 0; i < itemCount; i++) {
-                      CartController.to.addItem(CartItem(
-                        name: item.name,
-                        price: item.price.toDouble(),
-                      ));
-                    }
-                    // Close the dialog
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'Add to Cart',
-                    style: TextStyle(color: Colors.indigo, fontSize: 16),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }*/
-
-/*
-  void _viewCart() {
-    Get.to(CartPage());
-  }
-*/
-
-  /* bool _isSortedByPriceLowestToHighest = false;
-  bool _isSortedByPriceHighestToLowest = false;
-
-  void _sortListByDefaultOrder() {
-    setState(() {
-      _foodItems = List<FoodItem>.from(_defaultOrder);
-    });
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -396,15 +241,9 @@ class FoodPageState extends State<FoodPage> {
                     onTap: () {
                       setState(() {
                         selected = index1;
-                        _showDefaultOrder();
+                       /*  _showDefaultOrder();*/
                       });
                     },
-
-                    /* _sortListByDefaultOrder(); // Sort by default order
-                      setState(() {
-                        selected = index1;
-                      });*/
-
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Container(
@@ -437,7 +276,7 @@ class FoodPageState extends State<FoodPage> {
                     onTap: () {
                       setState(() {
                         selected = index2;
-                        _sortListByPriceLowestToHighest();
+                          _sortListByPriceLowestToHighest();
                       });
                     },
                     /* onTap: () {
@@ -485,7 +324,7 @@ class FoodPageState extends State<FoodPage> {
                     onTap: () {
                       setState(() {
                         selected = index3;
-                        _sortListByPriceHighestToLowest();
+                         _sortListByPriceHighestToLowest();
                       });
                     },
                     /*onTap: () {
@@ -536,199 +375,195 @@ class FoodPageState extends State<FoodPage> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 95),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: perfectlist().length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> itemData = perfectlist()[index];
-                    bool available = itemData['available'];
-                    bool unavailable = !available;
+                child: Obx(() {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: mergedList.length,
+                    itemBuilder: (context, index) {
+                      ItemsModel itemData =
+                      mergedList[index];
+                      bool available = itemData.availability;
+                      bool unavailable = !available;
 
-                    String itemname = itemData['name'];
-                    String itemprice = itemData['price'];
-                    String itemimage = itemData['image'];
+                      String? itemname = itemData.id;
+                      String itemprice = itemData.price;
+                      String itemimage = itemData.imageUrl;
 
-                    if (_searchController.text.isNotEmpty &&
-                        !itemname.toLowerCase().contains(
-                              _searchController.text.toLowerCase(),
-                            )) {
-                      return Container();
-                    }
+                       if (_searchController.text.isNotEmpty &&
+                          !itemname!.toLowerCase().contains(
+                                _searchController.text.toLowerCase(),
+                              )) {
+                        return Container();
+                      }
 
-                    return Padding(
-                      padding:
-                          const EdgeInsets.only(left: 8, right: 8, bottom: 5),
-                      child: Opacity(
-                        opacity: unavailable ? .4 : 1.0,
-                        child: Card(
-                            elevation: 2,
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ListTile(
-                              leading: ClipRRect(
+                      return Padding(
+                        padding:
+                            const EdgeInsets.only(left: 8, right: 8, bottom: 5),
+                        child: Opacity(
+                          opacity: unavailable ? .4 : 1.0,
+                          child: Card(
+                              elevation: 2,
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                child: SizedBox(
-                                  width: 70,
-                                  height: 70,
-                                  child: itemimage.isNotEmpty
-                                      ? Image.network(
-                                          itemimage,
-                                          fit: BoxFit.fill,
-                                        )
-                                      : const CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  Colors.blue),
+                              ),
+                              child: ListTile(
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: SizedBox(
+                                    width: 70,
+                                    height: 70,
+                                    child: itemimage.isNotEmpty
+                                        ? Image.network(
+                                            itemimage,
+                                            fit: BoxFit.fill,
+                                          )
+                                        : const CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.blue),
+                                          ),
+                                  ),
+                                ),
+                                title: Text(
+                                  itemname!,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      const WidgetSpan(
+                                        child: Icon(
+                                          Icons.currency_rupee_outlined,
+                                          color: Colors.green,
+                                          size: 17,
                                         ),
-                                ),
-                              ),
-                              title: Text(
-                                itemname,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: RichText(
-                                text: TextSpan(
-                                  children: [
-                                    const WidgetSpan(
-                                      child: Icon(
-                                        Icons.currency_rupee_outlined,
-                                        color: Colors.green,
-                                        size: 17,
                                       ),
-                                    ),
-                                    TextSpan(
-                                      text: itemprice,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
+                                      TextSpan(
+                                        text: itemprice,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              trailing: unavailable
-                                  ? const Text(
-                                      "Out of Stock",
-                                      style: TextStyle(
-                                        color: Color(0xFFDD4040),
-                                      ),
-                                    )
-                                  : GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          tappedList[index] =
-                                              !tappedList[index];
-                                          countList[index] = 1;
-                                        });
-                                        if (!unavailable) {
-                                          CartController.to.addItem(CartItem(
-                                            name: itemname,
-                                            price: double.parse(itemprice),
-                                          ));
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                  '$itemname added to cart'),
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: tappedList[index]
-                                          ? Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                IconButton(
-                                                  icon: const Icon(
-                                                    Icons.remove,
+                                trailing: unavailable
+                                    ? const Text(
+                                        "Out of Stock",
+                                        style: TextStyle(
+                                          color: Color(0xFFDD4040),
+                                        ),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            tappedList[index] =
+                                                !tappedList[index];
+                                            countList[index] = 1;
+                                          });
+                                          if (!unavailable) {
+                                            CartController.to.addItem(CartItem(
+                                              name: itemname,
+                                              price: double.parse(itemprice),
+                                            ));
+                                          }
+                                        },
+                                        child: tappedList[index]
+                                            ? Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                      Icons.remove,
+                                                    ),
+                                                    color: AppColors.blue,
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        if (countList[index] ==
+                                                            1) {
+                                                          tappedList[index] =
+                                                              false;
+                                                        } else if (countList[
+                                                                index] >
+                                                            1) {
+                                                          countList[index]--;
+                                                        }
+                                                        CartController.to
+                                                            .removeItem(
+                                                                CartItem(
+                                                          name: itemname,
+                                                          price: double.parse(
+                                                              itemprice),
+                                                        ));
+                                                      });
+                                                    },
                                                   ),
-                                                  color: AppColors.blue,
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      if (countList[index] ==
-                                                          1) {
-                                                        tappedList[index] =
-                                                            false;
-                                                      } else if (countList[
-                                                              index] >
-                                                          1) {
-                                                        countList[index]--;
-                                                      }
-                                                      CartController.to
-                                                          .removeItem(CartItem(
-                                                        name: itemname,
-                                                        price: double.parse(
-                                                            itemprice),
-                                                      ));
-                                                    });
-                                                  },
+                                                  Text(
+                                                    countList[index].toString(),
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18,
+                                                        color: AppColors.green),
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(Icons.add),
+                                                    color: AppColors.blue,
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        countList[index]++;
+                                                        CartController.to
+                                                            .addItem(CartItem(
+                                                          name: itemname,
+                                                          price: double.parse(
+                                                              itemprice),
+                                                        ));
+                                                      });
+                                                    },
+                                                  ),
+                                                ],
+                                              )
+                                            : Container(
+                                                width: 90,
+                                                height: 45,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color:
+                                                        const Color(0xFFD1D2D3),
+                                                    width: 1,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          60.0),
                                                 ),
-                                                Text(
-                                                  countList[index].toString(),
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18,
-                                                      color: AppColors.green),
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(Icons.add),
-                                                  color: AppColors.blue,
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      countList[index]++;
-                                                      CartController.to
-                                                          .addItem(CartItem(
-                                                        name: itemname,
-                                                        price: double.parse(
-                                                            itemprice),
-                                                      ));
-                                                    });
-                                                  },
-                                                ),
-                                              ],
-                                            )
-                                          : Container(
-                                              width: 90,
-                                              height: 45,
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color:
-                                                      const Color(0xFFD1D2D3),
-                                                  width: 1,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(60.0),
-                                              ),
-                                              child: const Center(
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(5),
-                                                  child: Text(
-                                                    "Add",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                child: const Center(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(5),
+                                                    child: Text(
+                                                      "Add",
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                    ),
-                            )),
-                      ),
-                    );
-                  },
-                ),
+                                      ),
+                              )),
+                        ),
+                      );
+                    },
+                  );
+                }),
               ),
             ),
           ],

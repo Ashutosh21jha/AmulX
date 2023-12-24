@@ -1,6 +1,6 @@
+import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/history.dart';
-import 'package:amul/models/items_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,48 +18,12 @@ class HomePage extends StatefulWidget {
 class _HomeState extends State<HomePage> {
   final db = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
-  int foodCount = 0;
-  int drinkCount = 0;
-  int munchiesCount = 0;
-  int dairyCount = 0;
-
-  Map<String, List<Map<String, dynamic>>> itemsMap = {
-    'food': [],
-    'drink': [],
-    'munchies': [],
-    'dairy': [],
-  };
-
-  void fetchData() async {
-    List<ItemsModel> availableItems = await ItemsModel.fetchAvailableItems();
-
-    itemsMap.values.forEach((list) => list.clear());
-
-    for (ItemsModel item in availableItems) {
-      String itemType = item.type;
-      Map<String, dynamic> itemData = {
-        'name': item.id!,
-        'price': item.price,
-        'image': item.imageUrl,
-        'available':item.availability,
-      };
-
-      itemsMap[itemType]!.add(itemData);
-    }
-
-    setState(() {
-      foodCount = itemsMap['food']!.length;
-      drinkCount = itemsMap['drink']!.length;
-      munchiesCount = itemsMap['munchies']!.length;
-      dairyCount = itemsMap['dairy']!.length;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    fetchData();
     CartController.to.fetchCart();
+    CartController.to.reloadFetchData();
   }
 
   @override
@@ -88,8 +52,8 @@ class _HomeState extends State<HomePage> {
                         height: 30,
                       ),
                       GestureDetector(
-                        onTap: () => Get.to(History()),
-                        child: Icon(
+                        onTap: () => Get.to(const History()),
+                        child: const Icon(
                           Icons.history,
                           size: 30,
                         ),
@@ -132,8 +96,7 @@ class _HomeState extends State<HomePage> {
                         onTap: () {
                           Get.to(FoodPage(
                             cat: "Food",
-                            itemList: itemsMap['food']!,
-                            itemCount: foodCount,
+                            itemList: ItemController.to.food,
                           ));
                         },
                         child: Container(
@@ -180,8 +143,7 @@ class _HomeState extends State<HomePage> {
                         onTap: () {
                           Get.to(FoodPage(
                             cat: "Drinks",
-                            itemList: itemsMap['drink']!,
-                            itemCount: drinkCount,
+                            itemList: ItemController.to.drink,
                           ));
                         },
                         child: Container(
@@ -232,8 +194,7 @@ class _HomeState extends State<HomePage> {
                         onTap: () {
                           Get.to(FoodPage(
                             cat: "Munchies",
-                            itemList: itemsMap['munchies']!,
-                            itemCount: munchiesCount,
+                            itemList: ItemController.to.munchies,
                           ));
                         },
                         child: Container(
@@ -281,8 +242,7 @@ class _HomeState extends State<HomePage> {
                         onTap: () {
                           Get.to(FoodPage(
                             cat: "Dairy",
-                            itemCount: dairyCount,
-                            itemList: itemsMap['dairy']!,
+                            itemList: ItemController.to.dairy,
                           ));
                         },
                         child: Container(
