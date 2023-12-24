@@ -54,7 +54,6 @@ class FoodPageState extends State<FoodPage> {
     mergedList.addAll(unavailableItems);
   }
 
-
   /*RxMap<String, RxList<Map<String, dynamic>>> Filterlist = {
     'availableItems': <Map<String, dynamic>>[].obs,
     'unavailableItems': <Map<String, dynamic>>[].obs,
@@ -106,7 +105,7 @@ class FoodPageState extends State<FoodPage> {
   void _sortListByPriceLowestToHighest() {
     setState(() {
       availableItems?.sort(
-            (a, b) => a.price.compareTo(b.price),
+        (a, b) => a.price.compareTo(b.price),
       );
       mergedList.clear();
       mergedList.addAll(availableItems);
@@ -117,14 +116,13 @@ class FoodPageState extends State<FoodPage> {
   void _sortListByPriceHighestToLowest() {
     setState(() {
       availableItems?.sort(
-            (a, b) => b.price.compareTo(a.price),
+        (a, b) => b.price.compareTo(a.price),
       );
       mergedList.clear();
       mergedList.addAll(availableItems);
       mergedList.addAll(unavailableItems);
     });
   }
-
 
   /*void _showDefaultOrder() {
     setState(() {
@@ -133,13 +131,12 @@ class FoodPageState extends State<FoodPage> {
     });
   }*/
 
-
-
   Future<void> reloadFetchData() async {
     _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       ItemController.to.fetchItems();
     });
   }
+
   String get userId => auth.currentUser?.email ?? '';
 
   int selected = 0;
@@ -149,7 +146,7 @@ class FoodPageState extends State<FoodPage> {
   void initState() {
     super.initState();
     separateItems();
- /*   _defaultOrder = List<F
+    /*   _defaultOrder = List<F
     oodItem>.from(_foodItems);*/
     /*_showDefaultOrder();*/
     ItemController.to.fetchItems();
@@ -241,7 +238,7 @@ class FoodPageState extends State<FoodPage> {
                     onTap: () {
                       setState(() {
                         selected = index1;
-                       /*  _showDefaultOrder();*/
+                        /*  _showDefaultOrder();*/
                       });
                     },
                     child: Padding(
@@ -276,7 +273,7 @@ class FoodPageState extends State<FoodPage> {
                     onTap: () {
                       setState(() {
                         selected = index2;
-                          _sortListByPriceLowestToHighest();
+                        _sortListByPriceLowestToHighest();
                       });
                     },
                     /* onTap: () {
@@ -324,7 +321,7 @@ class FoodPageState extends State<FoodPage> {
                     onTap: () {
                       setState(() {
                         selected = index3;
-                         _sortListByPriceHighestToLowest();
+                        _sortListByPriceHighestToLowest();
                       });
                     },
                     /*onTap: () {
@@ -381,8 +378,7 @@ class FoodPageState extends State<FoodPage> {
                     scrollDirection: Axis.vertical,
                     itemCount: mergedList.length,
                     itemBuilder: (context, index) {
-                      ItemsModel itemData =
-                      mergedList[index];
+                      ItemsModel itemData = mergedList[index];
                       bool available = itemData.availability;
                       bool unavailable = !available;
 
@@ -390,7 +386,7 @@ class FoodPageState extends State<FoodPage> {
                       String itemprice = itemData.price;
                       String itemimage = itemData.imageUrl;
 
-                       if (_searchController.text.isNotEmpty &&
+                      if (_searchController.text.isNotEmpty &&
                           !itemname!.toLowerCase().contains(
                                 _searchController.text.toLowerCase(),
                               )) {

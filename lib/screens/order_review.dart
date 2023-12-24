@@ -21,8 +21,7 @@ void handlePaymentSuccessResponse(PaymentSuccessResponse response) {
   Get.snackbar(
     'Payment Successful',
     'Thank You for using Amul',
-    backgroundGradient:
-    const LinearGradient(
+    backgroundGradient: const LinearGradient(
       colors: [
         Color(0xFFA2E8D8),
         AppColors.green,
@@ -31,8 +30,7 @@ void handlePaymentSuccessResponse(PaymentSuccessResponse response) {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
-    duration:
-    const Duration(seconds: 1),
+    duration: const Duration(seconds: 1),
     barBlur: 10,
     icon: Image.asset(
       'assets/images/devcommlogo.png',
@@ -48,8 +46,7 @@ void handlePaymentErrorResponse(PaymentFailureResponse response) {
     'Payment decline',
     'Provide valid credentials',
     barBlur: 10,
-    backgroundGradient:
-    const LinearGradient(
+    backgroundGradient: const LinearGradient(
       colors: [
         Color(0xFFF98181),
         AppColors.red,
@@ -58,8 +55,7 @@ void handlePaymentErrorResponse(PaymentFailureResponse response) {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
-    duration:
-    const Duration(seconds: 1),
+    duration: const Duration(seconds: 1),
     icon: Image.asset(
       'assets/images/devcommlogo.png',
       width: 24,
@@ -112,7 +108,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
-              height: 300,
+              height: 350,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
@@ -126,7 +122,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                     'Order Summary',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
                   ListView.builder(
                     shrinkWrap: true,
                     itemCount: cartItems.length,
@@ -179,7 +174,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
           ElevatedButton(
             onPressed: () {
               //upi
@@ -231,7 +226,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    fontSize: 14),
+                    fontSize: 18),
               ),
             ),
           ),

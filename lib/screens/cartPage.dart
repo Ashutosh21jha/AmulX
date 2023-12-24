@@ -148,7 +148,6 @@ class _CartPageState extends State<CartPage> {
                                             icon: const Icon(Icons.add),
                                             iconSize: 18,
                                             onPressed: () {
-
                                               cartController.addItem(item);
                                               /*updateItemCount();*/
                                             },
