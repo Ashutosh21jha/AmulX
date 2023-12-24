@@ -9,7 +9,7 @@ class CartController extends GetxController {
   static CartController get to => Get.put(CartController());
 
   final RxList<CartItem> cartItems = <CartItem>[].obs;
-  bool isCartEmpty=false;
+  bool isCartEmpty = false;
 
   final db = FirebaseFirestore.instance;
   late Timer _timer;
@@ -166,10 +166,12 @@ class CartController extends GetxController {
       print("Error checking cart collection: $e");
     }
   }
-  Future<void> reloadCart() async{
+
+  Future<void> reloadCart() async {
     isCartEmpty = cartItems.isEmpty;
     update();
   }
+
   Future<void> reloadFetchData() async {
     _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       CartController.to.fetchCart();
@@ -179,7 +181,12 @@ class CartController extends GetxController {
 
   Future<void> deleteCart() async {
     try {
-      await db.collection('User').doc(userId).collection('cart').get().then((querySnapshot) {
+      await db
+          .collection('User')
+          .doc(userId)
+          .collection('cart')
+          .get()
+          .then((querySnapshot) {
         querySnapshot.docs.forEach((doc) {
           doc.reference.delete();
         });
@@ -189,5 +196,4 @@ class CartController extends GetxController {
       print("Error deleting cart: $e");
     }
   }
-
 }

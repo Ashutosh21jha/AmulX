@@ -1,4 +1,8 @@
+import 'package:amul/Screens/profile.dart';
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/screens/emailverification.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'cart_components/cart_controller.dart';
@@ -8,7 +12,9 @@ import 'order_icons.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class OrderReviewPage extends StatefulWidget {
-  const OrderReviewPage({super.key, required this.cartItems});
+  OrderReviewPage({super.key, required this.cartItems});
+  String get userId => auth.currentUser?.email ?? '';
+  final auth = FirebaseAuth.instance;
 
   final RxList<CartItem> cartItems;
 
@@ -16,29 +22,54 @@ class OrderReviewPage extends StatefulWidget {
   State<OrderReviewPage> createState() => _OrderReviewPageState();
 }
 
-void handlePaymentSuccessResponse(PaymentSuccessResponse response) {
+void handlePaymentSuccessResponse(
+    PaymentSuccessResponse response, CartController cartController) {
   CartController.to.deleteCart();
-  Get.snackbar(
-    'Payment Successful',
-    'Thank You for using Amul',
-    backgroundGradient: const LinearGradient(
-      colors: [
-        Color(0xFFA2E8D8),
-        AppColors.green,
-        Color(0xFF007A52),
-      ],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-    ),
-    duration: const Duration(seconds: 1),
-    barBlur: 10,
-    icon: Image.asset(
-      'assets/images/devcommlogo.png',
-      width: 24,
-      height: 24,
-    ),
-  );
-  Get.offAll(() => const Mainscreen());
+
+  final historyCollection =
+      FirebaseFirestore.instance.collection('User/$userId/history');
+
+  final randomDocId = historyCollection.doc().id;
+
+  final orderData = {
+    'items':
+        cartController.cartItems.fold<Map<String, dynamic>>({}, (map, item) {
+      map[item.name] = {
+        'count': item.quantity,
+        'price': item.price,
+      };
+      return map;
+    }),
+    'orderStatus': 'Placed',
+    'timestamp': FieldValue.serverTimestamp(),
+  };
+
+  historyCollection.doc(randomDocId).set(orderData).then((_) {
+    Get.snackbar(
+      'Payment Successful',
+      'Thank You for using Amul',
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFA2E8D8),
+          AppColors.green,
+          Color(0xFF007A52),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 1),
+      barBlur: 10,
+      icon: Image.asset(
+        'assets/images/devcommlogo.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+    Get.offAll(() => const Mainscreen());
+  }).catchError((error) {
+    print('Error adding order to history: $error');
+    // Handle the error as needed
+  });
 }
 
 void handlePaymentErrorResponse(PaymentFailureResponse response) {
@@ -204,8 +235,9 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
               razorpay.on(
                   Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
-              razorpay.on(
-                  Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccessResponse);
+              razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (response) {
+                handlePaymentSuccessResponse(response, CartController.to);
+              });
               razorpay.on(
                   Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
               razorpay.open(options);
