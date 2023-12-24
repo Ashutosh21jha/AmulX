@@ -52,7 +52,7 @@ class _HomeState extends State<HomePage> {
                         height: 30,
                       ),
                       GestureDetector(
-                        onTap: () => Get.to(const History()),
+                        onTap: () => Get.to(History()),
                         child: const Icon(
                           Icons.history,
                           size: 30,

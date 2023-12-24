@@ -1,12 +1,20 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ListItem extends StatefulWidget {
-  final String title;
-  final String price;
+  final String id;
+  final String items;
+  final String orderStatus;
+  final Timestamp timestamp;
 
-  const ListItem({Key? key, required this.title, required this.price})
+  const ListItem(
+      {Key? key,
+      required this.id,
+      required this.items,
+      required this.orderStatus,
+      required this.timestamp})
       : super(key: key);
 
   @override
@@ -122,7 +130,7 @@ class _ListItemState extends State<ListItem>
                       SizedBox(
                         width: double.infinity,
                         child: Text(
-                          widget.title,
+                          "order-${widget.id}",
                           style: TextStyle(
                             color: Color(0xFF282828),
                             fontSize: 14,
@@ -136,7 +144,7 @@ class _ListItemState extends State<ListItem>
                       SizedBox(
                         width: double.infinity,
                         child: Text(
-                          "30 July 2023 - 13:15",
+                          widget.timestamp.toDate().toString(),
                           style: TextStyle(
                             color: Color(0xFF36414C),
                             fontSize: 14,
@@ -151,7 +159,7 @@ class _ListItemState extends State<ListItem>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  '₹90.00',
+                  widget.orderStatus,
                   style: TextStyle(
                     color: Color(0xFF18AE86),
                     fontSize: 14,
@@ -208,20 +216,20 @@ class _ListItemState extends State<ListItem>
                       height: 0.07,
                     ),
                   ),
+                  // const SizedBox(height: 16),
+                  // Text(
+                  //   'Details about order-${widget.id}',
+                  //   style: TextStyle(
+                  //     color: Color(0xFF36414C),
+                  //     fontSize: 14,
+                  //     fontFamily: 'Epilogue',
+                  //     fontWeight: FontWeight.w400,
+                  //     height: 0.07,
+                  //   ),
+                  // ),
                   const SizedBox(height: 16),
                   Text(
-                    'Some details about ${widget.title}',
-                    style: TextStyle(
-                      color: Color(0xFF36414C),
-                      fontSize: 14,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w400,
-                      height: 0.07,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Price: ${widget.price}',
+                    'Price: ${widget.items}',
                     style: TextStyle(
                       color: Color(0xFF36414C),
                       fontSize: 14,

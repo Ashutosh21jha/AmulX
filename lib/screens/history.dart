@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/item.dart';
 
 class History extends StatelessWidget {
-  const History({Key? key}) : super(key: key);
+  History({Key? key}) : super(key: key);
+  final auth = FirebaseAuth.instance;
+  String get userId => auth.currentUser?.email ?? '';
+
+  CollectionReference get historyCollection =>
+      FirebaseFirestore.instance.collection('User/$userId/history');
 
   @override
   Widget build(BuildContext context) {
-    List<String> items = [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-    ];
-
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -21,30 +22,6 @@ class History extends StatelessWidget {
     );
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text(
-      //     'History',
-      //     style: TextStyle(
-      //       color: Colors.white,
-      //       fontSize: 18,
-      //       fontFamily: 'Epilogue',
-      //       fontWeight: FontWeight.w700,
-      //       height: 0.06,
-      //     ),
-      //   ),
-      //   centerTitle: true,
-      //   backgroundColor: Colors.transparent,
-      //   leading: IconButton(
-      //     color: Colors.white,
-      //     onPressed: () {
-      //       Navigator.pop(context);
-      //     },
-      //     icon: const Icon(Icons.arrow_back),
-      //   ),
-      //   actions: const [
-      //     SizedBox(width: 48),
-      //   ],
-      // ),
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
@@ -74,7 +51,7 @@ class History extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "History",
+                          "Past Orders",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -86,18 +63,38 @@ class History extends StatelessWidget {
                       ]),
                 ),
                 Expanded(
-                  child: ListView(
-                    children: items
-                        .map((item) => Column(
-                              children: [
-                                ListItem(
-                                  title: item,
-                                  price: '₹90.00',
-                                ),
-                                const SizedBox(height: 16),
-                              ],
-                            ))
-                        .toList(),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: historyCollection.snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text("Something went wrong");
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+                      List<Map<String, dynamic>> orders = snapshot.data!.docs
+                          .map((doc) => doc.data() as Map<String, dynamic>)
+                          .toList();
+
+                      return ListView.builder(
+                        itemCount: orders.length,
+                        itemBuilder: (context, index) {
+                          Map<String, dynamic> order = orders[index];
+                          Map<String, dynamic> items =
+                              Map<String, dynamic>.from(order['items']);
+                          String itemsString = items.entries
+                              .map((e) => '${e.key}: ${e.value}')
+                              .join('\n');
+                          return ListItem(
+                            id: snapshot.data!.docs[index].id,
+                            items: itemsString,
+                            orderStatus: order['orderStatus'],
+                            timestamp: order['timestamp'],
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
@@ -105,7 +102,6 @@ class History extends StatelessWidget {
           ),
         ],
       ),
-      // bottomNavigationBar: const BottomNav(),
     );
   }
 }
