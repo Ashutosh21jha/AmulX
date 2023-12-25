@@ -10,6 +10,7 @@ import 'cart_components/cartItem_model.dart';
 import 'mainscreen.dart';
 import 'order_icons.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:intl/intl.dart';
 
 class OrderReviewPage extends StatefulWidget {
   OrderReviewPage({super.key, required this.cartItems});
@@ -23,28 +24,42 @@ class OrderReviewPage extends StatefulWidget {
 }
 
 void handlePaymentSuccessResponse(
-    PaymentSuccessResponse response, CartController cartController) {
-  CartController.to.deleteCart();
+    PaymentSuccessResponse response, CartController cartController) async {
+  try {
+    final formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
-  final historyCollection =
-      FirebaseFirestore.instance.collection('User/$userId/history');
+    final historyCollection =
+        FirebaseFirestore.instance.collection('User/$userId/history');
 
-  final randomDocId = historyCollection.doc().id;
+    final orderData = {
+      'orders': FieldValue.arrayUnion([
+        {
+          'items': cartController.cartItems.fold<Map<String, dynamic>>({},
+              (map, item) {
+            map[item.name] = {
+              'count': item.quantity,
+              'price': item.price,
+              'time': DateTime.now(),
+            };
+            return map;
+          }),
+        }
+      ]),
+      'orderStatus': 'Placed',
+      'time': FieldValue.serverTimestamp(),
+    };
 
-  final orderData = {
-    'items':
-        cartController.cartItems.fold<Map<String, dynamic>>({}, (map, item) {
-      map[item.name] = {
-        'count': item.quantity,
-        'price': item.price,
-      };
-      return map;
-    }),
-    'orderStatus': 'Placed',
-    'timestamp': FieldValue.serverTimestamp(),
-  };
+    final docSnapshot = await historyCollection.doc(formattedDate).get();
 
-  historyCollection.doc(randomDocId).set(orderData).then((_) {
+    if (docSnapshot.exists) {
+      // Document exists, update it
+      await historyCollection.doc(formattedDate).update(orderData);
+    } else {
+      // Document doesn't exist, create it
+      await historyCollection.doc(formattedDate).set(orderData);
+    }
+    CartController.to.deleteCart();
+
     Get.snackbar(
       'Payment Successful',
       'Thank You for using Amul',
@@ -65,11 +80,12 @@ void handlePaymentSuccessResponse(
         height: 24,
       ),
     );
+
     Get.offAll(() => const Mainscreen());
-  }).catchError((error) {
-    print('Error adding order to history: $error');
-    // Handle the error as needed
-  });
+    await CartController.to.deleteCart();
+  } catch (error) {
+    print('Error handling payment success: $error');
+  }
 }
 
 void handlePaymentErrorResponse(PaymentFailureResponse response) {

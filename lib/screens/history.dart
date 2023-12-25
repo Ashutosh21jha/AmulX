@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/item.dart';
 
@@ -35,7 +35,7 @@ class History extends StatelessWidget {
                   Color(0xFF00074B),
                   Color(0xFF2D55C0),
                   Color(0xFF2D55C0),
-                  Color(0xFF138BF9)
+                  Color(0xFF138BF9),
                 ],
               ),
             ),
@@ -48,19 +48,20 @@ class History extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 80),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Orders",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontFamily: 'Epilogue',
-                            fontWeight: FontWeight.w700,
-                            height: 0.06,
-                          ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Orders",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontFamily: 'Epilogue',
+                          fontWeight: FontWeight.w700,
+                          height: 0.06,
                         ),
-                      ]),
+                      ),
+                    ],
+                  ),
                 ),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
@@ -70,9 +71,11 @@ class History extends StatelessWidget {
                       if (snapshot.hasError) {
                         return Text("Something went wrong");
                       }
+
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
                       }
+
                       List<Map<String, dynamic>> orders = snapshot.data!.docs
                           .map((doc) => doc.data() as Map<String, dynamic>)
                           .toList();
@@ -81,18 +84,25 @@ class History extends StatelessWidget {
                         itemCount: orders.length,
                         itemBuilder: (context, index) {
                           Map<String, dynamic> order = orders[index];
-                          Map<String, dynamic> items =
-                              Map<String, dynamic>.from(order['items']);
-                          String itemsString = items.entries.map((e) {
-                            Map<String, dynamic> item =
-                                Map<String, dynamic>.from(e.value);
-                            return '${item['count']} x ${e.key}: ₹${item['price']}';
-                          }).join('\n');
-                          return ListItem(
-                            id: snapshot.data!.docs[index].id,
-                            items: itemsString,
-                            orderStatus: order['orderStatus'],
-                            timestamp: order['timestamp'],
+                          List<dynamic> orderList = order['orders'];
+
+                          return Column(
+                            children: orderList.map((orderItem) {
+                              Map<String, dynamic> items =
+                                  Map<String, dynamic>.from(orderItem['items']);
+                              String itemsString = items.entries.map((e) {
+                                Map<String, dynamic> item =
+                                    Map<String, dynamic>.from(e.value);
+                                return '${item['count']} x ${e.key}: ₹${item['price']}';
+                              }).join('\n');
+
+                              return ListItem(
+                                id: snapshot.data!.docs[index].id,
+                                items: itemsString,
+                                orderStatus: order['orderStatus'],
+                                timestamp: orderItem['time'] ?? Timestamp.now(),
+                              );
+                            }).toList(),
                           );
                         },
                       );
