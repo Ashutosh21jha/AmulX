@@ -177,68 +177,59 @@ class _ListItemState extends State<ListItem>
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           height: _isExpanded ? 80 : 0,
-          child: SingleChildScrollView(
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1, color: Color(0xFFF3F3F3)),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                shadows: [
-                  BoxShadow(
-                    color: Color(0x28606170),
-                    blurRadius: 2,
-                    offset: Offset(0, 0.50),
-                    spreadRadius: 0,
-                  ),
-                  BoxShadow(
-                    color: Color(0x1428293D),
-                    blurRadius: 1,
-                    offset: Offset(0, 0),
-                    spreadRadius: 0,
-                  )
-                ],
+          child: Container(
+            decoration: ShapeDecoration(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(width: 1, color: Color(0xFFF3F3F3)),
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  Text(
-                    'Details:',
-                    style: TextStyle(
-                      color: Color(0xFF282828),
-                      fontSize: 14,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w700,
-                      height: 0.07,
+              shadows: [
+                BoxShadow(
+                  color: Color(0x28606170),
+                  blurRadius: 2,
+                  offset: Offset(0, 0.50),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Color(0x1428293D),
+                  blurRadius: 1,
+                  offset: Offset(0, 0),
+                  spreadRadius: 0,
+                )
+              ],
+            ),
+            child: SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    Text(
+                      'Details:',
+                      style: TextStyle(
+                        color: Color(0xFF282828),
+                        fontSize: 14,
+                        fontFamily: 'Epilogue',
+                        fontWeight: FontWeight.w700,
+                        height: 0.7,
+                      ),
                     ),
-                  ),
-                  // const SizedBox(height: 16),
-                  // Text(
-                  //   'Details about order-${widget.id}',
-                  //   style: TextStyle(
-                  //     color: Color(0xFF36414C),
-                  //     fontSize: 14,
-                  //     fontFamily: 'Epilogue',
-                  //     fontWeight: FontWeight.w400,
-                  //     height: 0.07,
-                  //   ),
-                  // ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Price: ${widget.items}',
-                    style: TextStyle(
-                      color: Color(0xFF36414C),
-                      fontSize: 14,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w400,
-                      height: 0.07,
+                    Text(
+                      widget.items,
+                      style: TextStyle(
+                        color: Color(0xFF36414C),
+                        fontSize: 14,
+                        fontFamily: 'Epilogue',
+                        fontWeight: FontWeight.w400,
+                        height: 1.2,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

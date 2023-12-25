@@ -51,7 +51,7 @@ class History extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Past Orders",
+                          "Orders",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -83,9 +83,11 @@ class History extends StatelessWidget {
                           Map<String, dynamic> order = orders[index];
                           Map<String, dynamic> items =
                               Map<String, dynamic>.from(order['items']);
-                          String itemsString = items.entries
-                              .map((e) => '${e.key}: ${e.value}')
-                              .join('\n');
+                          String itemsString = items.entries.map((e) {
+                            Map<String, dynamic> item =
+                                Map<String, dynamic>.from(e.value);
+                            return '${item['count']} x ${e.key}: ₹${item['price']}';
+                          }).join('\n');
                           return ListItem(
                             id: snapshot.data!.docs[index].id,
                             items: itemsString,
