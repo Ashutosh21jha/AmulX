@@ -96,11 +96,14 @@ class History extends StatelessWidget {
                                 return '${item['count']} x ${e.key}: ₹${item['price']}';
                               }).join('\n');
 
+                              String orderName = orderItem['orderID'];
+
                               return ListItem(
                                 id: snapshot.data!.docs[index].id,
                                 items: itemsString,
                                 orderStatus: order['orderStatus'],
                                 timestamp: orderItem['time'] ?? Timestamp.now(),
+                                orderID: orderName,
                               );
                             }).toList(),
                           );

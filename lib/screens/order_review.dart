@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:amul/Screens/profile.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/emailverification.dart';
@@ -23,6 +25,13 @@ class OrderReviewPage extends StatefulWidget {
   State<OrderReviewPage> createState() => _OrderReviewPageState();
 }
 
+String generateRandomOrderID() {
+  // Generate a random number between 1000 and 9999
+  int randomOrderNumber = Random().nextInt(9000) + 1000;
+  // Combine it with a prefix, if needed
+  return 'ORD-$randomOrderNumber';
+}
+
 void handlePaymentSuccessResponse(
     PaymentSuccessResponse response, CartController cartController) async {
   try {
@@ -30,7 +39,7 @@ void handlePaymentSuccessResponse(
 
     final historyCollection =
         FirebaseFirestore.instance.collection('User/$userId/history');
-
+    String orderID = generateRandomOrderID();
     final orderData = {
       'orders': FieldValue.arrayUnion([
         {
@@ -43,6 +52,7 @@ void handlePaymentSuccessResponse(
             };
             return map;
           }),
+          'orderID': orderID,
         }
       ]),
       'orderStatus': 'Placed',

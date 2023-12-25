@@ -8,12 +8,14 @@ class ListItem extends StatefulWidget {
   final String items;
   final String orderStatus;
   final Timestamp timestamp;
+  final String orderID;
 
   const ListItem(
       {Key? key,
       required this.id,
       required this.items,
       required this.orderStatus,
+      required this.orderID,
       required this.timestamp})
       : super(key: key);
 
@@ -130,7 +132,7 @@ class _ListItemState extends State<ListItem>
                       SizedBox(
                         width: double.infinity,
                         child: Text(
-                          "order-${widget.id}",
+                          "${widget.orderID}",
                           style: TextStyle(
                             color: Color(0xFF282828),
                             fontSize: 12,
