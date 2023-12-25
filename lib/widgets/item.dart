@@ -133,7 +133,7 @@ class _ListItemState extends State<ListItem>
                           "order-${widget.id}",
                           style: TextStyle(
                             color: Color(0xFF282828),
-                            fontSize: 14,
+                            fontSize: 12,
                             fontFamily: 'Epilogue',
                             fontWeight: FontWeight.w700,
                             height: 0.07,
@@ -173,11 +173,11 @@ class _ListItemState extends State<ListItem>
             ),
           ),
         ),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          height: _isExpanded ? 80 : 0,
+        SizeTransition(
+          sizeFactor: _heightFactorAnimation,
           child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: ShapeDecoration(
               color: Colors.white,
               shape: RoundedRectangleBorder(
@@ -199,15 +199,14 @@ class _ListItemState extends State<ListItem>
                 )
               ],
             ),
-            child: SingleChildScrollView(
+            child: ClipRect(
               child: Container(
                 width: double.infinity,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 16),
                     Text(
                       'Details:',
                       style: TextStyle(
