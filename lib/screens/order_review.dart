@@ -121,6 +121,7 @@ void handlePaymentErrorResponse(PaymentFailureResponse response) {
   );
   Get.offAll(() => const Mainscreen());
   addBackStock(CartController.to.cartItems);
+  CartController.to.deleteCart();
 }
 
 void handleExternalWalletSelected(ExternalWalletResponse response) {}
