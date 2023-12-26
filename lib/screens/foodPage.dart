@@ -461,7 +461,7 @@ class FoodPageState extends State<FoodPage> {
                                         ),
                                       )
                                     : GestureDetector(
-                                        onTap: () async {
+                                        onTap: () {
                                           print(
                                               "Item: ${itemData.id}, Stock: ${itemData.stock}");
                                           if (itemData.stock > 0) {

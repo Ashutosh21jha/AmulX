@@ -1,8 +1,7 @@
 import 'dart:math';
 
-import 'package:amul/Screens/profile.dart';
 import 'package:amul/Utils/AppColors.dart';
-import 'package:amul/screens/emailverification.dart';
+import 'package:amul/screens/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,7 @@ import 'package:intl/intl.dart';
 
 class OrderReviewPage extends StatefulWidget {
   OrderReviewPage({super.key, required this.cartItems});
+
   String get userId => auth.currentUser?.email ?? '';
   final auth = FirebaseAuth.instance;
 
@@ -48,15 +48,15 @@ void handlePaymentSuccessResponse(
             map[item.name] = {
               'count': item.quantity,
               'price': item.price,
-              'time': DateTime.now(),
             };
             return map;
           }),
           'orderID': orderID,
+          'time': DateTime.now(),
         }
       ]),
-      'orderStatus': 'Placed',
       'time': FieldValue.serverTimestamp(),
+      'orderStatus': 'Placed',
     };
 
     final docSnapshot = await historyCollection.doc(formattedDate).get();
@@ -120,25 +120,74 @@ void handlePaymentErrorResponse(PaymentFailureResponse response) {
     ),
   );
   Get.offAll(() => const Mainscreen());
+  addBackStock(CartController.to.cartItems);
 }
 
 void handleExternalWalletSelected(ExternalWalletResponse response) {}
 
 class _OrderReviewPageState extends State<OrderReviewPage> {
-/*
-  @override
-  void initState() {
-    super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccessResponse);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
+  Future<void> navigateToPayment() async {
+    final exceededItems = <String>[];
+
+    // Check if the quantity exceeds stock for each item
+    for (final item in widget.cartItems) {
+      final stock = await getStockFromMenu(item.name);
+      if (item.quantity > stock) {
+        exceededItems.add(item.name);
+      }
+    }
+
+    if (exceededItems.isNotEmpty) {
+      Get.snackbar(
+        'Stock Exceeded',
+        'Reduce quantity for ${exceededItems.join(', ')}',
+        backgroundColor: Colors.red,
+      );
+      Get.back();
+    } else {}
   }
-  @override
-  void dispose() {
-    super.dispose();
-    _razorpay.clear();
-  }*/
+
+  Future<void> addBackStock(List<CartItem> cartItems) async {
+    try {
+      await db.runTransaction((transaction) async {
+        final availableCollection =
+            db.collection('menu').doc('today menu').collection('available');
+
+        for (final cartItem in cartItems) {
+          final itemDoc = await availableCollection.doc(cartItem.name).get();
+
+          if (itemDoc.exists) {
+            final currentStock = itemDoc['stock'] ?? 0;
+            final newStock = currentStock + cartItem.quantity;
+
+            // Update the stock
+            transaction.update(
+              availableCollection.doc(cartItem.name),
+              {'stock': newStock},
+            );
+          }
+        }
+      });
+    } catch (error) {
+      print('Error adding back stock: $error');
+      // Handle the error as needed
+    }
+    CartController.to.reloadCart(); // Reload the cart after adding back stock
+  }
+
+  Future<int> getStockFromMenu(String itemName) async {
+    final availableCollection = FirebaseFirestore.instance
+        .collection('menu')
+        .doc('today menu')
+        .collection('available');
+    final itemDoc = await availableCollection.doc(itemName).get();
+
+    if (itemDoc.exists) {
+      return itemDoc['stock'] ?? 0;
+    } else {
+      return 0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,6 +196,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     for (var item in cartItems) {
       totalAmount += item.price * item.quantity;
     }
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -233,9 +283,10 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           ),
           const SizedBox(height: 30),
           ElevatedButton(
-            onPressed: () {
-              //upi
-              /* Get.to(() => PaymentSuccessScreen());*/
+            onPressed: () async {
+              await CartController.to
+                  .updateStockOnPay(CartController.to.cartItems);
+              navigateToPayment();
 
               Razorpay razorpay = Razorpay();
 

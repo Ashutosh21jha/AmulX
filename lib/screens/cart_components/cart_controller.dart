@@ -45,7 +45,6 @@ class CartController extends GetxController {
           'price': item.price,
         });
       }
-      await updateStockInMenu(item.name, -1);
 
       /* final existingItemIndex =
             cartItems.indexWhere((element) => element.name == item.name);
@@ -128,7 +127,6 @@ class CartController extends GetxController {
           cartItems.remove(existingItem);
         }
       }*/
-      await updateStockInMenu(item.name, 1);
     } catch (e) {
       print('Error removing item from Firestore: $e');
     }
@@ -227,5 +225,99 @@ class CartController extends GetxController {
     } catch (e) {
       print("Error deleting cart: $e");
     }
+  }
+
+  Future<void> updateStockOnPay(List<CartItem> cartItems) async {
+    try {
+      await db.runTransaction((transaction) async {
+        final availableCollection =
+            db.collection('menu').doc('today menu').collection('available');
+
+        for (final cartItem in cartItems) {
+          final itemDoc = await availableCollection.doc(cartItem.name).get();
+
+          if (itemDoc.exists) {
+            final currentStock = itemDoc['stock'] ?? 0;
+            final newStock = currentStock - cartItem.quantity;
+
+            if (newStock >= 0) {
+              // Update the stock
+              transaction.update(
+                availableCollection.doc(cartItem.name),
+                {'stock': newStock},
+              );
+            } else {
+              // Handle out-of-stock case
+              print('Item ${cartItem.name} is out of stock.');
+              // You may want to throw an exception or handle this case appropriately
+            }
+          }
+        }
+      });
+    } catch (error) {
+      print('Error updating stock on pay: $error');
+      // Handle the error as needed
+    }
+  }
+}
+
+Future<void> addBackStock(List<CartItem> cartItems) async {
+  try {
+    await db.runTransaction((transaction) async {
+      final availableCollection =
+          db.collection('menu').doc('today menu').collection('available');
+
+      for (final cartItem in cartItems) {
+        final itemDoc = await availableCollection.doc(cartItem.name).get();
+
+        if (itemDoc.exists) {
+          final currentStock = itemDoc['stock'] ?? 0;
+          final newStock = currentStock + cartItem.quantity;
+
+          // Update the stock
+          transaction.update(
+            availableCollection.doc(cartItem.name),
+            {'stock': newStock},
+          );
+        }
+      }
+    });
+  } catch (error) {
+    print('Error adding back stock: $error');
+    // Handle the error as needed
+  }
+  CartController.to.reloadCart(); // Reload the cart after adding back stock
+}
+
+Future<void> updateStockOnPay(List<CartItem> cartItems) async {
+  try {
+    await db.runTransaction((transaction) async {
+      final availableCollection =
+          db.collection('menu').doc('today menu').collection('available');
+
+      for (final cartItem in cartItems) {
+        final itemDoc = await availableCollection.doc(cartItem.name).get();
+
+        if (itemDoc.exists) {
+          final currentStock = itemDoc['stock'] ?? 0;
+          final newStock = currentStock - cartItem.quantity;
+
+          if (newStock >= 0) {
+            // Update the stock
+            transaction.update(
+              availableCollection.doc(cartItem.name),
+              {'stock': newStock},
+            );
+          } else {
+            // Handle out-of-stock case
+            print('Item ${cartItem.name} is out of stock.');
+            // You may want to throw an exception or handle this case appropriately
+          }
+        }
+      }
+    });
+  } catch (error) {
+    print('Error updating stock on pay: $error');
+    // Handle the error as needed
   }
 }

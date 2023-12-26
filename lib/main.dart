@@ -3,6 +3,7 @@ import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/forgetpassword.dart';
 import 'package:amul/screens/home.dart';
 import 'package:amul/screens/splashscreen.dart';
+import 'package:amul/screens/waitingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
-    return const GetMaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
     );
