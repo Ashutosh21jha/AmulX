@@ -168,11 +168,12 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           }
         }
       });
+      CartController.to.deleteCart();
     } catch (error) {
       print('Error adding back stock: $error');
       // Handle the error as needed
     }
-    CartController.to.reloadCart(); // Reload the cart after adding back stock
+    CartController.to.reloadCart();
   }
 
   Future<int> getStockFromMenu(String itemName) async {
