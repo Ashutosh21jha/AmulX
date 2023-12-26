@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import '../widgets/item.dart';
 
 class History extends StatelessWidget {
@@ -73,7 +74,10 @@ class History extends StatelessWidget {
                       }
 
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return Center(child: Container(
+                            width: Get.width*0.5,
+                            height: Get.height*0.3,
+                            child: CircularProgressIndicator()));
                       }
 
                       List<Map<String, dynamic>> orders = snapshot.data!.docs
@@ -102,7 +106,7 @@ class History extends StatelessWidget {
                                 id: snapshot.data!.docs[index].id,
                                 items: itemsString,
                                 orderStatus: order['orderStatus'],
-                                timestamp: orderItem['time'] ?? Timestamp.now(),
+                                timestamp: orderItem['time'] ,
                                 orderID: orderName,
                               );
                             }).toList(),

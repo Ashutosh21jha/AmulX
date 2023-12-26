@@ -12,24 +12,24 @@ class _WaitingScreenState extends State<WaitingScreen> {
   late Timer _timer;
   int _timerDuration = 60; // 3 minutes
 
-  @override
-  void initState() {
-    super.initState();
-    _startTimer();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _startTimer();
+  // }
 
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_timerDuration > 0) {
-          _timerDuration--;
-        } else {
-          _timer.cancel();
-          Get.back();
-        }
-      });
-    });
-  }
+  // void _startTimer() {
+  //   _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+  //     setState(() {
+  //       if (_timerDuration > 0) {
+  //         _timerDuration--;
+  //       } else {
+  //         _timer.cancel();
+  //         Get.back();
+  //       }
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

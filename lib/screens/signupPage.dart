@@ -52,6 +52,9 @@ class _signupPageState extends State<signupPage> {
           rollno: rollno,
           isLoading: isLoading,
         );
+        setState(() {
+          isLoading = false;
+        });
       } catch (e) {
         print("Error during sign up: $e");
         setState(() {
