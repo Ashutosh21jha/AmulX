@@ -16,7 +16,6 @@ class ItemController extends GetxController {
   final RxList<ItemsModel> munchies = <ItemsModel>[].obs;
   final RxList<ItemsModel> dairy = <ItemsModel>[].obs;
 
-
   /* Map<String, RxList<Map<String, dynamic>>> itemsMap = {
     'food': <Map<String, dynamic>>[].obs,
     'drink': <Map<String, dynamic>>[].obs,
@@ -46,6 +45,7 @@ class ItemController extends GetxController {
               type: snapshot.data()['type'] ?? '',
               availability: snapshot.data()['availability'] as bool? ?? false,
               imageUrl: snapshot.data()['imageUrl'] ?? '',
+              stock: snapshot.data()['stock'] ?? 0,
             );
           }));
 
@@ -90,6 +90,4 @@ class ItemController extends GetxController {
       print("Error fetching items: $e");
     }
   }
-
-
 }

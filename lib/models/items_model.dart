@@ -6,7 +6,7 @@ class ItemsModel {
   final String imageUrl;
   final String type;
   final bool availability;
-
+  final int stock;
 
   ItemsModel({
     this.id,
@@ -14,6 +14,7 @@ class ItemsModel {
     required this.imageUrl,
     required this.type,
     required this.availability,
+    required this.stock,
   });
 
   /*factory ItemsModel. fromSnapshot(

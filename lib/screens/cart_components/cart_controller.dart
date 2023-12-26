@@ -45,6 +45,7 @@ class CartController extends GetxController {
           'price': item.price,
         });
       }
+      await updateStockInMenu(item.name, -1);
 
       /* final existingItemIndex =
             cartItems.indexWhere((element) => element.name == item.name);
@@ -59,6 +60,36 @@ class CartController extends GetxController {
       print('Error adding item to Firestore: $e');
     }
     update();
+  }
+
+  Future<void> updateStockInMenu(String itemName, int changeAmount) async {
+    try {
+      final availableCollection =
+          db.collection('menu').doc('today menu').collection('available');
+
+      await db.runTransaction((transaction) async {
+        final itemDoc = await availableCollection.doc(itemName).get();
+
+        if (itemDoc.exists) {
+          final currentStock = itemDoc['stock'] ?? 0;
+          final newStock = currentStock + changeAmount;
+
+          if (newStock >= 0) {
+            // Update the stock
+            transaction.update(
+              availableCollection.doc(itemName),
+              {'stock': newStock},
+            );
+          } else {
+            // Handle out-of-stock case
+            print('Item $itemName is out of stock.');
+          }
+        }
+      });
+    } catch (error) {
+      print('Error updating stock: $error');
+      // Handle the error as needed
+    }
   }
 
   Future<void> removeItem(CartItem item) async {
@@ -97,6 +128,7 @@ class CartController extends GetxController {
           cartItems.remove(existingItem);
         }
       }*/
+      await updateStockInMenu(item.name, 1);
     } catch (e) {
       print('Error removing item from Firestore: $e');
     }

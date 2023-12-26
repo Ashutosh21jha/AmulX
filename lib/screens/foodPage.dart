@@ -42,7 +42,8 @@ class FoodPageState extends State<FoodPage> {
           price: itemData.price,
           type: itemData.type,
           availability: itemData.availability,
-          imageUrl: itemData.imageUrl);
+          imageUrl: itemData.imageUrl,
+          stock: itemData.stock);
       if (available == true) {
         availableItems.add(item);
       } else {
@@ -382,6 +383,8 @@ class FoodPageState extends State<FoodPage> {
                       bool available = itemData.availability;
                       bool unavailable = !available;
 
+                      bool isOutOfStock = available && itemData.stock == 0;
+
                       String? itemname = itemData.id;
                       String itemprice = itemData.price;
                       String itemimage = itemData.imageUrl;
@@ -458,17 +461,42 @@ class FoodPageState extends State<FoodPage> {
                                         ),
                                       )
                                     : GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            tappedList[index] =
-                                                !tappedList[index];
-                                            countList[index] = 1;
-                                          });
-                                          if (!unavailable) {
-                                            CartController.to.addItem(CartItem(
-                                              name: itemname,
-                                              price: double.parse(itemprice),
-                                            ));
+                                        onTap: () async {
+                                          print(
+                                              "Item: ${itemData.id}, Stock: ${itemData.stock}");
+                                          if (itemData.stock > 0) {
+                                            setState(() {
+                                              tappedList[index] =
+                                                  !tappedList[index];
+                                              countList[index] = 1;
+                                            });
+                                            if (!unavailable) {
+                                              CartController.to
+                                                  .addItem(CartItem(
+                                                name: itemname,
+                                                price: double.parse(itemprice),
+                                              ));
+                                            }
+                                          } else {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      'Out of Stock'),
+                                                  content: const Text(
+                                                      'Sorry, this item is out of stock.'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text('OK'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
                                           }
                                         },
                                         child: tappedList[index]
