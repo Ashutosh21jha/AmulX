@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/screens/trackingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:amul/screens/order_review.dart';
@@ -27,6 +28,7 @@ class _CartPageState extends State<CartPage> {
     updateItemCount();*/
     CartController.to.fetchCart();
     CartController.to.reloadFetchData();
+    CartController.to.fetchCurrentOrder();
   }
 
   @override
@@ -246,12 +248,22 @@ class _CartPageState extends State<CartPage> {
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              print('pressed order now button');
                               final cartController = CartController.to;
                               if (cartController.cartItems.isNotEmpty) {
-                                Get.to(OrderReviewPage(
-                                  cartItems: cartController.cartItems,
-                                ));
+                                final currentOrder =
+                                    await cartController.fetchCurrentOrder();
+                                print('Current Order = $currentOrder');
+
+                                if (currentOrder == null) {
+                                  print("Navigating to review Screen");
+                                  Get.to(OrderReviewPage(
+                                    cartItems: cartController.cartItems,
+                                  ));
+                                } else {
+                                  Get.to(() => (TrackingPage()));
+                                }
                               } else {
                                 Get.snackbar(
                                   'Cart is Empty',

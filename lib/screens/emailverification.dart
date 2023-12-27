@@ -26,6 +26,7 @@ Future<void> signIn(BuildContext context, String email, String name,
       "name": name,
       "student id": s_id,
       "userUid": userUid,
+      "currentOrder": null,
     }).catchError((error) {
       print("Error adding data: $error");
     });

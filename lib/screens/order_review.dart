@@ -31,32 +31,35 @@ String generateRandomOrderID() {
   // Combine it with a prefix, if needed
   return 'ORD-$randomOrderNumber';
 }
+
 class _OrderReviewPageState extends State<OrderReviewPage> {
   late int count;
-  bool isLoading=false;
+  bool isLoading = false;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     fetch();
   }
-  void fetch() async{
 
-    await FirebaseFirestore.instance.collection('orderID').doc('IDCount').get().then((value){
-
-      count=value.get('ID');
+  void fetch() async {
+    await FirebaseFirestore.instance
+        .collection('orderID')
+        .doc('IDCount')
+        .get()
+        .then((value) {
+      count = value.get('ID');
     });
-    FirebaseFirestore.instance.collection('orderID').doc('IDCount').update(
-        {
-          'ID':++count,
-        }
-    );
+    FirebaseFirestore.instance.collection('orderID').doc('IDCount').update({
+      'ID': ++count,
+    });
   }
+
   Future<void> addBackStock(List<CartItem> cartItems) async {
     try {
       await db.runTransaction((transaction) async {
         final availableCollection =
-        db.collection('menu').doc('today menu').collection('available');
+            db.collection('menu').doc('today menu').collection('available');
 
         for (final cartItem in cartItems) {
           final itemDoc = await availableCollection.doc(cartItem.name).get();
@@ -80,34 +83,34 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     }
     CartController.to.reloadCart();
   }
+
   void handlePaymentSuccessResponse(
       PaymentSuccessResponse response, CartController cartController) async {
     try {
       final formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
       final historyCollection =
-      FirebaseFirestore.instance.collection('User/$userId/history');
+          FirebaseFirestore.instance.collection('User/$userId/history');
       String orderID = generateRandomOrderID();
       final orderData = {
         'orders': FieldValue.arrayUnion([
           {
             'items': cartController.cartItems.fold<Map<String, dynamic>>({},
-                    (map, item) {
-                  map[item.name] = {
-                    'count': item.quantity,
-                    'price': item.price,
-                  };
-                  return map;
-                }),
+                (map, item) {
+              map[item.name] = {
+                'count': item.quantity,
+                'price': item.price,
+              };
+              return map;
+            }),
             'orderID': 'ORD-$count',
             'time': DateTime.now(),
-
+            'orderStatus': 'Placed',
           }
         ]),
         // 'time': FieldValue.serverTimestamp(),
         // 'orderStatus': 'Placed',
       };
-
 
       final docSnapshot = await historyCollection.doc(formattedDate).get();
 
@@ -144,15 +147,16 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       Get.offAll(() => const Mainscreen());
       await CartController.to.deleteCart();
       setState(() {
-        isLoading=false;
+        isLoading = false;
       });
     } catch (error) {
       print('Error handling payment success: $error');
       setState(() {
-        isLoading=false;
+        isLoading = false;
       });
     }
   }
+
   void handlePaymentErrorResponse(PaymentFailureResponse response) {
     Get.snackbar(
       'Payment decline',
@@ -177,15 +181,17 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     Get.offAll(() => const Mainscreen());
     CartController.to.deleteCart();
     setState(() {
-      isLoading=false;
+      isLoading = false;
     });
     addBackStock(CartController.to.cartItems);
   }
+
   void handleExternalWalletSelected(ExternalWalletResponse response) {
     setState(() {
-      isLoading=false;
+      isLoading = false;
     });
   }
+
   Future<void> navigateToPayment() async {
     final exceededItems = <String>[];
 
@@ -206,8 +212,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       Get.back();
     } else {}
   }
-
-
 
   Future<int> getStockFromMenu(String itemName) async {
     final availableCollection = FirebaseFirestore.instance
@@ -318,7 +322,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           ElevatedButton(
             onPressed: () async {
               setState(() {
-                isLoading=true;
+                isLoading = true;
               });
               await CartController.to
                   .updateStockOnPay(CartController.to.cartItems);
@@ -364,15 +368,17 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                   const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
               textStyle: const TextStyle(fontSize: 20),
             ),
-            child:  Padding(
+            child: Padding(
               padding: EdgeInsets.only(left: 20, right: 20),
-              child: isLoading?CircularProgressIndicator():Text(
-                'Pay',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 18),
-              ),
+              child: isLoading
+                  ? CircularProgressIndicator()
+                  : Text(
+                      'Pay',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 18),
+                    ),
             ),
           ),
         ],

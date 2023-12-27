@@ -74,10 +74,11 @@ class History extends StatelessWidget {
                       }
 
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: Container(
-                            width: Get.width*0.5,
-                            height: Get.height*0.3,
-                            child: CircularProgressIndicator()));
+                        return Center(
+                            child: Container(
+                                width: Get.width * 0.5,
+                                height: Get.height * 0.3,
+                                child: CircularProgressIndicator()));
                       }
 
                       List<Map<String, dynamic>> orders = snapshot.data!.docs
@@ -105,8 +106,8 @@ class History extends StatelessWidget {
                               return ListItem(
                                 id: snapshot.data!.docs[index].id,
                                 items: itemsString,
-                                orderStatus: order['orderStatus'],
-                                timestamp: orderItem['time'] ,
+                                orderStatus: orderItem['orderStatus'],
+                                timestamp: orderItem['time'],
                                 orderID: orderName,
                               );
                             }).toList(),

@@ -1,44 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 class ItemCard extends StatefulWidget {
   String name;
   String rs;
 
-  ItemCard({super.key,required this.name,required this.rs});
-
+  ItemCard({super.key, required this.name, required this.rs});
 
   @override
   State<ItemCard> createState() => _ItemCardState();
 }
 
 class _ItemCardState extends State<ItemCard> {
-  FirebaseAuth _auth=FirebaseAuth.instance;
-  bool added=false;
-  int count=0;
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  bool added = false;
+  int count = 0;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     fetch();
   }
-  void fetch(){
-    try{
-      FirebaseFirestore.instance.collection('User').doc(_auth.currentUser!.email).collection('cart').doc('Coke').get().then((value) {
-        if(value['name']=='coke'){
+
+  void fetch() {
+    try {
+      FirebaseFirestore.instance
+          .collection('User')
+          .doc(_auth.currentUser!.email)
+          .collection('cart')
+          .doc('Coke')
+          .get()
+          .then((value) {
+        if (value['name'] == 'coke') {
           setState(() {
-            added=true;
+            added = true;
           });
+
           setState(() {
-            count=value['count'];
+            count = value['count'];
           });
         }
       });
-    }catch(e){
+    } catch (e) {
       print('Error');
     }
-
   }
 
   @override
