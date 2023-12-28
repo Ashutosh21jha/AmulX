@@ -129,7 +129,97 @@ class _ItemCardState extends State<ItemCard> {
                         color: Color(0xFFDD4040),
                       ),
                     )
-                  : GestureDetector(
+                  :added?Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.remove,
+                    ),
+                    color: AppColors.blue,
+                    onPressed: () {
+                      if (count == 1) {
+                        setState(() {
+                          added = false;
+                        });
+                        FirebaseFirestore.instance
+                            .collection('User')
+                            .doc(_auth.currentUser!.email)
+                            .collection('cart')
+                            .doc(widget.itemData.id)
+                            .delete();
+                      }
+                      if (count >= 1) {
+                        FirebaseFirestore.instance
+                            .collection('User')
+                            .doc(_auth.currentUser!.email)
+                            .collection('cart')
+                            .doc(widget.itemData.id)
+                            .update({
+                          'count': FieldValue.increment(-1),
+                        });
+                        setState(() {
+                          count--;
+                        });
+                      }
+                      // if (CartController.to.countList[widget.index] ==
+                      //     1) {
+                      //   CartController.to.tappedList[widget.index] =
+                      //   false;
+                      // } else if (CartController.to.countList[
+                      // widget.index] >
+                      //     1) {
+                      //   CartController.to.countList[widget.index]--;
+                      // }
+                      // CartController.to
+                      //     .removeItem(
+                      //     CartItem(
+                      //       name: widget.itemData.id!,
+                      //       price: double.parse(
+                      //           widget.itemData.price),
+                      //     ));
+                    },
+                  ),
+                  Text(
+                    "$count",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: AppColors.green),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    color: AppColors.blue,
+                    onPressed: () {
+                      setState(() {
+                        FirebaseFirestore.instance
+                            .collection('User')
+                            .doc(_auth.currentUser!.email)
+                            .collection('cart')
+                            .doc(widget.itemData.id)
+                            .update({
+                          'count': FieldValue.increment(1),
+                        });
+                        setState(() {
+                          count++;
+                        });
+                        if (count == 1) {
+                          setState(() {
+                            added = true;
+                          });
+                        }
+                        // CartController.to.countList[widget.index]++;
+                        // CartController.to
+                        //     .addItem(CartItem(
+                        //   name: widget.itemData.id!,
+                        //   price: double.parse(
+                        //       widget.itemData.price),
+                        // ));
+                      });
+                    },
+                  ),
+                ],
+              ): GestureDetector(
                       onTap: () async {
                         if (added == false) {
                           print("name");
@@ -184,99 +274,7 @@ class _ItemCardState extends State<ItemCard> {
                           );
                         }
                       },
-                      child: added
-                          ? Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.remove,
-                                  ),
-                                  color: AppColors.blue,
-                                  onPressed: () {
-                                    if (count == 1) {
-                                      setState(() {
-                                        added = false;
-                                      });
-                                      FirebaseFirestore.instance
-                                          .collection('User')
-                                          .doc(_auth.currentUser!.email)
-                                          .collection('cart')
-                                          .doc(widget.itemData.id)
-                                          .delete();
-                                    }
-                                    if (count >= 1) {
-                                      FirebaseFirestore.instance
-                                          .collection('User')
-                                          .doc(_auth.currentUser!.email)
-                                          .collection('cart')
-                                          .doc(widget.itemData.id)
-                                          .update({
-                                        'count': FieldValue.increment(-1),
-                                      });
-                                      setState(() {
-                                        count--;
-                                      });
-                                    }
-                                    // if (CartController.to.countList[widget.index] ==
-                                    //     1) {
-                                    //   CartController.to.tappedList[widget.index] =
-                                    //   false;
-                                    // } else if (CartController.to.countList[
-                                    // widget.index] >
-                                    //     1) {
-                                    //   CartController.to.countList[widget.index]--;
-                                    // }
-                                    // CartController.to
-                                    //     .removeItem(
-                                    //     CartItem(
-                                    //       name: widget.itemData.id!,
-                                    //       price: double.parse(
-                                    //           widget.itemData.price),
-                                    //     ));
-                                  },
-                                ),
-                                Text(
-                                  "$count",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: AppColors.green),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.add),
-                                  color: AppColors.blue,
-                                  onPressed: () {
-                                    setState(() {
-                                      FirebaseFirestore.instance
-                                          .collection('User')
-                                          .doc(_auth.currentUser!.email)
-                                          .collection('cart')
-                                          .doc(widget.itemData.id)
-                                          .update({
-                                        'count': FieldValue.increment(1),
-                                      });
-                                      setState(() {
-                                        count++;
-                                      });
-                                      if (count == 1) {
-                                        setState(() {
-                                          added = true;
-                                        });
-                                      }
-                                      // CartController.to.countList[widget.index]++;
-                                      // CartController.to
-                                      //     .addItem(CartItem(
-                                      //   name: widget.itemData.id!,
-                                      //   price: double.parse(
-                                      //       widget.itemData.price),
-                                      // ));
-                                    });
-                                  },
-                                ),
-                              ],
-                            )
-                          : Container(
+                      child: Container(
                               width: 90,
                               height: 45,
                               decoration: BoxDecoration(
