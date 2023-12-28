@@ -3,6 +3,7 @@ import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/forgetpassword.dart';
 import 'package:amul/screens/home.dart';
 import 'package:amul/screens/splashscreen.dart';
+import 'package:amul/screens/trackingPage.dart';
 import 'package:amul/screens/waitingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -91,6 +91,10 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
       final historyCollection =
           FirebaseFirestore.instance.collection('User/$userId/history');
+
+      final prepListCollection =
+          FirebaseFirestore.instance.collection('prepList');
+
       String orderID = generateRandomOrderID();
       final orderData = {
         'orders': FieldValue.arrayUnion([
@@ -112,6 +116,23 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         // 'orderStatus': 'Placed',
       };
 
+      final itemsMap = cartController.cartItems.fold<Map<String, dynamic>>(
+        {},
+        (map, item) {
+          map[item.name] = {
+            'count': item.quantity,
+            'price': item.price,
+          };
+          return map;
+        },
+      );
+
+      final prepListOrderData = {
+        'items': itemsMap,
+        'orderID': 'ORD-$count',
+        'orderStatus': 'Placed',
+      };
+
       final docSnapshot = await historyCollection.doc(formattedDate).get();
 
       if (docSnapshot.exists) {
@@ -121,6 +142,25 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         // Document doesn't exist, create it
         await historyCollection.doc(formattedDate).set(orderData);
       }
+      await prepListCollection.doc('ORD-$count').set(prepListOrderData);
+
+      prepListCollection.doc('ORD-$count').snapshots().listen((event) async {
+        // Check if the orderStatus field has changed
+        final newOrderStatus = event['orderStatus'];
+        if (newOrderStatus != 'Placed') {
+          await historyCollection.doc(formattedDate).update({
+            'orders': FieldValue.arrayUnion([
+              {
+                'items': itemsMap,
+                'orderID': 'ORD-$count',
+                'time': DateTime.now(),
+                'orderStatus': newOrderStatus,
+              }
+            ]),
+          });
+        }
+      });
+
       CartController.to.deleteCart();
 
       Get.snackbar(

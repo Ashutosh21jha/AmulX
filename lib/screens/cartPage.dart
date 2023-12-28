@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/screens/orderPage.dart';
+import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/trackingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -262,7 +264,7 @@ class _CartPageState extends State<CartPage> {
                                     cartItems: cartController.cartItems,
                                   ));
                                 } else {
-                                  Get.to(() => (TrackingPage()));
+                                  Get.to(() => OrderPage());
                                 }
                               } else {
                                 Get.snackbar(
