@@ -264,7 +264,9 @@ class _CartPageState extends State<CartPage> {
                                     cartItems: cartController.cartItems,
                                   ));
                                 } else {
-                                  Get.to(() => OrderPage());
+                                  Get.to(() => OrderPage(
+                                        userId: userId,
+                                      ));
                                 }
                               } else {
                                 Get.snackbar(

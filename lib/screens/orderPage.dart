@@ -1,10 +1,12 @@
+import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/trackingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class OrderPage extends StatelessWidget {
-  const OrderPage({Key? key}) : super(key: key);
+  final String userId;
+  const OrderPage({Key? key, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +85,16 @@ class OrderPage extends StatelessWidget {
 
   Future<List<Map<String, dynamic>>> getLatestOrders() async {
     try {
+      print('Fetching orders for userId: $userId');
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('prepList').get();
       if (querySnapshot.docs.isNotEmpty) {
-        // Filter documents with ORD prefix and three digits
+        print('Fetching orders for userId: $userId');
         var filteredDocs = querySnapshot.docs
-            .where((doc) => RegExp(r'^ORD-\d{3}$').hasMatch(doc.id.toString()))
+            .where((doc) =>
+                RegExp(r'^ORD-\d{3}$').hasMatch(doc.id.toString()) &&
+                (doc['userId'] == userId) &&
+                doc['orderStatus'] != 'Placed')
             .toList();
 
         if (filteredDocs.isNotEmpty) {

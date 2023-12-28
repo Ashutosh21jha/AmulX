@@ -128,6 +128,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       );
 
       final prepListOrderData = {
+        'userId': userId,
         'items': itemsMap,
         'orderID': 'ORD-$count',
         'orderStatus': 'Placed',
