@@ -36,6 +36,10 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Cart"),
+        centerTitle: true,
+      ),
       backgroundColor: Colors.grey.shade200,
       body: CartController.to.isCartEmpty
           ? Container(

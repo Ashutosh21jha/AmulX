@@ -104,7 +104,7 @@ class FoodPageState extends State<FoodPage> {
 
   void _sortListByPriceLowestToHighest() {
     setState(() {
-      availableItems?.sort(
+      availableItems.sort(
         (a, b) => a.price.compareTo(b.price),
       );
       mergedList.clear();
@@ -115,7 +115,7 @@ class FoodPageState extends State<FoodPage> {
 
   void _sortListByPriceHighestToLowest() {
     setState(() {
-      availableItems?.sort(
+      availableItems.sort(
         (a, b) => b.price.compareTo(a.price),
       );
       mergedList.clear();
