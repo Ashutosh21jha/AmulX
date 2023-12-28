@@ -31,55 +31,89 @@ class OrderPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 40),
-            Expanded(
-              child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: getLatestOrders(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: Container(child: CircularProgressIndicator()),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (!snapshot.hasData || snapshot.data == null) {
-                    return Text('No orders found.');
-                  } else {
-                    List<Map<String, dynamic>> latestOrders = snapshot.data!;
-                    return ListView.builder(
-                      itemCount: latestOrders.length,
-                      itemBuilder: (context, index) {
-                        var order = latestOrders[index];
-                        return Card(
-                          elevation: 3,
-                          margin: const EdgeInsets.all(10),
-                          child: ListTile(
-                            title: Text('Order ID: ${order['orderID']}'),
-                            subtitle:
-                                Text('Order Status: ${order['orderStatus']}'),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TrackingPage(),
-                                ),
-                              );
-                            },
+      body: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: getLatestOrders(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Container(child: CircularProgressIndicator()),
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else if (!snapshot.hasData || snapshot.data == null) {
+              return Text('No orders found.');
+            } else {
+              List<Map<String, dynamic>> latestOrders = snapshot.data!;
+              if (latestOrders.isEmpty) {
+                return Text('No orders found.');
+              }
+
+              var order = latestOrders.first;
+              var itemsMap = order['items'] as Map<String, dynamic>;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Order ID: ${order['orderID']}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Order Status: ${order['orderStatus']}',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Items:',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: itemsMap.entries
+                        .map(
+                          (entry) => Text(
+                            '${entry.key}: ${entry.value['count']} items, ₹${entry.value['price']} each',
+                            style: TextStyle(fontSize: 14),
                           ),
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
-            ),
-          ],
+                        )
+                        .toList(),
+                  ),
+                ],
+              );
+            }
+          },
         ),
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TrackingPage(),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.indigo,
+            padding: EdgeInsets.symmetric(vertical: 28, horizontal: 85),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40),
+            ),
+            textStyle: TextStyle(fontSize: 20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Text('Track Order'),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 

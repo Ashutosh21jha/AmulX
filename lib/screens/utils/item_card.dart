@@ -5,13 +5,18 @@ import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/models/items_model.dart';
 import '../../Utils/AppColors.dart';
 import '../cart_components/cartItem_model.dart';
+
 class ItemCard extends StatefulWidget {
   ItemsModel itemData;
-  bool unavailable ;
-  bool isOutOfStock ;
+  bool unavailable;
+  bool isOutOfStock;
   int index;
-  ItemCard({super.key,required this.itemData,required this.isOutOfStock,required this.unavailable,required this.index});
-
+  ItemCard(
+      {super.key,
+      required this.itemData,
+      required this.isOutOfStock,
+      required this.unavailable,
+      required this.index});
 
   @override
   State<ItemCard> createState() => _ItemCardState();
@@ -19,48 +24,51 @@ class ItemCard extends StatefulWidget {
 
 class _ItemCardState extends State<ItemCard> {
   //Remove tapped and count list use added and count variables for changing the Add button
-  FirebaseAuth _auth=FirebaseAuth.instance;
-  bool added=false;
-  int count=0;
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  bool added = false;
+  int count = 0;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     fetch();
   }
-  void stockCheck(){
-    //count<=stock(item)?count++:Message(not enough stock)
 
+  void stockCheck() {
+    //count<=stock(item)?count++:Message(not enough stock)
   }
-  void fetch(){
-    try{
-      FirebaseFirestore.instance.collection('User').doc(_auth.currentUser!.email).collection('cart').doc(widget.itemData.id).get().then((value) {
-        try{
-          if(value.get('count')!=null){
+  void fetch() {
+    try {
+      FirebaseFirestore.instance
+          .collection('User')
+          .doc(_auth.currentUser!.email)
+          .collection('cart')
+          .doc(widget.itemData.id)
+          .get()
+          .then((value) {
+        try {
+          if (value.get('count') != null) {
             setState(() {
-              added=true;
+              added = true;
             });
             setState(() {
-              count=value.get('count');
+              count = value.get('count');
               // localcount=value.get('count');
             });
           }
-        }catch(e){
+        } catch (e) {
           print("Count field does not exist");
         }
       });
-    }catch(e){
+    } catch (e) {
       print('Error');
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-      const EdgeInsets.only(left: 8, right: 8, bottom: 5),
+      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 5),
       child: Opacity(
         opacity: widget.unavailable ? .4 : 1.0,
         child: Card(
@@ -77,14 +85,13 @@ class _ItemCardState extends State<ItemCard> {
                   height: 70,
                   child: widget.itemData.imageUrl.isNotEmpty
                       ? Image.network(
-                    widget.itemData.imageUrl,
-                    fit: BoxFit.fill,
-                  )
+                          widget.itemData.imageUrl,
+                          fit: BoxFit.fill,
+                        )
                       : const CircularProgressIndicator(
-                    valueColor:
-                    AlwaysStoppedAnimation<Color>(
-                        Colors.blue),
-                  ),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.blue),
+                        ),
                 ),
               ),
               title: Text(
@@ -117,171 +124,182 @@ class _ItemCardState extends State<ItemCard> {
               ),
               trailing: widget.unavailable
                   ? const Text(
-                "Out of Stock",
-                style: TextStyle(
-                  color: Color(0xFFDD4040),
-                ),
-              )
-                  : GestureDetector(
-                onTap: () async {
-                  if(added==false){
-                    print("name");
-                    print(widget.itemData.id);
-                    await FirebaseFirestore.instance.collection('User').doc(_auth.currentUser!.email).collection('cart').doc(widget.itemData.id).set({
-                      'name': widget.itemData.id,
-                      'count': 0,
-                      'price': widget.itemData.price,
-                    });
-                    setState(() {
-                      added=true;
-                      count++;
-                    });
-                  }
-                  print(
-                      "Item: ${widget.itemData.id}, Stock: ${widget.itemData.stock}");
-                  if (widget.itemData.stock > 0) {
-                    setState(() {
-                      CartController.to.tappedList[widget.index] =
-                      !CartController.to.tappedList[widget.index];
-                      CartController.to.countList[widget.index] = 1;
-                    });
-                    if (!widget.unavailable) {
-                      CartController.to
-                          .addItem(CartItem(
-                        name: widget.itemData.id!,
-                        price: double.parse(widget.itemData.price),
-                      ));
-                    }
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text(
-                              'Out of Stock'),
-                          content: const Text(
-                              'Sorry, this item is out of stock.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                },
-                child: added
-                    ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.remove,
+                      "Out of Stock",
+                      style: TextStyle(
+                        color: Color(0xFFDD4040),
                       ),
-                      color: AppColors.blue,
-                      onPressed: () {
-
-                        if(count==1){
-                          setState(() {
-                            added=false;
-                          });
-                          FirebaseFirestore.instance.collection('User').doc(_auth.currentUser!.email).collection('cart').doc(widget.itemData.id).delete();
-                        }
-                        if(count>=1){
-                          FirebaseFirestore.instance.collection('User').doc(_auth.currentUser!.email).collection('cart').doc(widget.itemData.id).update({
-                            'count' : FieldValue.increment(-1),
-                          });
-                          setState(() {
-                            count--;
-                          });
-                        }
-                        // if (CartController.to.countList[widget.index] ==
-                        //     1) {
-                        //   CartController.to.tappedList[widget.index] =
-                        //   false;
-                        // } else if (CartController.to.countList[
-                        // widget.index] >
-                        //     1) {
-                        //   CartController.to.countList[widget.index]--;
-                        // }
-                        // CartController.to
-                        //     .removeItem(
-                        //     CartItem(
-                        //       name: widget.itemData.id!,
-                        //       price: double.parse(
-                        //           widget.itemData.price),
-                        //     ));
-
-                      },
-                    ),
-                    Text(
-                      "$count",
-                      style: const TextStyle(
-                          fontWeight:
-                          FontWeight.bold,
-                          fontSize: 18,
-                          color: AppColors.green),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      color: AppColors.blue,
-                      onPressed: () {
-                        setState(() {
-                          FirebaseFirestore.instance.collection('User').doc(_auth.currentUser!.email).collection('cart').doc(widget.itemData.id).update({
-                            'count' : FieldValue.increment(1),
+                    )
+                  : GestureDetector(
+                      onTap: () async {
+                        if (added == false) {
+                          print("name");
+                          print(widget.itemData.id);
+                          await FirebaseFirestore.instance
+                              .collection('User')
+                              .doc(_auth.currentUser!.email)
+                              .collection('cart')
+                              .doc(widget.itemData.id)
+                              .set({
+                            'name': widget.itemData.id,
+                            'count': 0,
+                            'price': widget.itemData.price,
                           });
                           setState(() {
+                            added = true;
                             count++;
                           });
-                          if(count==1){
-                            setState(() {
-                              added=true;
-                            });
+                        }
+                        print(
+                            "Item: ${widget.itemData.id}, Stock: ${widget.itemData.stock}");
+                        if (widget.itemData.stock > 0) {
+                          setState(() {
+                            CartController.to.tappedList[widget.index] =
+                                !CartController.to.tappedList[widget.index];
+                            CartController.to.countList[widget.index] = 1;
+                          });
+                          if (!widget.unavailable) {
+                            CartController.to.addItem(CartItem(
+                              name: widget.itemData.id!,
+                              price: double.parse(widget.itemData.price),
+                            ));
                           }
-                          // CartController.to.countList[widget.index]++;
-                          // CartController.to
-                          //     .addItem(CartItem(
-                          //   name: widget.itemData.id!,
-                          //   price: double.parse(
-                          //       widget.itemData.price),
-                          // ));
-                        });
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Out of Stock'),
+                                content: const Text(
+                                    'Sorry, this item is out of stock.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
                       },
+                      child: added
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.remove,
+                                  ),
+                                  color: AppColors.blue,
+                                  onPressed: () {
+                                    if (count == 1) {
+                                      setState(() {
+                                        added = false;
+                                      });
+                                      FirebaseFirestore.instance
+                                          .collection('User')
+                                          .doc(_auth.currentUser!.email)
+                                          .collection('cart')
+                                          .doc(widget.itemData.id)
+                                          .delete();
+                                    }
+                                    if (count >= 1) {
+                                      FirebaseFirestore.instance
+                                          .collection('User')
+                                          .doc(_auth.currentUser!.email)
+                                          .collection('cart')
+                                          .doc(widget.itemData.id)
+                                          .update({
+                                        'count': FieldValue.increment(-1),
+                                      });
+                                      setState(() {
+                                        count--;
+                                      });
+                                    }
+                                    // if (CartController.to.countList[widget.index] ==
+                                    //     1) {
+                                    //   CartController.to.tappedList[widget.index] =
+                                    //   false;
+                                    // } else if (CartController.to.countList[
+                                    // widget.index] >
+                                    //     1) {
+                                    //   CartController.to.countList[widget.index]--;
+                                    // }
+                                    // CartController.to
+                                    //     .removeItem(
+                                    //     CartItem(
+                                    //       name: widget.itemData.id!,
+                                    //       price: double.parse(
+                                    //           widget.itemData.price),
+                                    //     ));
+                                  },
+                                ),
+                                Text(
+                                  "$count",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: AppColors.green),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.add),
+                                  color: AppColors.blue,
+                                  onPressed: () {
+                                    setState(() {
+                                      FirebaseFirestore.instance
+                                          .collection('User')
+                                          .doc(_auth.currentUser!.email)
+                                          .collection('cart')
+                                          .doc(widget.itemData.id)
+                                          .update({
+                                        'count': FieldValue.increment(1),
+                                      });
+                                      setState(() {
+                                        count++;
+                                      });
+                                      if (count == 1) {
+                                        setState(() {
+                                          added = true;
+                                        });
+                                      }
+                                      // CartController.to.countList[widget.index]++;
+                                      // CartController.to
+                                      //     .addItem(CartItem(
+                                      //   name: widget.itemData.id!,
+                                      //   price: double.parse(
+                                      //       widget.itemData.price),
+                                      // ));
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
+                          : Container(
+                              width: 90,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xFFD1D2D3),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(60.0),
+                              ),
+                              child: const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: Text(
+                                    "Add",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                     ),
-                  ],
-                )
-                    : Container(
-                  width: 90,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color:
-                      const Color(0xFFD1D2D3),
-                      width: 1,
-                    ),
-                    borderRadius:
-                    BorderRadius.circular(
-                        60.0),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Text(
-                        "Add",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight:
-                          FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             )),
       ),
     );

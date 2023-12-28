@@ -59,17 +59,17 @@ class CartController extends GetxController {
       //     .where('name', isEqualTo: item.name)
       //     .limit(1)
       //     .get();
-      try{
-        await userCartCollection.get().then((value){
-          try{
+      try {
+        await userCartCollection.get().then((value) {
+          try {
             userCartCollection.update({
               'count': FieldValue.increment(1),
             });
-          }catch(e){
+          } catch (e) {
             print('Doc does not exist');
           }
         });
-      }catch(e){
+      } catch (e) {
         await userCartCollection.set({
           'name': item.name,
           'count': 1,
@@ -211,7 +211,7 @@ class CartController extends GetxController {
           cartItems.addAll(cartdoc.docs.map((doc) {
             return CartItem(
               name: doc['name'] ?? '',
-              price: doc['price']?.toDouble() ?? '',
+              price: double.parse(doc['price'] ?? '0.0'),
               quantity: doc['count'] ?? 0,
             );
           }));
@@ -341,13 +341,11 @@ Future<void> updateStockOnPay(List<CartItem> cartItems) async {
           } else {
             // Handle out-of-stock case
             print('Item ${cartItem.name} is out of stock.');
-            // You may want to throw an exception or handle this case appropriately
           }
         }
       }
     });
   } catch (error) {
     print('Error updating stock on pay: $error');
-    // Handle the error as needed
   }
 }
