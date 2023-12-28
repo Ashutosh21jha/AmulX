@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
-
+import 'package:amul/screens/utils/item_card.dart';
 FirebaseFirestore db = FirebaseFirestore.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -26,8 +26,7 @@ class FoodPage extends StatefulWidget {
 }
 
 class FoodPageState extends State<FoodPage> {
-  late List<bool> tappedList;
-  late List<int> countList;
+
   final RxList<ItemsModel> availableItems = <ItemsModel>[].obs;
   final RxList<ItemsModel> unavailableItems = <ItemsModel>[].obs;
   final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
@@ -152,8 +151,8 @@ class FoodPageState extends State<FoodPage> {
     /*_showDefaultOrder();*/
     ItemController.to.fetchItems();
     reloadFetchData();
-    tappedList = List.filled(mergedList.length, false);
-    countList = List.filled(mergedList.length, 0);
+    CartController.to.tappedList = List.filled(mergedList.length, false);
+    CartController.to.countList = List.filled(mergedList.length, 0);
     selected = 0;
   }
 
@@ -386,8 +385,8 @@ class FoodPageState extends State<FoodPage> {
                       bool isOutOfStock = available && itemData.stock == 0;
 
                       String? itemname = itemData.id;
-                      String itemprice = itemData.price;
-                      String itemimage = itemData.imageUrl;
+                      // String itemprice = itemData.price;
+                      // String itemimage = itemData.imageUrl;
 
                       if (_searchController.text.isNotEmpty &&
                           !itemname!.toLowerCase().contains(
@@ -396,195 +395,7 @@ class FoodPageState extends State<FoodPage> {
                         return Container();
                       }
 
-                      return Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8, right: 8, bottom: 5),
-                        child: Opacity(
-                          opacity: unavailable ? .4 : 1.0,
-                          child: Card(
-                              elevation: 2,
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ListTile(
-                                leading: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: SizedBox(
-                                    width: 70,
-                                    height: 70,
-                                    child: itemimage.isNotEmpty
-                                        ? Image.network(
-                                            itemimage,
-                                            fit: BoxFit.fill,
-                                          )
-                                        : const CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    Colors.blue),
-                                          ),
-                                  ),
-                                ),
-                                title: Text(
-                                  itemname!,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                subtitle: RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      const WidgetSpan(
-                                        child: Icon(
-                                          Icons.currency_rupee_outlined,
-                                          color: Colors.green,
-                                          size: 17,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: itemprice,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.green,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                trailing: unavailable
-                                    ? const Text(
-                                        "Out of Stock",
-                                        style: TextStyle(
-                                          color: Color(0xFFDD4040),
-                                        ),
-                                      )
-                                    : GestureDetector(
-                                        onTap: () {
-                                          print(
-                                              "Item: ${itemData.id}, Stock: ${itemData.stock}");
-                                          if (itemData.stock > 0) {
-                                            setState(() {
-                                              tappedList[index] =
-                                                  !tappedList[index];
-                                              countList[index] = 1;
-                                            });
-                                            if (!unavailable) {
-                                              CartController.to
-                                                  .addItem(CartItem(
-                                                name: itemname,
-                                                price: double.parse(itemprice),
-                                              ));
-                                            }
-                                          } else {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: const Text(
-                                                      'Out of Stock'),
-                                                  content: const Text(
-                                                      'Sorry, this item is out of stock.'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text('OK'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          }
-                                        },
-                                        child: tappedList[index]
-                                            ? Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  IconButton(
-                                                    icon: const Icon(
-                                                      Icons.remove,
-                                                    ),
-                                                    color: AppColors.blue,
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        if (countList[index] ==
-                                                            1) {
-                                                          tappedList[index] =
-                                                              false;
-                                                        } else if (countList[
-                                                                index] >
-                                                            1) {
-                                                          countList[index]--;
-                                                        }
-                                                        CartController.to
-                                                            .removeItem(
-                                                                CartItem(
-                                                          name: itemname,
-                                                          price: double.parse(
-                                                              itemprice),
-                                                        ));
-                                                      });
-                                                    },
-                                                  ),
-                                                  Text(
-                                                    countList[index].toString(),
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18,
-                                                        color: AppColors.green),
-                                                  ),
-                                                  IconButton(
-                                                    icon: const Icon(Icons.add),
-                                                    color: AppColors.blue,
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        countList[index]++;
-                                                        CartController.to
-                                                            .addItem(CartItem(
-                                                          name: itemname,
-                                                          price: double.parse(
-                                                              itemprice),
-                                                        ));
-                                                      });
-                                                    },
-                                                  ),
-                                                ],
-                                              )
-                                            : Container(
-                                                width: 90,
-                                                height: 45,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color:
-                                                        const Color(0xFFD1D2D3),
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          60.0),
-                                                ),
-                                                child: const Center(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(5),
-                                                    child: Text(
-                                                      "Add",
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                      ),
-                              )),
-                        ),
-                      );
+                      return ItemCard(itemData: itemData, isOutOfStock: isOutOfStock, unavailable: unavailable, index: index);
                     },
                   );
                 }),

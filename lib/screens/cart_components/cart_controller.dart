@@ -7,7 +7,8 @@ import 'package:get/get.dart';
 
 class CartController extends GetxController {
   static CartController get to => Get.put(CartController());
-
+  late List<bool> tappedList;
+  late List<int> countList;
   final RxList<CartItem> cartItems = <CartItem>[].obs;
   bool isCartEmpty = false;
   String? currentOrder;
@@ -51,27 +52,30 @@ class CartController extends GetxController {
   Future<void> addItem(CartItem item) async {
     try {
       final userCartCollection =
-          db.collection('User').doc(userId).collection('cart');
+          db.collection('User').doc(userId).collection('cart').doc(item.name);
 
       // Check if the item already exists
-      final cartItemDoc = await userCartCollection
-          .where('name', isEqualTo: item.name)
-          .limit(1)
-          .get();
-
-      if (cartItemDoc.docs.isNotEmpty) {
-        final docId = cartItemDoc.docs.first.id;
-        await userCartCollection.doc(docId).update({
-          'count': FieldValue.increment(1),
+      // final cartItemDoc = await userCartCollection
+      //     .where('name', isEqualTo: item.name)
+      //     .limit(1)
+      //     .get();
+      try{
+        await userCartCollection.get().then((value){
+          try{
+            userCartCollection.update({
+              'count': FieldValue.increment(1),
+            });
+          }catch(e){
+            print('Doc does not exist');
+          }
         });
-      } else {
-        await userCartCollection.add({
+      }catch(e){
+        await userCartCollection.set({
           'name': item.name,
           'count': 1,
           'price': item.price,
         });
       }
-
       /* final existingItemIndex =
             cartItems.indexWhere((element) => element.name == item.name);
 
@@ -207,7 +211,7 @@ class CartController extends GetxController {
           cartItems.addAll(cartdoc.docs.map((doc) {
             return CartItem(
               name: doc['name'] ?? '',
-              price: doc['price']?.toDouble() ?? 0.0,
+              price: doc['price']?.toDouble() ?? '',
               quantity: doc['count'] ?? 0,
             );
           }));

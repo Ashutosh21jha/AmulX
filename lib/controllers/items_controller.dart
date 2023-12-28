@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 
 class ItemController extends GetxController {
   static ItemController get to => Get.put(ItemController());
-
   final db = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   String get userId => auth.currentUser?.email ?? '';
