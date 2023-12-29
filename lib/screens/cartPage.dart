@@ -178,6 +178,34 @@ class _CartPageState extends State<CartPage> {
                 ),
                 Visibility(
                     visible: !CartController.to.currentOrder,
+                    replacement: Padding(
+                      padding: const EdgeInsets.only(bottom: 30),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.to(() => OrderPage(
+                            userId: userId,
+                          ));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 24),
+                          backgroundColor: const Color(0xFF2546A9),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(48),
+                          ),
+                        ),
+                        child: const Text(
+                          'Track Orders',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18, // Increase font size
+                          ),
+                        ),
+                      ),
+                    ),
                     child: Column(
                       children: [
                         Container(
