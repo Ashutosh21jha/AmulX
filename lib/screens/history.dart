@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,6 +22,21 @@ class History extends StatelessWidget {
         statusBarIconBrightness: Brightness.light,
       ),
     );
+
+    Stream<ImageProvider> getProfilePicture() async* {
+      FirebaseStorage storage = FirebaseStorage.instance;
+      while (true) {
+        try {
+          String downloadURL =
+          await storage.ref('user/pp_$userId.jpg').getDownloadURL();
+          yield NetworkImage(downloadURL);
+        } catch (e) {
+          // The file doesn't exist
+          yield const AssetImage('assets/images/avatar.png');
+        }
+        await Future.delayed(const Duration(seconds: 2));
+      }
+    }
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -46,8 +62,8 @@ class History extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 80),
+                const Padding(
+                  padding: EdgeInsets.only(top: 80),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -70,7 +86,7 @@ class History extends StatelessWidget {
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasError) {
-                        return Text("Something went wrong");
+                        return const Text("Something went wrong");
                       }
 
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -78,7 +94,7 @@ class History extends StatelessWidget {
                             child: Container(
                                 width: Get.width * 0.5,
                                 height: Get.height * 0.3,
-                                child: CircularProgressIndicator()));
+                                child: const CircularProgressIndicator()));
                       }
 
                       List<Map<String, dynamic>> orders = snapshot.data!.docs

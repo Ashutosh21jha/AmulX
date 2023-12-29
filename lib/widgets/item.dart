@@ -1,7 +1,11 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api
 
+import 'package:amul/Utils/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ListItem extends StatefulWidget {
   final String id;
@@ -28,6 +32,10 @@ class _ListItemState extends State<ListItem>
   bool _isExpanded = false;
   late AnimationController _controller;
   late Animation<double> _heightFactorAnimation;
+  final auth = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
+
+  String get userId => auth.currentUser?.email ?? '';
 
   @override
   void initState() {
@@ -62,6 +70,20 @@ class _ListItemState extends State<ListItem>
         _controller.reverse();
       }
     });
+  }
+
+  Stream<ImageProvider> getProfilePicture() async* {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    while (true) {
+      try {
+        String downloadURL =
+            await storage.ref('user/pp_$userId.jpg').getDownloadURL();
+        yield NetworkImage(downloadURL);
+      } catch (e) {
+        yield const AssetImage('assets/images/avatar.png');
+      }
+      await Future.delayed(const Duration(seconds: 2));
+    }
   }
 
   @override
@@ -100,27 +122,34 @@ class _ListItemState extends State<ListItem>
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
-                  decoration: ShapeDecoration(
-                    color: Color(0xFF42D8B0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 27,
-                        height: 23.67,
-                        child: Stack(children: []),
-                      ),
-                    ],
-                  ),
+                StreamBuilder<ImageProvider>(
+                  stream: getProfilePicture(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<ImageProvider<Object>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const SizedBox(
+                        height: 60,
+                        width: 60,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.blue,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: snapshot.data!,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -132,7 +161,7 @@ class _ListItemState extends State<ListItem>
                       SizedBox(
                         width: double.infinity,
                         child: Text(
-                          "${widget.orderID}",
+                          widget.orderID,
                           style: TextStyle(
                             color: Color(0xFF282828),
                             fontSize: 12,
@@ -146,7 +175,7 @@ class _ListItemState extends State<ListItem>
                       SizedBox(
                         width: double.infinity,
                         child: Text(
-                          widget.timestamp.toDate().toString(),
+                          DateFormat('MMM d, y h:mm a').format(widget.timestamp.toDate()),
                           style: TextStyle(
                             color: Color(0xFF36414C),
                             fontSize: 14,
