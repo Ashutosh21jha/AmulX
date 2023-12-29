@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/utils/item_card.dart';
+
 FirebaseFirestore db = FirebaseFirestore.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -26,7 +27,6 @@ class FoodPage extends StatefulWidget {
 }
 
 class FoodPageState extends State<FoodPage> {
-
   final RxList<ItemsModel> availableItems = <ItemsModel>[].obs;
   final RxList<ItemsModel> unavailableItems = <ItemsModel>[].obs;
   final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
@@ -151,12 +151,10 @@ class FoodPageState extends State<FoodPage> {
     /*_showDefaultOrder();*/
     ItemController.to.fetchItems();
     reloadFetchData();
-    /*CartController.to.tappedList = List.filled(mergedList.length, false);
-    CartController.to.countList = List.filled(mergedList.length, 0);*/
+    CartController.to.tappedList = List.filled(mergedList.length, false);
+    CartController.to.countList = List.filled(mergedList.length, 0);
     selected = 0;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +204,6 @@ class FoodPageState extends State<FoodPage> {
                     hintText: 'Search',
                     hintStyle: const TextStyle(color: Color(0xFF57585B)),
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                    // Adjust the vertical padding as needed
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(8),
@@ -215,7 +212,6 @@ class FoodPageState extends State<FoodPage> {
                     filled: true,
                   ),
                   onChanged: (value) {
-                    // Filter the list based on the search input
                     setState(() {
                       /* _foodItems = _defaultOrder
                           .where((item) => item.name
@@ -397,7 +393,11 @@ class FoodPageState extends State<FoodPage> {
                         return Container();
                       }
 
-                      return ItemCard(itemData: itemData, isOutOfStock: isOutOfStock, unavailable: unavailable, index: index);
+                      return ItemCard(
+                          itemData: itemData,
+                          isOutOfStock: isOutOfStock,
+                          unavailable: unavailable,
+                          index: index);
                     },
                   );
                 }),

@@ -363,7 +363,7 @@ class _signupPageState extends State<signupPage> {
                         backgroundColor: const Color(0xFF2546A9),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              48), // Set the border radius
+                              48),
                         ),
                       ),
                       child: Padding(

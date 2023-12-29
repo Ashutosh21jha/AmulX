@@ -40,19 +40,19 @@ class History extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
+      backgroundColor: Colors.grey.shade200,
       body: Stack(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: 100,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xFF00074B),
-                  Color(0xFF2D55C0),
-                  Color(0xFF2D55C0),
-                  Color(0xFF138BF9),
+                  Color(0xFF00084B),
+                  Color(0xFF2E55C0),
+                  Color(0xFF148BFA),
                 ],
               ),
             ),

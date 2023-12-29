@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api
-
 import 'package:amul/Utils/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -88,183 +86,186 @@ class _ListItemState extends State<ListItem>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: _toggleExpanded,
-          child: Container(
-            width: double.infinity,
-            height: 68,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: Color(0xFFF3F3F3)),
-                borderRadius: BorderRadius.circular(16),
+    return Padding(
+      padding: const EdgeInsets.only(bottom :8.0),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: _toggleExpanded,
+            child: Container(
+              width: double.infinity,
+              height: 70,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 1, color: Color(0xFFF3F3F3)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                shadows: [
+                  const BoxShadow(
+                    color: Color(0x28606170),
+                    blurRadius: 2,
+                    offset: Offset(0, 0.50),
+                    spreadRadius: 0,
+                  ),
+                  const BoxShadow(
+                    color: Color(0x1428293D),
+                    blurRadius: 1,
+                    offset: Offset(0, 0),
+                    spreadRadius: 0,
+                  )
+                ],
               ),
-              shadows: [
-                BoxShadow(
-                  color: Color(0x28606170),
-                  blurRadius: 2,
-                  offset: Offset(0, 0.50),
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: Color(0x1428293D),
-                  blurRadius: 1,
-                  offset: Offset(0, 0),
-                  spreadRadius: 0,
-                )
-              ],
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  StreamBuilder<ImageProvider>(
+                    stream: getProfilePicture(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<ImageProvider<Object>> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox(
+                          height: 60,
+                          width: 60,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.blue,
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: snapshot.data!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: Text(
+                            widget.orderID,
+                            style: const TextStyle(
+                              color: Color(0xFF282828),
+                              fontSize: 12,
+                              fontFamily: 'Epilogue',
+                              fontWeight: FontWeight.w700,
+                              height: 0.07,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Text(
+                            DateFormat('MMM d, y h:mm a').format(widget.timestamp.toDate()),
+                            style: const TextStyle(
+                              color: Color(0xFF36414C),
+                              fontSize: 14,
+                              fontFamily: 'Epilogue',
+                              fontWeight: FontWeight.w400,
+                              height: 0.07,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.orderStatus,
+                    style: const TextStyle(
+                      color: Color(0xFF18AE86),
+                      fontSize: 14,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w700,
+                      height: 0.11,
+                      letterSpacing: 0.20,
+                    ),
+                  )
+                ],
+              ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                StreamBuilder<ImageProvider>(
-                  stream: getProfilePicture(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<ImageProvider<Object>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const SizedBox(
-                        height: 60,
-                        width: 60,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.blue,
-                          ),
-                        ),
-                      );
-                    } else {
-                      return Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: snapshot.data!,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    }
-                  },
+          ),
+          SizeTransition(
+            sizeFactor: _heightFactorAnimation,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 1, color: Color(0xFFF3F3F3)),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
+                shadows: [
+                  const BoxShadow(
+                    color: Color(0x28606170),
+                    blurRadius: 2,
+                    offset: Offset(0, 0.50),
+                    spreadRadius: 0,
+                  ),
+                  const BoxShadow(
+                    color: Color(0x1428293D),
+                    blurRadius: 1,
+                    offset: Offset(0, 0),
+                    spreadRadius: 0,
+                  )
+                ],
+              ),
+              child: ClipRect(
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          widget.orderID,
-                          style: TextStyle(
-                            color: Color(0xFF282828),
-                            fontSize: 12,
-                            fontFamily: 'Epilogue',
-                            fontWeight: FontWeight.w700,
-                            height: 0.07,
-                          ),
+                      const Text(
+                        'Details:',
+                        style: TextStyle(
+                          color: Color(0xFF282828),
+                          fontSize: 14,
+                          fontFamily: 'Epilogue',
+                          fontWeight: FontWeight.w700,
+                          height: 0.7,
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          DateFormat('MMM d, y h:mm a').format(widget.timestamp.toDate()),
-                          style: TextStyle(
-                            color: Color(0xFF36414C),
-                            fontSize: 14,
-                            fontFamily: 'Epilogue',
-                            fontWeight: FontWeight.w400,
-                            height: 0.07,
-                          ),
+                      Text(
+                        widget.items,
+                        style: const TextStyle(
+                          color: Color(0xFF36414C),
+                          fontSize: 14,
+                          fontFamily: 'Epilogue',
+                          fontWeight: FontWeight.w400,
+                          height: 1.2,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  widget.orderStatus,
-                  style: TextStyle(
-                    color: Color(0xFF18AE86),
-                    fontSize: 14,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w700,
-                    height: 0.11,
-                    letterSpacing: 0.20,
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-        SizeTransition(
-          sizeFactor: _heightFactorAnimation,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: Color(0xFFF3F3F3)),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              shadows: [
-                BoxShadow(
-                  color: Color(0x28606170),
-                  blurRadius: 2,
-                  offset: Offset(0, 0.50),
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: Color(0x1428293D),
-                  blurRadius: 1,
-                  offset: Offset(0, 0),
-                  spreadRadius: 0,
-                )
-              ],
-            ),
-            child: ClipRect(
-              child: Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Details:',
-                      style: TextStyle(
-                        color: Color(0xFF282828),
-                        fontSize: 14,
-                        fontFamily: 'Epilogue',
-                        fontWeight: FontWeight.w700,
-                        height: 0.7,
-                      ),
-                    ),
-                    Text(
-                      widget.items,
-                      style: TextStyle(
-                        color: Color(0xFF36414C),
-                        fontSize: 14,
-                        fontFamily: 'Epilogue',
-                        fontWeight: FontWeight.w400,
-                        height: 1.2,
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

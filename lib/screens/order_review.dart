@@ -60,7 +60,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     try {
       await db.runTransaction((transaction) async {
         final availableCollection =
-        db.collection('menu').doc('today menu').collection('available');
+            db.collection('menu').doc('today menu').collection('available');
 
         for (final cartItem in cartItems) {
           final itemDoc = await availableCollection.doc(cartItem.name).get();
@@ -80,14 +80,13 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                 {'availability': false},
               );
             }
-            if(itemDoc['availability']==false){
-              if(newStock>0){
+            if (itemDoc['availability'] == false) {
+              if (newStock > 0) {
                 transaction.update(
                   availableCollection.doc(cartItem.name),
                   {'availability': true},
                 );
               }
-
             }
           }
         }
@@ -106,23 +105,23 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       final formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
       final historyCollection =
-      FirebaseFirestore.instance.collection('User/$userId/history');
+          FirebaseFirestore.instance.collection('User/$userId/history');
 
       final prepListCollection =
-      FirebaseFirestore.instance.collection('prepList');
+          FirebaseFirestore.instance.collection('prepList');
 
       String orderID = generateRandomOrderID();
       final orderData = {
         'orders': FieldValue.arrayUnion([
           {
             'items': cartController.cartItems.fold<Map<String, dynamic>>({},
-                    (map, item) {
-                  map[item.name] = {
-                    'count': item.quantity,
-                    'price': item.price,
-                  };
-                  return map;
-                }),
+                (map, item) {
+              map[item.name] = {
+                'count': item.quantity,
+                'price': item.price,
+              };
+              return map;
+            }),
             'orderID': 'ORD-$count',
             'time': DateTime.now(),
             'orderStatus': 'Placed',
@@ -134,7 +133,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
       final itemsMap = cartController.cartItems.fold<Map<String, dynamic>>(
         {},
-            (map, item) {
+        (map, item) {
           map[item.name] = {
             'count': item.quantity,
             'price': item.price,
@@ -248,7 +247,8 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       isLoading = false;
     });
   }
-  void showsnackBar(List item){
+
+  void showsnackBar(List item) {
     Get.snackbar(
       'Stock Exceeded',
       'Reduce quantity for ${item.join(', ')}',
@@ -326,14 +326,16 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       return 0;
     }
   }
+
   // final cartItems = widget.cartItems;
   double totalAmount = 0.0;
 
-  void priceFetch(){
+  void priceFetch() {
     for (var item in widget.cartItems) {
       totalAmount += item.price * item.quantity;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -342,15 +344,17 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         children: [
           Container(
             padding: const EdgeInsets.only(top: 60),
-            child:  Center(
+            child: Center(
               child: Row(
                 children: [
-                  SizedBox(width: 5),
-                  IconButton(onPressed: (){
-                    Navigator.pop(context);
-                  }, icon: Icon(Icons.arrow_back_ios)),
-                  SizedBox(width: Get.width*0.26),
-                  Text(
+                  const SizedBox(width: 5),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back_ios)),
+                  SizedBox(width: Get.width * 0.26),
+                  const Text(
                     'Summary',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
@@ -438,12 +442,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
               navigateToPayment();
               await CartController.to
                   .updateStockOnPay(CartController.to.cartItems);
-              // Get.snackbar(
-              //   'Stock Exceeded',
-              //   'Reduce quantity for ',
-              //   backgroundColor: Colors.red,
-              //   snackPosition: SnackPosition.TOP,
-              // );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.blue,
@@ -451,20 +449,26 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                 borderRadius: BorderRadius.circular(40),
               ),
               padding:
-              const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
+                  const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
               textStyle: const TextStyle(fontSize: 20),
             ),
             child: Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 10, right: 10),
               child: isLoading
-                  ? CircularProgressIndicator()
-                  : Text(
-                'Pay',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 18),
-              ),
+                  ? const SizedBox(
+                      height: 10,
+                      width: 10,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text(
+                      'Pay',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 18),
+                    ),
             ),
           ),
         ],
