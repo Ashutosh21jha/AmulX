@@ -25,7 +25,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
-    fetchImageUrl();
+    fetchImage();
     receivedata();
     nameController = TextEditingController(text: name);
   }
@@ -54,6 +54,7 @@ class _EditProfileState extends State<EditProfile> {
       await FirebaseStorage.instance
           .ref('user/pp_$userId.jpg')
           .putFile(imageFile);
+      setState(() {});
     } on FirebaseException catch (e) {
       print(e);
     }
@@ -69,17 +70,15 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  Future<void> fetchImageUrl() async {
+  Future<ImageProvider> fetchImage() async {
     try {
       String downloadURL = await FirebaseStorage.instance
           .ref('user/pp_$userId.jpg')
           .getDownloadURL();
 
-      setState(() {
-        imageUrl = downloadURL;
-      });
+      return NetworkImage(downloadURL);
     } catch (e) {
-      imageUrl = 'assets/images/avatar.png';
+      return AssetImage('assets/images/avatar.png');
     }
   }
 
@@ -181,20 +180,28 @@ class _EditProfileState extends State<EditProfile> {
                           onTap: () {
                             pickImage();
                           },
-                          child: Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(8),
-                              image: DecorationImage(
-                                image: imageUrl != null
-                                    ? NetworkImage(imageUrl!)
-                                    : AssetImage('assets/images/avatar.png')
-                                        as ImageProvider<Object>,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                          child: FutureBuilder<ImageProvider>(
+                            future: fetchImage(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<ImageProvider> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else {
+                                return Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: snapshot.data!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
                           ),
                         ),
                         SizedBox(height: 20),

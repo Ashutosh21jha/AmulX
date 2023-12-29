@@ -72,17 +72,18 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  Stream<String> getProfilePictureUrl() async* {
+  Stream<ImageProvider> getProfilePicture() async* {
     FirebaseStorage storage = FirebaseStorage.instance;
     while (true) {
       try {
         String downloadURL =
             await storage.ref('user/pp_$userId.jpg').getDownloadURL();
-        yield downloadURL;
+        yield NetworkImage(downloadURL);
       } catch (e) {
-        yield 'assets/images/avatar.png';
+        // The file doesn't exist
+        yield AssetImage('assets/images/avatar.png');
       }
-      await Future.delayed(const Duration(seconds: 2)); // Check every 5 seconds
+      await Future.delayed(const Duration(seconds: 2));
     }
   }
 
@@ -167,10 +168,11 @@ class _ProfileState extends State<Profile> {
                                   Positioned(
                                       left: 0,
                                       top: 0,
-                                      child: StreamBuilder<String>(
-                                        stream: getProfilePictureUrl(),
+                                      child: StreamBuilder<ImageProvider>(
+                                        stream: getProfilePicture(),
                                         builder: (BuildContext context,
-                                            AsyncSnapshot<String> snapshot) {
+                                            AsyncSnapshot<ImageProvider>
+                                                snapshot) {
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
                                             return CircularProgressIndicator(); // Show loading spinner while waiting for data
@@ -181,16 +183,7 @@ class _ProfileState extends State<Profile> {
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 image: DecorationImage(
-                                                  image: snapshot.data !=
-                                                              null &&
-                                                          snapshot.data
-                                                              is String
-                                                      ? NetworkImage(snapshot
-                                                          .data as String)
-                                                      : const AssetImage(
-                                                              'assets/images/avatar.png')
-                                                          as ImageProvider<
-                                                              Object>,
+                                                  image: snapshot.data!,
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
