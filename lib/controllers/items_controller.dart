@@ -34,7 +34,6 @@ class ItemController extends GetxController {
               .collection('menu')
               .doc('today menu')
               .collection('available')
-              .where('stock', isGreaterThan: 0)
               .get();
 
           Items.clear();
