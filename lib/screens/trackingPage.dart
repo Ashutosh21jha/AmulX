@@ -12,9 +12,9 @@ class TrackingPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Padding(
-            padding: const EdgeInsets.all(1.0),
+            padding: EdgeInsets.all(1.0),
             child: Text(
               'Track Order',
               style: TextStyle(color: Colors.black),
@@ -22,7 +22,7 @@ class TrackingPage extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new,
             size: 32,
             color: Colors.black,
@@ -41,18 +41,18 @@ class TrackingPage extends StatelessWidget {
             padding: const EdgeInsets.only(left: 16, top: 16),
             child: Text(
               formattedDate,
-              style: TextStyle(color: Colors.indigo, fontSize: 20),
+              style: const TextStyle(color: Colors.indigo, fontSize: 20),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 10),
+          const Padding(
+            padding: EdgeInsets.only(left: 16, top: 10),
             child: Text(
               "Order ID - ",
               style: TextStyle(color: Colors.indigo, fontSize: 20),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 30),
+          const Padding(
+            padding: EdgeInsets.only(left: 16, top: 30),
             child: Text(
               "Orders",
               style: TextStyle(color: Colors.indigo, fontSize: 22),
@@ -72,7 +72,7 @@ class TrackingPage extends StatelessWidget {
               lineLength: 70.0,
               lineDotRadius: 2.0,
               stepRadius: 18.0,
-              icons: [
+              icons: const [
                 Icon(
                   Icons.radio_button_checked,
                   color: Colors.green,

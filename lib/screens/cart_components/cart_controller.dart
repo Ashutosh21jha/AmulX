@@ -11,7 +11,7 @@ class CartController extends GetxController {
   late List<int> countList;
   final RxList<CartItem> cartItems = <CartItem>[].obs;
   bool isCartEmpty = false;
-  String? currentOrder;
+  bool currentOrder=false;
 
   final db = FirebaseFirestore.instance;
   late Timer _timer;
@@ -26,23 +26,10 @@ class CartController extends GetxController {
 
   Future<String?> fetchCurrentOrder() async {
     try {
-      // Replace 'User' with your actual collection name
       String collectionPath = 'User/$userId';
-
-      // Fetch the user document from Firestore
       DocumentSnapshot<Map<String, dynamic>> userDoc =
           await FirebaseFirestore.instance.doc(collectionPath).get();
-
-      // Replace 'currentOrder' with your actual field name in the user doc
-      dynamic currentOrder = userDoc.get('currentOrder');
-
-      // Check if currentOrder is null or not present
-      if (currentOrder == null) {
-        print("Fetched Order: $currentOrder");
-        return null;
-      } else {
-        return currentOrder.toString();
-      }
+      currentOrder = userDoc.get('currentOrder');
     } catch (e) {
       print('Error fetching current order from Firestore: $e');
       return null;

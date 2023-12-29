@@ -176,134 +176,167 @@ class _CartPageState extends State<CartPage> {
                     );
                   }),
                 ),
-                Container(
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Text(
-                        'Summary',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 10),
-                      Obx(() {
-                        final cartController = CartController.to;
-                        return Column(
-                          children: cartController.cartItems
-                              .map((item) => Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        '${item.quantity} ${item.name}',
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                      Text(
-                                        '\₹${(item.price * item.quantity).toStringAsFixed(2)}',
-                                        style: const TextStyle(fontSize: 14),
-                                      ), // Item price
-                                    ],
-                                  ))
-                              .toList(),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15)),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              'Total Amount',
-                              style: TextStyle(
-                                color: Colors.indigo,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                Visibility(
+                    visible: !CartController.to.currentOrder,
+                    replacement: Padding(
+                      padding: const EdgeInsets.only(bottom: 30),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.to(() => OrderPage(
+                            userId: userId,
+                          ));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 24),
+                          backgroundColor: const Color(0xFF2546A9),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                            vertical: 16,
                           ),
-                          Obx(() {
-                            final cartController = CartController.to;
-                            return Text(
-                              '\₹ ${cartController.totalAmount.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              print('pressed order now button');
-                              final cartController = CartController.to;
-                              if (cartController.cartItems.isNotEmpty) {
-                                final currentOrder =
-                                    await cartController.fetchCurrentOrder();
-                                print('Current Order = $currentOrder');
-
-                                if (currentOrder == null) {
-                                  print("Navigating to review Screen");
-                                  Get.to(OrderReviewPage(
-                                    cartItems: cartController.cartItems,
-                                  ));
-                                } else {
-                                  Get.to(() => OrderPage(
-                                        userId: userId,
-                                      ));
-                                }
-                              } else {
-                                Get.snackbar(
-                                  'Cart is Empty',
-                                  'Please add items to the cart first',
-                                );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              textStyle: const TextStyle(fontSize: 22),
-                              backgroundColor: const Color(0xFF2546A9),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 10,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(48),
-                              ),
-                            ),
-                            child: const Text(
-                              'Order Now',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(48),
+                          ),
+                        ),
+                        child: const Text(
+                          'Track Orders',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18, // Increase font size
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Text(
+                                'Summary',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 10),
+                              Obx(() {
+                                final cartController = CartController.to;
+                                return Column(
+                                  children: cartController.cartItems
+                                      .map((item) => Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                '${item.quantity} ${item.name}',
+                                                style: const TextStyle(
+                                                    fontSize: 14),
+                                              ),
+                                              Text(
+                                                '\₹${(item.price * item.quantity).toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                    fontSize: 14),
+                                              ), // Item price
+                                            ],
+                                          ))
+                                      .toList(),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15)),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 20),
+                          child: Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    child: Text(
+                                      'Total Amount',
+                                      style: TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Obx(() {
+                                    final cartController = CartController.to;
+                                    return Text(
+                                      '\₹ ${cartController.totalAmount.toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }),
+                                ],
+                              ),
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      print('pressed order now button');
+                                      final cartController = CartController.to;
+                                      if (cartController.cartItems.isNotEmpty) {
+                                        if (CartController.to.currentOrder ==
+                                            false) {
+                                          print("Navigating to review Screen");
+                                          Get.to(OrderReviewPage(
+                                            cartItems: cartController.cartItems,
+                                          ));
+                                        } else {
+                                          Get.to(() => OrderPage(
+                                                userId: userId,
+                                              ));
+                                        }
+                                      } else {
+                                        Get.snackbar(
+                                          'Cart is Empty',
+                                          'Please add items to the cart first',
+                                        );
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      textStyle: const TextStyle(fontSize: 22),
+                                      backgroundColor: const Color(0xFF2546A9),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 10,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(48),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'Order Now',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
               ],
             ),
     );
