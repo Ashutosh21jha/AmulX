@@ -198,28 +198,31 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        TextButton(
-                          onPressed: submit,
-                          style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(vertical: 16)),
-                            backgroundColor:
-                                MaterialStateProperty.all(Color(0xFF2546A9)),
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(48),
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextButton(
+                            onPressed: submit,
+                            style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.symmetric(vertical: 16)),
+                              backgroundColor:
+                                  MaterialStateProperty.all(Color(0xFF2546A9)),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(48),
+                                ),
                               ),
                             ),
-                          ),
-                          child: Text(
-                            'Save',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'Epilogue',
-                              fontWeight: FontWeight.w500,
-                              height: 0.06,
+                            child: Text(
+                              'Save',
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontFamily: 'Epilogue',
+                                fontWeight: FontWeight.w500,
+                                height: 0.06,
+                              ),
                             ),
                           ),
                         )
