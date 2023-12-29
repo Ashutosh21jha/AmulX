@@ -2,14 +2,20 @@ import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/trackingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:im_stepper/stepper.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class OrderPage extends StatelessWidget {
   final String userId;
   const OrderPage({Key? key, required this.userId}) : super(key: key);
+  CollectionReference get prepListCollection =>
+      FirebaseFirestore.instance.collection('prepList');
 
   @override
   Widget build(BuildContext context) {
+    DateTime currentDate = DateTime.now();
+    String formattedDate = DateFormat('EEE, d MMMM').format(currentDate);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -31,99 +37,117 @@ class OrderPage extends StatelessWidget {
           },
         ),
       ),
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: getLatestOrders(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Container(child: CircularProgressIndicator()),
-              );
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (!snapshot.hasData || snapshot.data == null) {
-              return Text('No orders found.');
-            } else {
-              List<Map<String, dynamic>> latestOrders = snapshot.data!;
-              if (latestOrders.isEmpty) {
-                return Text('No orders found.');
-              }
-
-              var order = latestOrders.first;
-              var itemsMap = order['items'] as Map<String, dynamic>;
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Order ID: ${order['orderID']}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Order Status: ${order['orderStatus']}',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(height: 18),
-                  Text(
-                    'Items:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: itemsMap.entries.length,
-                    itemBuilder: (context, index) {
-                      var entry = itemsMap.entries.elementAt(index);
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${entry.key}:',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '${entry.value['count']} items, ₹${entry.value['price']} each',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          // Add a SizedBox to create a gap between items
-                          const SizedBox(height: 10),
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              );
-            }
-          },
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 16),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TrackingPage(),
-              ),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.indigo,
-            padding: EdgeInsets.symmetric(vertical: 28, horizontal: 85),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 16),
+            child: Text(
+              formattedDate,
+              style: const TextStyle(color: Colors.indigo, fontSize: 20),
             ),
-            textStyle: TextStyle(fontSize: 20),
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Text('Track Order'),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: getLatestOrders(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: Container(child: CircularProgressIndicator()),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data == null) {
+                  return Text('No orders found.');
+                } else {
+                  List<Map<String, dynamic>> latestOrders = snapshot.data!;
+                  if (latestOrders.isEmpty) {
+                    return Text('No orders found.');
+                  }
+
+                  var order = latestOrders.first;
+                  var itemsMap = order['items'] as Map<String, dynamic>;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text(
+                          'Order ID: ${order['orderID']}',
+                          style: TextStyle(color: Colors.indigo, fontSize: 20),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Orders:',
+                        style: TextStyle(color: Colors.indigo, fontSize: 20),
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: itemsMap.entries.length,
+                        itemBuilder: (context, index) {
+                          var entry = itemsMap.entries.elementAt(index);
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${entry.key}:',
+                                style: TextStyle(color: Colors.indigo, fontSize: 20),
+                              ),
+                              Text(
+                                '${entry.value['count']} items, ₹${entry.value['price']} each',
+                                style: TextStyle(color: Colors.indigo, fontSize: 20),
+                              ),
+                              // Add a SizedBox to create a gap between items
+                              const SizedBox(height: 10),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                }
+              },
+            ),
           ),
-        ),
+          Container(
+            alignment: Alignment.centerLeft,
+            height: MediaQuery.of(context).size.height / 4,
+            width: MediaQuery.of(context).size.width,
+            child: IconStepper(
+              direction: Axis.horizontal,
+              enableNextPreviousButtons: false,
+              activeStepBorderColor: Colors.white,
+              activeStepBorderWidth: 0.0,
+              lineColor: Colors.redAccent,
+              stepColor: Colors.green,
+              lineLength: 70.0,
+              lineDotRadius: 2.0,
+              stepRadius: 18.0,
+              icons: const [
+                Icon(
+                  Icons.radio_button_checked,
+                  color: Colors.green,
+                ),
+                Icon(
+                  Icons.check_sharp,
+                  color: Colors.white,
+                ),
+                Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+                Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -140,12 +164,12 @@ class OrderPage extends StatelessWidget {
             .where((doc) =>
                 RegExp(r'^ORD-\d{3}$').hasMatch(doc.id.toString()) &&
                 (doc['userId'] == userId) &&
-                doc['orderStatus'] != 'Placed')
+                doc['orderStatus'] != 'preparing')
             .toList();
         print('Filtered Docs: $filteredDocs');
 
         var ordersWithStatus = filteredDocs
-            .where((doc) => doc['orderStatus'] != 'Placed')
+            .where((doc) => doc['orderStatus'] != 'preparing')
             .toList();
         print('Orders with Status: $ordersWithStatus');
 
