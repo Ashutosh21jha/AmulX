@@ -1,4 +1,3 @@
-import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/signupPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +9,7 @@ import 'profile_screens/privacy.dart';
 import 'profile_screens/editprofile.dart';
 import 'profile_screens/faq.dart';
 import 'profile_screens/profile_card.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 final auth = FirebaseAuth.instance;
 final db = FirebaseFirestore.instance;
@@ -53,12 +53,13 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String name = "";
   String s_id = "";
+  String? imageUrl;
 
   @override
   void initState() {
     super.initState();
     receivedata();
-    /*CartController.to.fetchCart();*/
+    fetchImageUrl();
   }
 
   Future<void> receivedata() async {
@@ -70,6 +71,16 @@ class _ProfileState extends State<Profile> {
         s_id = userData['student id'] ?? '';
       });
     }
+  }
+
+  Future<void> fetchImageUrl() async {
+    String downloadURL = await FirebaseStorage.instance
+        .ref('user/pp_$userId.jpg')
+        .getDownloadURL();
+
+    setState(() {
+      imageUrl = downloadURL;
+    });
   }
 
   @override
@@ -156,12 +167,15 @@ class _ProfileState extends State<Profile> {
                                     child: Container(
                                       width: 60,
                                       height: 60,
-                                      decoration: const BoxDecoration(
+                                      decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
-                                          image: NetworkImage(
-                                              'https://picsum.photos/seed/60/60'),
-                                          fit: BoxFit.fill,
+                                          image: imageUrl != null
+                                              ? NetworkImage(imageUrl!)
+                                              : const AssetImage(
+                                                      'assets/images/avatar.png')
+                                                  as ImageProvider<Object>,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
@@ -177,23 +191,27 @@ class _ProfileState extends State<Profile> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(name,
-                                style: const TextStyle(
-                                  color: Color(0xFF57585B),
-                                  fontSize: 14,
-                                  fontFamily: 'Epilogue',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0.07,
-                                )),
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                color: Color(0xFF414042),
+                                fontSize: 18,
+                                fontFamily: 'Epilogue',
+                                fontWeight: FontWeight.w700,
+                                height: 0.06,
+                              ),
+                            ),
                             const SizedBox(height: 20),
-                            Text(s_id,
-                                style: const TextStyle(
-                                  color: Color(0xFF57585B),
-                                  fontSize: 14,
-                                  fontFamily: 'Epilogue',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0.07,
-                                )),
+                            Text(
+                              s_id,
+                              style: const TextStyle(
+                                color: Color(0xFF57585B),
+                                fontSize: 14,
+                                fontFamily: 'Epilogue',
+                                fontWeight: FontWeight.w400,
+                                height: 0.07,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -218,7 +236,7 @@ class _ProfileState extends State<Profile> {
                   ProfileCard(
                       icon: Icons.person,
                       text: "Profile",
-                      screen: const EditProfile(),
+                      screen: EditProfile(),
                       color: const Color(0xFFA287F8)),
                   const SizedBox(height: 16),
                   // ABOUT US
