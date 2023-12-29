@@ -73,6 +73,12 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
               availableCollection.doc(cartItem.name),
               {'stock': newStock},
             );
+            if (newStock == 0) {
+              transaction.update(
+                availableCollection.doc(cartItem.name),
+                {'availability': false},
+              );
+            }
           }
         }
       });
@@ -234,6 +240,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
   }
 
   Future<void> navigateToPayment() async {
+    print('Inside navigateToPayment');
     final exceededItems = <String>[];
 
     // Check if the quantity exceeds stock for each item
@@ -241,17 +248,52 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       final stock = await getStockFromMenu(item.name);
       if (item.quantity > stock) {
         exceededItems.add(item.name);
+        print('${item.name} quantity exceeds stock: ${item.quantity} > $stock');
       }
     }
 
     if (exceededItems.isNotEmpty) {
+      print('Stock Exceeded for items: ${exceededItems.join(', ')}');
       Get.snackbar(
         'Stock Exceeded',
         'Reduce quantity for ${exceededItems.join(', ')}',
         backgroundColor: Colors.red,
+        snackPosition: SnackPosition.TOP,
       );
       Get.back();
-    } else {}
+    } else {
+      print("Stock check passed");
+      final cartItems = widget.cartItems;
+      double totalAmount = 0.0;
+      for (var item in cartItems) {
+        totalAmount += item.price * item.quantity;
+      }
+      Razorpay razorpay = Razorpay();
+
+      var options = {
+        /*          'key': 'rzp_test_Hy9f4oAIXRyJIw',*/
+        'key': 'rzp_test_Hy9f4oAIXRyJIw',
+        'amount': (totalAmount * 100).toInt(),
+        'name': 'Amul powered by Devcomm',
+        'image': 'https://example.com/your_image.png',
+        'description': 'Amul Nsut',
+        'timeout': 90,
+        'currency': 'INR',
+        'retry': {'enabled': true, 'max_count': 1},
+        'send_sms_hash': true,
+        'external': {
+          'wallets': ['paytm']
+        },
+        'prefill': {'contact': '8178600597', 'email': 'devcomm.nsut@nsut.ac.in'}
+      };
+
+      razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
+      razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (response) {
+        handlePaymentSuccessResponse(response, CartController.to);
+      });
+      razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
+      razorpay.open(options);
+    }
   }
 
   Future<int> getStockFromMenu(String itemName) async {
@@ -368,37 +410,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
               await CartController.to
                   .updateStockOnPay(CartController.to.cartItems);
               navigateToPayment();
-
-              Razorpay razorpay = Razorpay();
-
-              var options = {
-                /*          'key': 'rzp_test_Hy9f4oAIXRyJIw',*/
-                'key': 'rzp_test_Hy9f4oAIXRyJIw',
-                'amount': (totalAmount * 100).toInt(),
-                'name': 'Amul powered by Devcomm',
-                'image': 'https://example.com/your_image.png',
-                'description': 'Amul Nsut',
-                'timeout': 90,
-                'currency': 'INR',
-                'retry': {'enabled': true, 'max_count': 1},
-                'send_sms_hash': true,
-                'external': {
-                  'wallets': ['paytm']
-                },
-                'prefill': {
-                  'contact': '8178600597',
-                  'email': 'devcomm.nsut@nsut.ac.in'
-                }
-              };
-
-              razorpay.on(
-                  Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
-              razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (response) {
-                handlePaymentSuccessResponse(response, CartController.to);
-              });
-              razorpay.on(
-                  Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
-              razorpay.open(options);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.blue,

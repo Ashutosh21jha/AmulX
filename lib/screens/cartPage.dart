@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/screens/foodPage.dart';
+import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/orderPage.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/trackingPage.dart';
@@ -37,8 +39,15 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cart"),
+        backgroundColor: Colors.indigo,
+        title: const Text('CART'),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_outlined),
+          onPressed: () {
+            Get.back();
+          },
+        ),
       ),
       backgroundColor: Colors.grey.shade200,
       body: CartController.to.isCartEmpty
@@ -66,12 +75,6 @@ class _CartPageState extends State<CartPage> {
           : Column(
               children: [
                 const SizedBox(height: 45),
-                const Center(
-                  child: Text(
-                    'Cart',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ),
                 Expanded(
                   child: Obx(() {
                     final cartController = CartController.to;
