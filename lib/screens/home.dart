@@ -23,7 +23,8 @@ class _HomeState extends State<HomePage> {
   void initState() {
     super.initState();
     CartController.to.fetchCart();
-    CartController.to.reloadFetchData();
+  /*  CartController.to.reloadFetchData();*/
+    CartController.to.fetchCurrentOrder();
   }
 
   @override
