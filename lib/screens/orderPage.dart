@@ -61,26 +61,38 @@ class OrderPage extends StatelessWidget {
                     'Order ID: ${order['orderID']}',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   Text(
                     'Order Status: ${order['orderStatus']}',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 20),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 18),
                   Text(
                     'Items:',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: itemsMap.entries
-                        .map(
-                          (entry) => Text(
-                            '${entry.key}: ${entry.value['count']} items, ₹${entry.value['price']} each',
-                            style: TextStyle(fontSize: 14),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: itemsMap.entries.length,
+                    itemBuilder: (context, index) {
+                      var entry = itemsMap.entries.elementAt(index);
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${entry.key}:',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
                           ),
-                        )
-                        .toList(),
+                          Text(
+                            '${entry.value['count']} items, ₹${entry.value['price']} each',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          // Add a SizedBox to create a gap between items
+                          const SizedBox(height: 10),
+                        ],
+                      );
+                    },
                   ),
                 ],
               );
@@ -130,6 +142,12 @@ class OrderPage extends StatelessWidget {
                 (doc['userId'] == userId) &&
                 doc['orderStatus'] != 'Placed')
             .toList();
+        print('Filtered Docs: $filteredDocs');
+
+        var ordersWithStatus = filteredDocs
+            .where((doc) => doc['orderStatus'] != 'Placed')
+            .toList();
+        print('Orders with Status: $ordersWithStatus');
 
         if (filteredDocs.isNotEmpty) {
           // Return the latest orders
