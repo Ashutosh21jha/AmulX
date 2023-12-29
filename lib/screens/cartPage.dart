@@ -34,6 +34,11 @@ class _CartPageState extends State<CartPage> {
     CartController.to.reloadFetchData();
     CartController.to.fetchCurrentOrder();
   }
+  @override
+  void dispose() {
+    CartController.to.reloadFetchData();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

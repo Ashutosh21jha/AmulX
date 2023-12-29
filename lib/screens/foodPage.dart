@@ -151,10 +151,12 @@ class FoodPageState extends State<FoodPage> {
     /*_showDefaultOrder();*/
     ItemController.to.fetchItems();
     reloadFetchData();
-    CartController.to.tappedList = List.filled(mergedList.length, false);
-    CartController.to.countList = List.filled(mergedList.length, 0);
+    /*CartController.to.tappedList = List.filled(mergedList.length, false);
+    CartController.to.countList = List.filled(mergedList.length, 0);*/
     selected = 0;
   }
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,13 +1,16 @@
+import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/signupPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'profile_screens/about.dart';
 import 'profile_screens/terms.dart';
 import 'profile_screens/privacy.dart';
 import 'profile_screens/editprofile.dart';
 import 'profile_screens/faq.dart';
+import 'dart:io';
 import 'profile_screens/profile_card.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -61,6 +64,29 @@ class _ProfileState extends State<Profile> {
     receivedata();
   }
 
+  Future<void> uploadImageToFirebase(XFile image) async {
+    File imageFile = File(image.path);
+
+    try {
+      await FirebaseStorage.instance
+          .ref('user/pp_$userId.jpg')
+          .putFile(imageFile);
+      setState(() {});
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery, maxWidth: 500, maxHeight: 500);
+
+    if (image != null) {
+      uploadImageToFirebase(image);
+    }
+  }
+
   Future<void> receivedata() async {
     final docRef = await db.collection("User").doc(userId).get();
     Map<String, dynamic>? userData = docRef.data() as Map<String, dynamic>?;
@@ -81,7 +107,7 @@ class _ProfileState extends State<Profile> {
         yield NetworkImage(downloadURL);
       } catch (e) {
         // The file doesn't exist
-        yield AssetImage('assets/images/avatar.png');
+        yield const AssetImage('assets/images/avatar.png');
       }
       await Future.delayed(const Duration(seconds: 2));
     }
@@ -175,18 +201,54 @@ class _ProfileState extends State<Profile> {
                                                 snapshot) {
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
-                                            return CircularProgressIndicator(); // Show loading spinner while waiting for data
-                                          } else {
-                                            return Container(
-                                              width: 60,
+                                            return const SizedBox(
                                               height: 60,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                  image: snapshot.data!,
-                                                  fit: BoxFit.cover,
+                                              width: 60,
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: AppColors.blue,
                                                 ),
                                               ),
+                                            );
+                                          } else {
+                                            return Stack(
+                                              children: [
+                                                Container(
+                                                  width: 60,
+                                                  height: 60,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                      image: snapshot.data!,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  bottom: 0,
+                                                  right: 0,
+                                                  child: Container(
+                                                    width: 22,
+                                                    height: 22,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: AppColors.yellow,
+                                                    ),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        pickImage();
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.edit,
+                                                        color: Colors.white,
+                                                        size: 12,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             );
                                           }
                                         },
@@ -247,7 +309,7 @@ class _ProfileState extends State<Profile> {
                   ProfileCard(
                       icon: Icons.person,
                       text: "Profile",
-                      screen: EditProfile(),
+                      screen: const EditProfile(),
                       color: const Color(0xFFA287F8)),
                   const SizedBox(height: 16),
                   // ABOUT US

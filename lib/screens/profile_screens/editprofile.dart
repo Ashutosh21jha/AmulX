@@ -1,11 +1,13 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
+
+import '../../Utils/AppColors.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -17,6 +19,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final auth = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
+
   String get userId => auth.currentUser?.email ?? '';
   String? imageUrl;
   late TextEditingController nameController;
@@ -78,7 +81,7 @@ class _EditProfileState extends State<EditProfile> {
 
       return NetworkImage(downloadURL);
     } catch (e) {
-      return AssetImage('assets/images/avatar.png');
+      return const AssetImage('assets/images/avatar.png');
     }
   }
 
@@ -99,15 +102,15 @@ class _EditProfileState extends State<EditProfile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 80),
+                const Padding(
+                  padding: EdgeInsets.only(top: 80),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         "Edit profile",
                         style: TextStyle(
-                          color: const Color.fromARGB(255, 0, 0, 0),
+                          color: Color.fromARGB(255, 0, 0, 0),
                           fontSize: 18,
                           fontFamily: 'Epilogue',
                           fontWeight: FontWeight.w700,
@@ -117,13 +120,13 @@ class _EditProfileState extends State<EditProfile> {
                     ],
                   ),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 Align(
                   alignment: Alignment.topLeft,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Full Name',
                           style: TextStyle(
                             color: Color(0xFF141414),
@@ -133,29 +136,29 @@ class _EditProfileState extends State<EditProfile> {
                             height: 0.06,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         TextField(
                           controller: nameController,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 20),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 width: 1,
                                 color: Color(0xFFD1D2D3),
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 width: 1,
                                 color: Color(0xFFD1D2D3),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 width: 1,
                                 color: Colors.blue,
                               ),
@@ -164,8 +167,8 @@ class _EditProfileState extends State<EditProfile> {
                             fillColor: Colors.white,
                           ),
                         ),
-                        SizedBox(height: 20),
-                        Text(
+                        const SizedBox(height: 20),
+                        const Text(
                           'Profile Picture',
                           style: TextStyle(
                             color: Color(0xFF141414),
@@ -175,7 +178,7 @@ class _EditProfileState extends State<EditProfile> {
                             height: 0.06,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         GestureDetector(
                           onTap: () {
                             pickImage();
@@ -186,7 +189,16 @@ class _EditProfileState extends State<EditProfile> {
                                 AsyncSnapshot<ImageProvider> snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return CircularProgressIndicator();
+                                return const SizedBox(
+                                  height: 60,
+                                  width: 60,
+                                  child: Center(
+                                    child:
+                                    CircularProgressIndicator(
+                                      color: AppColors.blue,
+                                    ),
+                                  ),
+                                );
                               } else {
                                 return Container(
                                   width: 100,
@@ -204,7 +216,7 @@ class _EditProfileState extends State<EditProfile> {
                             },
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         SizedBox(
                           width: double.infinity,
                           child: TextButton(
@@ -212,23 +224,28 @@ class _EditProfileState extends State<EditProfile> {
                             style: ButtonStyle(
                               padding: MaterialStateProperty.all(
                                   const EdgeInsets.symmetric(vertical: 16)),
-                              backgroundColor:
-                                  MaterialStateProperty.all(Color(0xFF2546A9)),
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color(0xFF2546A9)),
                               shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(48),
                                 ),
                               ),
                             ),
-                            child: Text(
-                              'Save',
-                              textAlign: TextAlign.justify,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontFamily: 'Epilogue',
-                                fontWeight: FontWeight.w500,
-                                height: 0.06,
+                            child: InkWell(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: const Text(
+                                'Save',
+                                textAlign: TextAlign.justify,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Epilogue',
+                                  fontWeight: FontWeight.w500,
+                                  height: 0.06,
+                                ),
                               ),
                             ),
                           ),
