@@ -257,13 +257,23 @@ class CartController extends GetxController {
             final currentStock = itemDoc['stock'] ?? 0;
             final newStock = currentStock - cartItem.quantity;
 
-            if (newStock >= 0) {
+            if (newStock > 0) {
               // Update the stock
               transaction.update(
                 availableCollection.doc(cartItem.name),
                 {'stock': newStock},
               );
-            } else {
+            }
+            if (newStock == 0) {
+              transaction.update(
+                availableCollection.doc(cartItem.name),
+                {'availability': false,
+                  'stock': newStock
+                },
+              );
+
+            }
+            else {
               // Handle out-of-stock case
               print('Item ${cartItem.name} is out of stock.');
               // You may want to throw an exception or handle this case appropriately

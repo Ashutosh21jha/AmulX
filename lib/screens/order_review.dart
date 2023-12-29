@@ -80,6 +80,15 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                 {'availability': false},
               );
             }
+            if(itemDoc['availability']==false){
+              if(newStock>0){
+                transaction.update(
+                  availableCollection.doc(cartItem.name),
+                  {'availability': true},
+                );
+              }
+
+            }
           }
         }
       });
@@ -426,9 +435,9 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
               setState(() {
                 isLoading = true;
               });
+              navigateToPayment();
               await CartController.to
                   .updateStockOnPay(CartController.to.cartItems);
-              navigateToPayment();
               // Get.snackbar(
               //   'Stock Exceeded',
               //   'Reduce quantity for ',
