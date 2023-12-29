@@ -59,7 +59,6 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     receivedata();
-    fetchImageUrl();
   }
 
   Future<void> receivedata() async {
@@ -73,14 +72,18 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  Future<void> fetchImageUrl() async {
-    String downloadURL = await FirebaseStorage.instance
-        .ref('user/pp_$userId.jpg')
-        .getDownloadURL();
-
-    setState(() {
-      imageUrl = downloadURL;
-    });
+  Stream<String> getProfilePictureUrl() async* {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    while (true) {
+      try {
+        String downloadURL =
+            await storage.ref('user/pp_$userId.jpg').getDownloadURL();
+        yield downloadURL;
+      } catch (e) {
+        yield 'assets/images/avatar.png';
+      }
+      await Future.delayed(const Duration(seconds: 2)); // Check every 5 seconds
+    }
   }
 
   @override
@@ -162,24 +165,39 @@ class _ProfileState extends State<Profile> {
                               child: Stack(
                                 children: [
                                   Positioned(
-                                    left: 0,
-                                    top: 0,
-                                    child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: imageUrl != null
-                                              ? NetworkImage(imageUrl!)
-                                              : const AssetImage(
-                                                      'assets/images/avatar.png')
-                                                  as ImageProvider<Object>,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                      left: 0,
+                                      top: 0,
+                                      child: StreamBuilder<String>(
+                                        stream: getProfilePictureUrl(),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<String> snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return CircularProgressIndicator(); // Show loading spinner while waiting for data
+                                          } else {
+                                            return Container(
+                                              width: 60,
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                  image: snapshot.data !=
+                                                              null &&
+                                                          snapshot.data
+                                                              is String
+                                                      ? NetworkImage(snapshot
+                                                          .data as String)
+                                                      : const AssetImage(
+                                                              'assets/images/avatar.png')
+                                                          as ImageProvider<
+                                                              Object>,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      )),
                                 ],
                               ),
                             ),

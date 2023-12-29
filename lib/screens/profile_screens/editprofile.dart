@@ -70,13 +70,17 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> fetchImageUrl() async {
-    String downloadURL = await FirebaseStorage.instance
-        .ref('user/pp_$userId.jpg')
-        .getDownloadURL();
+    try {
+      String downloadURL = await FirebaseStorage.instance
+          .ref('user/pp_$userId.jpg')
+          .getDownloadURL();
 
-    setState(() {
-      imageUrl = downloadURL;
-    });
+      setState(() {
+        imageUrl = downloadURL;
+      });
+    } catch (e) {
+      imageUrl = 'assets/images/avatar.png';
+    }
   }
 
   @override
