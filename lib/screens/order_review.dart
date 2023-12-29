@@ -39,6 +39,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
   @override
   void initState() {
     super.initState();
+    priceFetch();
     fetch();
   }
 
@@ -59,7 +60,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     try {
       await db.runTransaction((transaction) async {
         final availableCollection =
-            db.collection('menu').doc('today menu').collection('available');
+        db.collection('menu').doc('today menu').collection('available');
 
         for (final cartItem in cartItems) {
           final itemDoc = await availableCollection.doc(cartItem.name).get();
@@ -96,23 +97,23 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       final formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
       final historyCollection =
-          FirebaseFirestore.instance.collection('User/$userId/history');
+      FirebaseFirestore.instance.collection('User/$userId/history');
 
       final prepListCollection =
-          FirebaseFirestore.instance.collection('prepList');
+      FirebaseFirestore.instance.collection('prepList');
 
       String orderID = generateRandomOrderID();
       final orderData = {
         'orders': FieldValue.arrayUnion([
           {
             'items': cartController.cartItems.fold<Map<String, dynamic>>({},
-                (map, item) {
-              map[item.name] = {
-                'count': item.quantity,
-                'price': item.price,
-              };
-              return map;
-            }),
+                    (map, item) {
+                  map[item.name] = {
+                    'count': item.quantity,
+                    'price': item.price,
+                  };
+                  return map;
+                }),
             'orderID': 'ORD-$count',
             'time': DateTime.now(),
             'orderStatus': 'Placed',
@@ -124,7 +125,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
       final itemsMap = cartController.cartItems.fold<Map<String, dynamic>>(
         {},
-        (map, item) {
+            (map, item) {
           map[item.name] = {
             'count': item.quantity,
             'price': item.price,
@@ -238,6 +239,15 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       isLoading = false;
     });
   }
+  void showsnackBar(List item){
+    Get.snackbar(
+      'Stock Exceeded',
+      'Reduce quantity for ${item.join(', ')}',
+      colorText: Colors.indigo,
+      backgroundColor: Colors.transparent,
+      snackPosition: SnackPosition.TOP,
+    );
+  }
 
   Future<void> navigateToPayment() async {
     print('Inside navigateToPayment');
@@ -254,13 +264,11 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
     if (exceededItems.isNotEmpty) {
       print('Stock Exceeded for items: ${exceededItems.join(', ')}');
-      Get.snackbar(
-        'Stock Exceeded',
-        'Reduce quantity for ${exceededItems.join(', ')}',
-        backgroundColor: Colors.red,
-        snackPosition: SnackPosition.TOP,
-      );
-      Get.back();
+      showsnackBar(exceededItems);
+      setState(() {
+        isLoading = false;
+      });
+      // Get.back();
     } else {
       print("Stock check passed");
       final cartItems = widget.cartItems;
@@ -309,24 +317,35 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       return 0;
     }
   }
+  // final cartItems = widget.cartItems;
+  double totalAmount = 0.0;
 
-  @override
-  Widget build(BuildContext context) {
-    final cartItems = widget.cartItems;
-    double totalAmount = 0.0;
-    for (var item in cartItems) {
+  void priceFetch(){
+    for (var item in widget.cartItems) {
       totalAmount += item.price * item.quantity;
     }
+  }
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.only(top: 60),
-            child: const Center(
-              child: Text(
-                'Summary',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            child:  Center(
+              child: Row(
+                children: [
+                  SizedBox(width: 5),
+                  IconButton(onPressed: (){
+                    Navigator.pop(context);
+                  }, icon: Icon(Icons.arrow_back_ios)),
+                  SizedBox(width: Get.width*0.26),
+                  Text(
+                    'Summary',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
           ),
@@ -351,9 +370,9 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                   ),
                   ListView.builder(
                     shrinkWrap: true,
-                    itemCount: cartItems.length,
+                    itemCount: widget.cartItems.length,
                     itemBuilder: (context, index) {
-                      final item = cartItems[index];
+                      final item = widget.cartItems[index];
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -410,6 +429,12 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
               await CartController.to
                   .updateStockOnPay(CartController.to.cartItems);
               navigateToPayment();
+              // Get.snackbar(
+              //   'Stock Exceeded',
+              //   'Reduce quantity for ',
+              //   backgroundColor: Colors.red,
+              //   snackPosition: SnackPosition.TOP,
+              // );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.blue,
@@ -417,7 +442,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                 borderRadius: BorderRadius.circular(40),
               ),
               padding:
-                  const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
+              const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
               textStyle: const TextStyle(fontSize: 20),
             ),
             child: Padding(
@@ -425,12 +450,12 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
               child: isLoading
                   ? CircularProgressIndicator()
                   : Text(
-                      'Pay',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 18),
-                    ),
+                'Pay',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 18),
+              ),
             ),
           ),
         ],
