@@ -1,3 +1,4 @@
+import 'package:amul/Utils/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,6 @@ class _forgetPasswordState extends State<forgetPassword> {
   final _emailController = TextEditingController();
   bool isLoading = false;
 
-  // email pattern
   final emailPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@nsut\.ac\.in$');
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -41,15 +41,47 @@ class _forgetPasswordState extends State<forgetPassword> {
 
       if (existingDocument.exists) {
         await auth.sendPasswordResetEmail(email: email);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("You don't have account yet!"),
+        Get.snackbar(
+          'Password Reset link Sent!',
+          'Thank You for using Amul',
+          backgroundGradient: const LinearGradient(
+            colors: [
+              Color(0xFF00084B),
+              Color(0xFF2E55C0),
+              Color(0xFF148BFA),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          duration: const Duration(seconds: 2),
+          barBlur: 10,
+          icon: Image.asset(
+            'assets/images/devcommlogo.png',
+            width: 24,
+            height: 24,
           ),
         );
-        await Future.delayed(const Duration(seconds: 2));
-
-        Get.back();
+      } else {
+        Get.snackbar(
+          'You do not have account yet!',
+          'Sign Up using Nsut credentials',
+          backgroundGradient: const LinearGradient(
+            colors: [
+              Color(0xFF00084B),
+              Color(0xFF2E55C0),
+              Color(0xFF148BFA),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          duration: const Duration(seconds: 2),
+          barBlur: 10,
+          icon: Image.asset(
+            'assets/images/devcommlogo.png',
+            width: 24,
+            height: 24,
+          ),
+        );
       }
     } catch (e) {
       throw Exception(e.toString());
@@ -66,6 +98,7 @@ class _forgetPasswordState extends State<forgetPassword> {
         isLoading = false;
       });
     }
+    Get.back();
   }
 
   @override
