@@ -408,7 +408,7 @@ class FoodPageState extends State<FoodPage> {
       ),
       floatingActionButton: InkWell(
         onTap: () {
-          Get.to(() => CartPage());
+          Get.to(() => CartPage(true));
         },
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),

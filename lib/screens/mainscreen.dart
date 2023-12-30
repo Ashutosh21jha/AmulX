@@ -17,7 +17,7 @@ class _MainscreenState extends State<Mainscreen> {
   final PageController _pageController = PageController(initialPage: 0);
   List<Widget> widgetList =  [
     const HomePage(),
-    CartPage(),
+    CartPage(false),
     const Profile(),
   ];
 

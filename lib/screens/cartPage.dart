@@ -1,39 +1,30 @@
-import 'dart:async';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
-import 'package:amul/screens/foodPage.dart';
-import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/orderPage.dart';
 import 'package:amul/screens/profile.dart';
-import 'package:amul/screens/trackingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:amul/screens/order_review.dart';
 import 'package:lottie/lottie.dart';
 
 class CartPage extends StatefulWidget {
+  bool fromFoodPage;
+
+  CartPage(this.fromFoodPage);
+
   @override
   State<CartPage> createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
-  /* int itemCount = 0;
-  void updateItemCount() {
-    setState(() {
-      itemCount =
-          CartController.to.calculateItemCount(CartController.to.cartItems);
-    });pub
-  }*/
-
   @override
   void initState() {
     super.initState();
-    /* itemCount = calculateItemCount(); // Initialized item count
-    updateItemCount();*/
     CartController.to.fetchCart();
     CartController.to.reloadFetchData();
     CartController.to.fetchCurrentOrder();
   }
+
   @override
   void dispose() {
     CartController.to.reloadFetchData();
@@ -43,17 +34,30 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.indigo,
-        title: const Text('CART'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined),
-          onPressed: () {
-            Get.back();
-          },
-        ),
-      ),
+      appBar: widget.fromFoodPage
+          ? AppBar(
+              backgroundColor: Colors.grey.shade200,
+              toolbarHeight: 70,
+              automaticallyImplyLeading: false,
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_sharp,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              centerTitle: true,
+              title: const Text(
+                'Cart',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Colors.black),
+              ),
+            )
+          : null,
       backgroundColor: Colors.grey.shade200,
       body: CartController.to.isCartEmpty
           ? Container(
@@ -79,7 +83,7 @@ class _CartPageState extends State<CartPage> {
             )
           : Column(
               children: [
-                const SizedBox(height: 45),
+                SizedBox(height: widget.fromFoodPage ? 0 : 20),
                 Expanded(
                   child: Obx(() {
                     final cartController = CartController.to;
@@ -188,8 +192,8 @@ class _CartPageState extends State<CartPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           Get.to(() => OrderPage(
-                            userId: userId,
-                          ));
+                                userId: userId,
+                              ));
                         },
                         style: ElevatedButton.styleFrom(
                           textStyle: const TextStyle(fontSize: 24),
