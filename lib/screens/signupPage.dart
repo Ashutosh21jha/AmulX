@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../Utils/AppColors.dart';
+
 class signupPage extends StatefulWidget {
   const signupPage({super.key});
 
@@ -93,11 +95,31 @@ class _signupPageState extends State<signupPage> {
               password: password,
               isLoading: isLoading);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Invalid info"),
+          Get.snackbar(
+            'Failed',
+            'Provide valid credentials',
+            barBlur: 10,
+            backgroundGradient: LinearGradient(
+              colors: [
+                Color(0xFFF98181),
+                AppColors.red,
+                Color(0xFF850000),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            duration: const Duration(seconds: 1),
+            icon: Image.asset(
+              'assets/images/devcommlogo.png',
+              width: 24,
+              height: 24,
             ),
           );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(
+          //     content: Text("Invalid info"),
+          //   ),
+          // );
         }
       } else {
         auth.createUserWithEmailAndPassword(email: email, password: password);

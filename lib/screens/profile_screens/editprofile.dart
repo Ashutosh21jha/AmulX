@@ -29,20 +29,20 @@ class _EditProfileState extends State<EditProfile> {
   void initState() {
     super.initState();
     fetchImage();
-    // receivedata();
+    receivedata();
     nameController = TextEditingController(text: name);
   }
 
-  // Future<void> receivedata() async {
-  //   final docRef = await db.collection("User").doc(userId).get();
-  //   Map<String, dynamic>? userData = docRef.data();
-  //   if (userData != null) {
-  //     setState(() {
-  //       name = userData['name'] ?? '';
-  //       nameController = TextEditingController(text: name);
-  //     });
-  //   }
-  // }
+  Future<void> receivedata() async {
+    final docRef = await db.collection("User").doc(userId).get();
+    Map<String, dynamic>? userData = docRef.data();
+    if (userData != null) {
+      setState(() {
+        name = userData['name'] ?? '';
+        nameController = TextEditingController(text: name);
+      });
+    }
+  }
 
   Future<void> submit() async {
     await db.collection('User').doc(userId).update({
