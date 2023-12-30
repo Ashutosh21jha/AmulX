@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import '../Utils/AppColors.dart';
-
 class forgetPassword extends StatefulWidget {
   const forgetPassword({super.key});
 
@@ -32,17 +30,6 @@ class _forgetPasswordState extends State<forgetPassword> {
     }
     return null;
   }
-  Future<void> _submitform() async {
-    setState(() {
-      isLoading = true;
-    });
-    if (_formKey.currentState!.validate()) {
-      resentpassword();
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   Future<void> resentpassword() async {
     String email = _emailController.text.toString();
@@ -53,28 +40,7 @@ class _forgetPasswordState extends State<forgetPassword> {
       var existingDocument = await collection.doc(documentId).get();
 
       if (existingDocument.exists) {
-        Get.snackbar(
-          'Success',
-          'Link is Send to your E-mail',
-          barBlur: 10,
-          backgroundGradient: LinearGradient(
-            colors: [
-              Color(0xFFF98181),
-              AppColors.red,
-              Color(0xFF850000),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          duration: const Duration(seconds: 1),
-          icon: Image.asset(
-            'assets/images/devcommlogo.png',
-            width: 24,
-            height: 24,
-          ),
-        );
         await auth.sendPasswordResetEmail(email: email);
-
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -83,14 +49,24 @@ class _forgetPasswordState extends State<forgetPassword> {
         );
         await Future.delayed(const Duration(seconds: 2));
 
-        // Get.back();
+        Get.back();
       }
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-
+  Future<void> _submitform() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+      resentpassword();
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -177,7 +153,7 @@ class _forgetPasswordState extends State<forgetPassword> {
                               48), // Set the border radius
                         ),
                       ),
-                      onPressed: () =>  _submitform(),
+                      onPressed: () => isLoading ? null : _submitform(),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Center(
