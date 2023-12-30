@@ -21,21 +21,22 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     CartController.to.fetchCart();
-    CartController.to.reloadFetchData();
+    // CartController.to.reloadFetchData();
     CartController.to.fetchCurrentOrder();
   }
 
-  @override
-  void dispose() {
-    CartController.to.reloadFetchData();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   CartController.to.reloadFetchData();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: widget.fromFoodPage
           ? AppBar(
+        elevation: 0,
               backgroundColor: Colors.grey.shade200,
               toolbarHeight: 70,
               automaticallyImplyLeading: false,
@@ -155,6 +156,8 @@ class _CartPageState extends State<CartPage> {
                                             iconSize: 18,
                                             onPressed: () {
                                               cartController.removeItem(item);
+                                              CartController.to.fetchCart();
+                                              CartController.to.reloadCart();
                                               /* updateItemCount();*/
                                             },
                                           ),
@@ -169,6 +172,8 @@ class _CartPageState extends State<CartPage> {
                                             iconSize: 18,
                                             onPressed: () {
                                               cartController.addItem(item);
+                                              CartController.to.fetchCart();
+                                              CartController.to.reloadCart();
                                               /*updateItemCount();*/
                                             },
                                           ),

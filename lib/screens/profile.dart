@@ -100,7 +100,7 @@ class _ProfileState extends State<Profile> {
 
   Stream<ImageProvider> getProfilePicture() async* {
     FirebaseStorage storage = FirebaseStorage.instance;
-    while (true) {
+    // while (true) {
       try {
         String downloadURL =
             await storage.ref('user/pp_$userId.jpg').getDownloadURL();
@@ -110,7 +110,7 @@ class _ProfileState extends State<Profile> {
         yield const AssetImage('assets/images/avatar.png');
       }
       await Future.delayed(const Duration(seconds: 2));
-    }
+    // }
   }
 
   @override

@@ -34,6 +34,7 @@ class CartController extends GetxController {
       print('Error fetching current order from Firestore: $e');
       return null;
     }
+    return null;
   }
 
   Future<void> addItem(CartItem item) async {
@@ -220,10 +221,10 @@ class CartController extends GetxController {
   }
 
   Future<void> reloadFetchData() async {
-    _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+    // _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       CartController.to.fetchCart();
       CartController.to.reloadCart();
-    });
+    // });
   }
 
   Future<void> deleteCart() async {

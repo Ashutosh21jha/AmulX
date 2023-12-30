@@ -2,10 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-class OrderPage extends StatelessWidget {
+class OrderPage extends StatefulWidget {
   final String userId;
   const OrderPage({Key? key, required this.userId}) : super(key: key);
 
+  @override
+  State<OrderPage> createState() => _OrderPageState();
+}
+
+class _OrderPageState extends State<OrderPage> {
+  String orderId='';
+  @override
+  void initState(){
+    super.initState();
+    fetchId();
+  }
+  void fetchId() async{
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('prepList').get();
+    if (querySnapshot.docs.isNotEmpty) {
+      print('Fetching orders for userId: ${widget.userId}');
+      var filteredDocs = querySnapshot.docs
+          .where((doc) =>
+      RegExp(r'^ORD-\d{3}$').hasMatch(doc.id.toString()) &&
+          (doc['userId'] == widget.userId) &&
+          doc['orderStatus'] != 'Placed')
+          .toList();
+      print('Filtered Docs: ${filteredDocs.toList().elementAt(0).get(
+          'orderID')}');
+      setState(() {
+        orderId=filteredDocs.toList().elementAt(0).get(
+            'orderID');
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +55,7 @@ class OrderPage extends StatelessWidget {
             color: Colors.indigo,
           ),
           onPressed: () {
+            print(orderId);
             Navigator.pop(context);
           },
         ),
@@ -35,8 +66,8 @@ class OrderPage extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: getLatestOrders(),
+            child:orderId==''?const Center(child: CircularProgressIndicator()): StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('prepList').doc(orderId).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -47,14 +78,10 @@ class OrderPage extends StatelessWidget {
                 } else if (!snapshot.hasData || snapshot.data == null) {
                   return Text('No orders found.');
                 } else {
-                  List<Map<String, dynamic>> latestOrders = snapshot.data!;
-                  if (latestOrders.isEmpty) {
+                  // List<Map<String, dynamic>> latestOrders = snapshot.data!;
+                  if (snapshot.data==null) {
                     return Text('No orders found.');
                   }
-
-                  var order = latestOrders.last;
-                  var itemsMap = order['items'] as Map<String, dynamic>;
-
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -71,10 +98,10 @@ class OrderPage extends StatelessWidget {
                               isLast: false,
                               indicatorStyle: IndicatorStyle(
                                 width: 20,
-                                color: getStepColor(0, order['orderStatus']),
+                                color: getStepColor(0, snapshot.data?['orderStatus']),
                               ),
                               beforeLineStyle: LineStyle(
-                                color: getStepColor(0, order['orderStatus']),
+                                color: getStepColor(0, snapshot.data?['orderStatus']),
                               ),
                               endChild: Container(
                                 constraints: const BoxConstraints(
@@ -85,7 +112,7 @@ class OrderPage extends StatelessWidget {
                                     'Placed',
                                     style: TextStyle(
                                       color:
-                                          getStepColor(0, order['orderStatus']),
+                                          getStepColor(0, snapshot.data?['orderStatus']),
                                       fontSize: 16,
                                     ),
                                   ),
@@ -100,10 +127,10 @@ class OrderPage extends StatelessWidget {
                               isLast: false,
                               indicatorStyle: IndicatorStyle(
                                 width: 40,
-                                color: getStepColor(1, order['orderStatus']),
+                                color: getStepColor(1, snapshot.data?['orderStatus']),
                               ),
                               beforeLineStyle: LineStyle(
-                                color: getStepColor(1, order['orderStatus']),
+                                color: getStepColor(1, snapshot.data?['orderStatus']),
                               ),
                               endChild: Container(
                                 constraints: const BoxConstraints(
@@ -114,7 +141,7 @@ class OrderPage extends StatelessWidget {
                                     'Preparing',
                                     style: TextStyle(
                                       color:
-                                          getStepColor(1, order['orderStatus']),
+                                          getStepColor(1, snapshot.data?['orderStatus']),
                                       fontSize: 16,
                                     ),
                                   ),
@@ -129,10 +156,10 @@ class OrderPage extends StatelessWidget {
                               isLast: true,
                               indicatorStyle: IndicatorStyle(
                                 width: 20,
-                                color: getStepColor(2, order['orderStatus']),
+                                color: getStepColor(2, snapshot.data?['orderStatus']),
                               ),
                               beforeLineStyle: LineStyle(
-                                color: getStepColor(2, order['orderStatus']),
+                                color: getStepColor(2, snapshot.data?['orderStatus']),
                               ),
                               endChild: Container(
                                 constraints: const BoxConstraints(
@@ -143,7 +170,7 @@ class OrderPage extends StatelessWidget {
                                     'Ready',
                                     style: TextStyle(
                                       color:
-                                          getStepColor(2, order['orderStatus']),
+                                          getStepColor(2, snapshot.data?['orderStatus']),
                                       fontSize: 16,
                                     ),
                                   ),
@@ -156,14 +183,14 @@ class OrderPage extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(top: 8),
                         child: Text(
-                          'Order ID: ${order['orderID']}',
+                          'Order ID: ${snapshot.data?['orderID']}',
                           style: TextStyle(color: Colors.indigo, fontSize: 20),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(top: 8),
                         child: Text(
-                          'Status: ${order['orderStatus']}',
+                          'Status: ${snapshot.data?['orderStatus']}',
                           style: TextStyle(color: Colors.indigo, fontSize: 20),
                         ),
                       ),
@@ -174,19 +201,21 @@ class OrderPage extends StatelessWidget {
                       ),
                       ListView.builder(
                         shrinkWrap: true,
-                        itemCount: itemsMap.entries.length,
+                        itemCount: snapshot.data?['items'].length,
                         itemBuilder: (context, index) {
-                          var entry = itemsMap.entries.elementAt(index);
+                          Map<String,dynamic> map=snapshot.data?['items'];
+                          final key = map.keys.elementAt(index);
+                          final value = map[key];
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${entry.key}:',
+                                '${map.keys.elementAt(index)}:',
                                 style: TextStyle(
                                     color: Colors.indigo, fontSize: 20),
                               ),
                               Text(
-                                '${entry.value['count']} items, ₹${entry.value['price']} each',
+                                '${value['count']} items, ₹${value['price']} each',
                                 style: TextStyle(
                                     color: Colors.indigo, fontSize: 20),
                               ),
@@ -230,18 +259,18 @@ class OrderPage extends StatelessWidget {
 
   Future<List<Map<String, dynamic>>> getLatestOrders() async {
     try {
-      print('Fetching orders for userId: $userId');
+      print('Fetching orders for userId: ${widget.userId}');
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('prepList').get();
       if (querySnapshot.docs.isNotEmpty) {
-        print('Fetching orders for userId: $userId');
+        print('Fetching orders for userId: ${widget.userId}');
         var filteredDocs = querySnapshot.docs
             .where((doc) =>
                 RegExp(r'^ORD-\d{3}$').hasMatch(doc.id.toString()) &&
-                (doc['userId'] == userId) &&
+                (doc['userId'] == widget.userId) &&
                 doc['orderStatus'] != 'Placed')
             .toList();
-        print('Filtered Docs: $filteredDocs');
+        print('Filtered Docs: ${filteredDocs.toList().elementAt(0).get('orderID')}');
 
         var ordersWithStatus = filteredDocs
             .where((doc) => doc['orderStatus'] != 'preparing')

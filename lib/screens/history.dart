@@ -6,14 +6,34 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import '../widgets/item.dart';
 
-class History extends StatelessWidget {
+class History extends StatefulWidget {
   History({Key? key}) : super(key: key);
+
+  @override
+  State<History> createState() => _HistoryState();
+}
+
+class _HistoryState extends State<History> {
   final auth = FirebaseAuth.instance;
+
   String get userId => auth.currentUser?.email ?? '';
 
   CollectionReference get historyCollection =>
       FirebaseFirestore.instance.collection('User/$userId/history');
-
+  Stream<ImageProvider> getProfilePicture() async* {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    while (true) {
+      try {
+        String downloadURL =
+        await storage.ref('user/pp_$userId.jpg').getDownloadURL();
+        yield NetworkImage(downloadURL);
+      } catch (e) {
+        // The file doesn't exist
+        yield const AssetImage('assets/images/avatar.png');
+      }
+      await Future.delayed(const Duration(seconds: 2));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -22,21 +42,6 @@ class History extends StatelessWidget {
         statusBarIconBrightness: Brightness.light,
       ),
     );
-    Stream<ImageProvider> getProfilePicture() async* {
-      FirebaseStorage storage = FirebaseStorage.instance;
-      while (true) {
-        try {
-          String downloadURL =
-              await storage.ref('user/pp_$userId.jpg').getDownloadURL();
-          yield NetworkImage(downloadURL);
-        } catch (e) {
-          // The file doesn't exist
-          yield const AssetImage('assets/images/avatar.png');
-        }
-        await Future.delayed(const Duration(seconds: 2));
-      }
-    }
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.grey.shade200,
@@ -79,6 +84,7 @@ class History extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(height: 10),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
                     stream: historyCollection.snapshots(),
@@ -117,23 +123,7 @@ class History extends StatelessWidget {
                                     Map<String, dynamic>.from(e.value);
                                 return '${item['count']} x ${e.key}: ₹${item['price']}';
                               }).join('\n');
-
                               String orderName = orderItem['orderID'];
-
-                              return StreamBuilder<DocumentSnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection('prepList')
-                                    .doc(orderName)
-                                    .snapshots(),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<DocumentSnapshot>
-                                        prepListSnapshot) {
-                                  if (prepListSnapshot.hasError) {
-                                    return const Text("Something went wrong");
-                                  }
-
-                                  if (prepListSnapshot.connectionState ==
-                                      ConnectionState.waiting) {
                                     return ListItem(
                                       id: snapshot.data!.docs[index].id,
                                       items: itemsString,
@@ -141,37 +131,6 @@ class History extends StatelessWidget {
                                       timestamp: orderItem['time'],
                                       orderID: orderName,
                                     );
-                                  }
-
-                                  String existingOrderStatus =
-                                      orderItem['orderStatus'];
-                                  String newOrderStatus =
-                                      prepListSnapshot.data!['orderStatus'];
-
-                                  // Update order status if it has changed
-                                  if (existingOrderStatus != newOrderStatus) {
-                                    // Update order status in history collection
-                                    historyCollection.doc(orderName).update({
-                                      'orders': FieldValue.arrayUnion([
-                                        {
-                                          'items': items,
-                                          'orderID': orderName,
-                                          'time': orderItem['time'],
-                                          'orderStatus': newOrderStatus,
-                                        },
-                                      ])
-                                    });
-                                  }
-
-                                  return ListItem(
-                                    id: snapshot.data!.docs[index].id,
-                                    items: itemsString,
-                                    orderStatus: newOrderStatus,
-                                    timestamp: orderItem['time'],
-                                    orderID: orderName,
-                                  );
-                                },
-                              );
                             }).toList(),
                           );
                         },
