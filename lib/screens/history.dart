@@ -22,7 +22,6 @@ class History extends StatelessWidget {
         statusBarIconBrightness: Brightness.light,
       ),
     );
-
     Stream<ImageProvider> getProfilePicture() async* {
       FirebaseStorage storage = FirebaseStorage.instance;
       while (true) {
@@ -91,10 +90,12 @@ class History extends StatelessWidget {
 
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(
-                            child: Container(
-                                width: Get.width * 0.5,
-                                height: Get.height * 0.3,
-                                child: const CircularProgressIndicator()));
+                          child: Container(
+                            width: Get.width * 0.5,
+                            height: Get.height * 0.3,
+                            child: const CircularProgressIndicator(),
+                          ),
+                        );
                       }
 
                       List<Map<String, dynamic>> orders = snapshot.data!.docs
@@ -119,12 +120,57 @@ class History extends StatelessWidget {
 
                               String orderName = orderItem['orderID'];
 
-                              return ListItem(
-                                id: snapshot.data!.docs[index].id,
-                                items: itemsString,
-                                orderStatus: orderItem['orderStatus'],
-                                timestamp: orderItem['time'],
-                                orderID: orderName,
+                              return StreamBuilder<DocumentSnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('prepList')
+                                    .doc(orderName)
+                                    .snapshots(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<DocumentSnapshot>
+                                        prepListSnapshot) {
+                                  if (prepListSnapshot.hasError) {
+                                    return const Text("Something went wrong");
+                                  }
+
+                                  if (prepListSnapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return ListItem(
+                                      id: snapshot.data!.docs[index].id,
+                                      items: itemsString,
+                                      orderStatus: orderItem['orderStatus'],
+                                      timestamp: orderItem['time'],
+                                      orderID: orderName,
+                                    );
+                                  }
+
+                                  String existingOrderStatus =
+                                      orderItem['orderStatus'];
+                                  String newOrderStatus =
+                                      prepListSnapshot.data!['orderStatus'];
+
+                                  // Update order status if it has changed
+                                  if (existingOrderStatus != newOrderStatus) {
+                                    // Update order status in history collection
+                                    historyCollection.doc(orderName).update({
+                                      'orders': FieldValue.arrayUnion([
+                                        {
+                                          'items': items,
+                                          'orderID': orderName,
+                                          'time': orderItem['time'],
+                                          'orderStatus': newOrderStatus,
+                                        },
+                                      ])
+                                    });
+                                  }
+
+                                  return ListItem(
+                                    id: snapshot.data!.docs[index].id,
+                                    items: itemsString,
+                                    orderStatus: newOrderStatus,
+                                    timestamp: orderItem['time'],
+                                    orderID: orderName,
+                                  );
+                                },
                               );
                             }).toList(),
                           );
