@@ -29,20 +29,20 @@ class _EditProfileState extends State<EditProfile> {
   void initState() {
     super.initState();
     fetchImage();
-    receivedata();
+    // receivedata();
     nameController = TextEditingController(text: name);
   }
 
-  Future<void> receivedata() async {
-    final docRef = await db.collection("User").doc(userId).get();
-    Map<String, dynamic>? userData = docRef.data();
-    if (userData != null) {
-      setState(() {
-        name = userData['name'] ?? '';
-        nameController = TextEditingController(text: name);
-      });
-    }
-  }
+  // Future<void> receivedata() async {
+  //   final docRef = await db.collection("User").doc(userId).get();
+  //   Map<String, dynamic>? userData = docRef.data();
+  //   if (userData != null) {
+  //     setState(() {
+  //       name = userData['name'] ?? '';
+  //       nameController = TextEditingController(text: name);
+  //     });
+  //   }
+  // }
 
   Future<void> submit() async {
     await db.collection('User').doc(userId).update({
@@ -220,7 +220,34 @@ class _EditProfileState extends State<EditProfile> {
                         SizedBox(
                           width: double.infinity,
                           child: TextButton(
-                            onPressed: submit,
+                            onPressed: () async{
+                              await db.collection('User').doc(userId).update({
+                                'name': nameController.text,
+                              }).then((value){
+                                Get.snackbar(
+                                  'Success',
+                                  'Name Updated',
+                                  barBlur: 10,
+                                  backgroundGradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFFF98181),
+                                      AppColors.red,
+                                      Color(0xFF850000),
+                                    ],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
+                                  duration: const Duration(seconds: 1),
+                                  icon: Image.asset(
+                                    'assets/images/devcommlogo.png',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                );
+                              });
+
+                              // Get.back();
+                            },
                             style: ButtonStyle(
                               padding: MaterialStateProperty.all(
                                   const EdgeInsets.symmetric(vertical: 16)),
@@ -234,7 +261,7 @@ class _EditProfileState extends State<EditProfile> {
                             ),
                             child: InkWell(
                               onTap: () {
-                                Get.back();
+
                               },
                               child: const Text(
                                 'Save',

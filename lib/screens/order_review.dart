@@ -206,9 +206,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           height: 24,
         ),
       );
-
-      Get.offAll(() => const Mainscreen());
-
       await CartController.to.deleteCart();
       setState(() {
         isLoading = false;
@@ -219,6 +216,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         isLoading = false;
       });
     }
+    Get.offAll(() => const Mainscreen());
   }
 
   void handlePaymentErrorResponse(PaymentFailureResponse response) {
