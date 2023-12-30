@@ -1,21 +1,13 @@
-import 'package:amul/screens/profile.dart';
-import 'package:amul/screens/trackingPage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:im_stepper/stepper.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 class OrderPage extends StatelessWidget {
   final String userId;
   const OrderPage({Key? key, required this.userId}) : super(key: key);
-  CollectionReference get prepListCollection =>
-      FirebaseFirestore.instance.collection('prepList');
 
   @override
   Widget build(BuildContext context) {
-    DateTime currentDate = DateTime.now();
-    String formattedDate = DateFormat('EEE, d MMMM').format(currentDate);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -40,13 +32,6 @@ class OrderPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 16),
-            child: Text(
-              formattedDate,
-              style: const TextStyle(color: Colors.indigo, fontSize: 20),
-            ),
-          ),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -67,12 +52,107 @@ class OrderPage extends StatelessWidget {
                     return Text('No orders found.');
                   }
 
-                  var order = latestOrders.first;
+                  var order = latestOrders.last;
                   var itemsMap = order['items'] as Map<String, dynamic>;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Container(
+                        height: 150,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TimelineTile(
+                              axis: TimelineAxis.horizontal,
+                              alignment: TimelineAlign.manual,
+                              lineXY: 0.3,
+                              isFirst: true,
+                              isLast: false,
+                              indicatorStyle: IndicatorStyle(
+                                width: 20,
+                                color: getStepColor(0, order['orderStatus']),
+                              ),
+                              beforeLineStyle: LineStyle(
+                                color: getStepColor(0, order['orderStatus']),
+                              ),
+                              endChild: Container(
+                                constraints: const BoxConstraints(
+                                  minHeight: 80,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Placed',
+                                    style: TextStyle(
+                                      color:
+                                          getStepColor(0, order['orderStatus']),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            TimelineTile(
+                              axis: TimelineAxis.horizontal,
+                              alignment: TimelineAlign.manual,
+                              lineXY: 0.3,
+                              isFirst: false,
+                              isLast: false,
+                              indicatorStyle: IndicatorStyle(
+                                width: 40,
+                                color: getStepColor(0, order['orderStatus']),
+                              ),
+                              beforeLineStyle: LineStyle(
+                                color: getStepColor(0, order['orderStatus']),
+                              ),
+                              endChild: Container(
+                                constraints: const BoxConstraints(
+                                  minHeight: 80,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Preparing',
+                                    style: TextStyle(
+                                      color:
+                                          getStepColor(0, order['orderStatus']),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            TimelineTile(
+                              axis: TimelineAxis.horizontal,
+                              alignment: TimelineAlign.manual,
+                              lineXY: 0.3,
+                              isFirst: false,
+                              isLast: true,
+                              indicatorStyle: IndicatorStyle(
+                                width: 20,
+                                color: getStepColor(2, order['orderStatus']),
+                              ),
+                              beforeLineStyle: LineStyle(
+                                color: getStepColor(2, order['orderStatus']),
+                              ),
+                              endChild: Container(
+                                constraints: const BoxConstraints(
+                                  minHeight: 80,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Ready',
+                                    style: TextStyle(
+                                      color:
+                                          getStepColor(2, order['orderStatus']),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       Padding(
                         padding: EdgeInsets.only(top: 8),
                         child: Text(
@@ -80,9 +160,16 @@ class OrderPage extends StatelessWidget {
                           style: TextStyle(color: Colors.indigo, fontSize: 20),
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text(
+                          'Status: ${order['orderStatus']}',
+                          style: TextStyle(color: Colors.indigo, fontSize: 20),
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       Text(
-                        'Orders:',
+                        'Items: ',
                         style: TextStyle(color: Colors.indigo, fontSize: 20),
                       ),
                       ListView.builder(
@@ -95,11 +182,13 @@ class OrderPage extends StatelessWidget {
                             children: [
                               Text(
                                 '${entry.key}:',
-                                style: TextStyle(color: Colors.indigo, fontSize: 20),
+                                style: TextStyle(
+                                    color: Colors.indigo, fontSize: 20),
                               ),
                               Text(
                                 '${entry.value['count']} items, ₹${entry.value['price']} each',
-                                style: TextStyle(color: Colors.indigo, fontSize: 20),
+                                style: TextStyle(
+                                    color: Colors.indigo, fontSize: 20),
                               ),
                               // Add a SizedBox to create a gap between items
                               const SizedBox(height: 10),
@@ -113,44 +202,30 @@ class OrderPage extends StatelessWidget {
               },
             ),
           ),
-          Container(
-            alignment: Alignment.centerLeft,
-            height: MediaQuery.of(context).size.height / 4,
-            width: MediaQuery.of(context).size.width,
-            child: IconStepper(
-              direction: Axis.horizontal,
-              enableNextPreviousButtons: false,
-              activeStepBorderColor: Colors.white,
-              activeStepBorderWidth: 0.0,
-              lineColor: Colors.redAccent,
-              stepColor: Colors.green,
-              lineLength: 70.0,
-              lineDotRadius: 2.0,
-              stepRadius: 18.0,
-              icons: const [
-                Icon(
-                  Icons.radio_button_checked,
-                  color: Colors.green,
-                ),
-                Icon(
-                  Icons.check_sharp,
-                  color: Colors.white,
-                ),
-                Icon(
-                  Icons.check,
-                  color: Colors.white,
-                ),
-                Icon(
-                  Icons.check,
-                  color: Colors.white,
-                ),
-              ],
-            ),
-          ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  Color getStepColor(int stepIndex, String orderStatus) {
+    if (stepIndex == 0) {
+      return Colors.green;
+    } else if (getActiveStep(orderStatus) >= stepIndex) {
+      return Colors.green;
+    } else {
+      return Colors.grey;
+    }
+  }
+
+  int getActiveStep(String orderStatus) {
+    if (orderStatus == 'Preparing') {
+      return 1; // Active step for 'Preparing'
+    } else if (orderStatus == 'Ready') {
+      return 2; // Active step for 'Ready'
+    } else {
+      return 0; // Default active step
+    }
   }
 
   Future<List<Map<String, dynamic>>> getLatestOrders() async {
@@ -164,7 +239,7 @@ class OrderPage extends StatelessWidget {
             .where((doc) =>
                 RegExp(r'^ORD-\d{3}$').hasMatch(doc.id.toString()) &&
                 (doc['userId'] == userId) &&
-                doc['orderStatus'] != 'preparing')
+                doc['orderStatus'] != 'Placed')
             .toList();
         print('Filtered Docs: $filteredDocs');
 

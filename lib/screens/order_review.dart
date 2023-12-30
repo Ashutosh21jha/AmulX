@@ -127,8 +127,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
             'orderStatus': 'Placed',
           }
         ]),
-        // 'time': FieldValue.serverTimestamp(),
-        // 'orderStatus': 'Placed',
       };
 
       final itemsMap = cartController.cartItems.fold<Map<String, dynamic>>(
@@ -158,8 +156,10 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         // Document doesn't exist, create it
         await historyCollection.doc(formattedDate).set(orderData);
       }
+
       await prepListCollection.doc('ORD-$count').set(prepListOrderData);
 
+      // Listen for changes in prepList document
       prepListCollection.doc('ORD-$count').snapshots().listen((event) async {
         // Check if the orderStatus field has changed
         final newOrderStatus = event['orderStatus'];
@@ -167,7 +167,14 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           await historyCollection.doc(formattedDate).update({
             'orders': FieldValue.arrayUnion([
               {
-                'items': itemsMap,
+                'items': cartController.cartItems.fold<Map<String, dynamic>>({},
+                    (map, item) {
+                  map[item.name] = {
+                    'count': item.quantity,
+                    'price': item.price,
+                  };
+                  return map;
+                }),
                 'orderID': 'ORD-$count',
                 'time': DateTime.now(),
                 'orderStatus': newOrderStatus,
@@ -201,6 +208,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       );
 
       Get.offAll(() => const Mainscreen());
+
       await CartController.to.deleteCart();
       setState(() {
         isLoading = false;
@@ -363,7 +371,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
             ),
           ),
           const SizedBox(height: 20),
-          OrderStatusIcons(),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(

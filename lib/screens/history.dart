@@ -28,7 +28,7 @@ class History extends StatelessWidget {
       while (true) {
         try {
           String downloadURL =
-          await storage.ref('user/pp_$userId.jpg').getDownloadURL();
+              await storage.ref('user/pp_$userId.jpg').getDownloadURL();
           yield NetworkImage(downloadURL);
         } catch (e) {
           // The file doesn't exist

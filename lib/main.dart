@@ -5,7 +5,6 @@ import 'package:amul/screens/home.dart';
 import 'package:amul/screens/orderPage.dart';
 import 'package:amul/screens/splashscreen.dart';
 import 'package:amul/screens/trackingPage.dart';
-import 'package:amul/screens/waitingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
