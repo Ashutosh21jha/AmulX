@@ -100,10 +100,10 @@ class OrderPage extends StatelessWidget {
                               isLast: false,
                               indicatorStyle: IndicatorStyle(
                                 width: 40,
-                                color: getStepColor(0, order['orderStatus']),
+                                color: getStepColor(1, order['orderStatus']),
                               ),
                               beforeLineStyle: LineStyle(
-                                color: getStepColor(0, order['orderStatus']),
+                                color: getStepColor(1, order['orderStatus']),
                               ),
                               endChild: Container(
                                 constraints: const BoxConstraints(
@@ -114,7 +114,7 @@ class OrderPage extends StatelessWidget {
                                     'Preparing',
                                     style: TextStyle(
                                       color:
-                                          getStepColor(0, order['orderStatus']),
+                                          getStepColor(1, order['orderStatus']),
                                       fontSize: 16,
                                     ),
                                   ),
