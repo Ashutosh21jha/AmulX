@@ -23,17 +23,22 @@ class _HistoryState extends State<History> {
   Stream<ImageProvider> getProfilePicture() async* {
     FirebaseStorage storage = FirebaseStorage.instance;
     while (true) {
-      try {
-        String downloadURL =
-        await storage.ref('user/pp_$userId.jpg').getDownloadURL();
+      var ref = storage.ref('user/pp_$userId.jpg');
+      var metadata = await ref.getMetadata().onError((error, stackTrace) {
+        return Future.value(null);
+      });
+
+      if (metadata != null) {
+        String downloadURL = await ref.getDownloadURL();
         yield NetworkImage(downloadURL);
-      } catch (e) {
-        // The file doesn't exist
+      } else {
         yield const AssetImage('assets/images/avatar.png');
       }
+
       await Future.delayed(const Duration(seconds: 2));
     }
   }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -124,13 +129,13 @@ class _HistoryState extends State<History> {
                                 return '${item['count']} x ${e.key}: ₹${item['price']}';
                               }).join('\n');
                               String orderName = orderItem['orderID'];
-                                    return ListItem(
-                                      id: snapshot.data!.docs[index].id,
-                                      items: itemsString,
-                                      orderStatus: orderItem['orderStatus'],
-                                      timestamp: orderItem['time'],
-                                      orderID: orderName,
-                                    );
+                              return ListItem(
+                                id: snapshot.data!.docs[index].id,
+                                items: itemsString,
+                                orderStatus: orderItem['orderStatus'],
+                                timestamp: orderItem['time'],
+                                orderID: orderName,
+                              );
                             }).toList(),
                           );
                         },

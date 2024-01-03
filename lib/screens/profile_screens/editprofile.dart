@@ -74,15 +74,14 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<ImageProvider> fetchImage() async {
-    try {
-      String downloadURL = await FirebaseStorage.instance
-          .ref('user/pp_$userId.jpg')
-          .getDownloadURL();
+    String filePath = 'user/pp_$userId.jpg';
+    var ref = FirebaseStorage.instance.ref().child(filePath);
 
-      return NetworkImage(downloadURL);
-    } catch (e) {
+    return ref.getDownloadURL().then((url) {
+      return NetworkImage(url);
+    }, onError: (error) {
       return const AssetImage('assets/images/avatar.png');
-    }
+    });
   }
 
   @override
@@ -193,8 +192,7 @@ class _EditProfileState extends State<EditProfile> {
                                   height: 60,
                                   width: 60,
                                   child: Center(
-                                    child:
-                                    CircularProgressIndicator(
+                                    child: CircularProgressIndicator(
                                       color: AppColors.blue,
                                     ),
                                   ),
@@ -220,10 +218,10 @@ class _EditProfileState extends State<EditProfile> {
                         SizedBox(
                           width: double.infinity,
                           child: TextButton(
-                            onPressed: () async{
+                            onPressed: () async {
                               await db.collection('User').doc(userId).update({
                                 'name': nameController.text,
-                              }).then((value){
+                              }).then((value) {
                                 Get.snackbar(
                                   'Success',
                                   'Name Updated',
@@ -260,9 +258,7 @@ class _EditProfileState extends State<EditProfile> {
                               ),
                             ),
                             child: InkWell(
-                              onTap: () {
-
-                              },
+                              onTap: () {},
                               child: const Text(
                                 'Save',
                                 textAlign: TextAlign.justify,

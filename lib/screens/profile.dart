@@ -100,17 +100,21 @@ class _ProfileState extends State<Profile> {
 
   Stream<ImageProvider> getProfilePicture() async* {
     FirebaseStorage storage = FirebaseStorage.instance;
-    // while (true) {
-      try {
-        String downloadURL =
-            await storage.ref('user/pp_$userId.jpg').getDownloadURL();
+    while (true) {
+      var ref = storage.ref('user/pp_$userId.jpg');
+      var metadata = await ref.getMetadata().onError((error, stackTrace) {
+        return Future.value(null);
+      });
+
+      if (metadata != null) {
+        String downloadURL = await ref.getDownloadURL();
         yield NetworkImage(downloadURL);
-      } catch (e) {
-        // The file doesn't exist
+      } else {
         yield const AssetImage('assets/images/avatar.png');
       }
+
       await Future.delayed(const Duration(seconds: 2));
-    // }
+    }
   }
 
   @override
@@ -168,8 +172,8 @@ class _ProfileState extends State<Profile> {
                     // PROFILE CARD
                     Container(
                       width: 327,
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       decoration: ShapeDecoration(
                         color: const Color.fromARGB(255, 255, 255, 255),
                         shape: RoundedRectangleBorder(
@@ -235,8 +239,10 @@ class _ProfileState extends State<Profile> {
                                                         height: 22,
                                                         decoration:
                                                             const BoxDecoration(
-                                                          shape: BoxShape.circle,
-                                                          color: AppColors.yellow,
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color:
+                                                              AppColors.yellow,
                                                         ),
                                                         child: InkWell(
                                                           onTap: () {
@@ -263,43 +269,51 @@ class _ProfileState extends State<Profile> {
                           ),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: StreamBuilder(stream: db.collection("User").doc(userId).snapshots(), builder: (BuildContext context,
-                                AsyncSnapshot
-                                snapshot){
-                              if(snapshot.data==null){
-                                return Center(child: CircularProgressIndicator());
-                              }else{
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    snapshot.data['name'],
-                                    style: const TextStyle(
-                                      color: Color(0xFF414042),
-                                      fontSize: 18,
-                                      fontFamily: 'Epilogue',
-                                      fontWeight: FontWeight.w700,
+                            child: StreamBuilder(
+                                stream: db
+                                    .collection("User")
+                                    .doc(userId)
+                                    .snapshots(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.data == null) {
+                                    return Center(
+                                        child: CircularProgressIndicator());
+                                  } else {
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          snapshot.data['name'],
+                                          style: const TextStyle(
+                                            color: Color(0xFF414042),
+                                            fontSize: 18,
+                                            fontFamily: 'Epilogue',
+                                            fontWeight: FontWeight.w700,
 
-                                      // height: 0.06,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    snapshot.data['student id'],
-                                    style: const TextStyle(
-                                      color: Color(0xFF57585B),
-                                      fontSize: 14,
-                                      fontFamily: 'Epilogue',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.07,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              );}
-                            }),
+                                            // height: 0.06,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        Text(
+                                          snapshot.data['student id'],
+                                          style: const TextStyle(
+                                            color: Color(0xFF57585B),
+                                            fontSize: 14,
+                                            fontFamily: 'Epilogue',
+                                            fontWeight: FontWeight.w400,
+                                            height: 0.07,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                }),
                           )
                         ],
                       ),
@@ -395,7 +409,8 @@ class _ProfileState extends State<Profile> {
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         width: 24,
