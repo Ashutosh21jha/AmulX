@@ -122,36 +122,36 @@ class _ListItemState extends State<ListItem>
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  StreamBuilder<ImageProvider>(
-                    stream: getProfilePicture(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<ImageProvider<Object>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox(
-                          height: 60,
-                          width: 60,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.blue,
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: snapshot.data!,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(width: 16),
+                  // StreamBuilder<ImageProvider>(
+                  //   stream: getProfilePicture(),
+                  //   builder: (BuildContext context,
+                  //       AsyncSnapshot<ImageProvider<Object>> snapshot) {
+                  //     if (snapshot.connectionState == ConnectionState.waiting) {
+                  //       return const SizedBox(
+                  //         height: 60,
+                  //         width: 60,
+                  //         child: Center(
+                  //           child: CircularProgressIndicator(
+                  //             color: AppColors.blue,
+                  //           ),
+                  //         ),
+                  //       );
+                  //     } else {
+                  //       return Container(
+                  //         width: 60,
+                  //         height: 60,
+                  //         decoration: BoxDecoration(
+                  //           shape: BoxShape.circle,
+                  //           image: DecorationImage(
+                  //             image: snapshot.data!,
+                  //             fit: BoxFit.cover,
+                  //           ),
+                  //         ),
+                  //       );
+                  //     }
+                  //   },
+                  // ),
+                  // const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,

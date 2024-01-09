@@ -22,7 +22,7 @@ class _HistoryState extends State<History> {
       FirebaseFirestore.instance.collection('User/$userId/history');
   Stream<ImageProvider> getProfilePicture() async* {
     FirebaseStorage storage = FirebaseStorage.instance;
-    while (true) {
+
       var ref = storage.ref('user/pp_$userId.jpg');
       var metadata = await ref.getMetadata().onError((error, stackTrace) {
         return Future.value(null);
@@ -35,8 +35,8 @@ class _HistoryState extends State<History> {
         yield const AssetImage('assets/images/avatar.png');
       }
 
-      await Future.delayed(const Duration(seconds: 2));
-    }
+      // await Future.delayed(const Duration(seconds: 2));
+
   }
 
   @override

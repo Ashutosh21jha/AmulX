@@ -100,13 +100,13 @@ class _ProfileState extends State<Profile> {
 
   Stream<ImageProvider> getProfilePicture() async* {
     FirebaseStorage storage = FirebaseStorage.instance;
-    while (true) {
+
       var ref = storage.ref('user/pp_$userId.jpg');
       var metadata = await ref.getMetadata().onError((error, stackTrace) {
         return Future.value(null);
       });
 
-      if (metadata != null) {
+      if (metadata!= null) {
         String downloadURL = await ref.getDownloadURL();
         yield NetworkImage(downloadURL);
       } else {
@@ -114,7 +114,7 @@ class _ProfileState extends State<Profile> {
       }
 
       await Future.delayed(const Duration(seconds: 2));
-    }
+
   }
 
   @override
