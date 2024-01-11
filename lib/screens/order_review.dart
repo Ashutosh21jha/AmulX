@@ -160,7 +160,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         'userId': userId,
         'items': itemsMap,
         'orderID': 'ORD-$count',
-        'orderStatus': 'Placed',
+        'orderStatus': 'Preparing',
         'name': await getUserName(userId),
         'time': DateTime.now(),
       };
