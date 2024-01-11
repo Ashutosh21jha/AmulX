@@ -21,15 +21,15 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     CartController.to.fetchCart();
-    // CartController.to.reloadFetchData();
+    CartController.to.reloadFetchData();
     CartController.to.fetchCurrentOrder();
   }
 
-  // @override
-  // void dispose() {
-  //   CartController.to.reloadFetchData();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    CartController.to.reloadFetchData();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class _CartPageState extends State<CartPage> {
             )
           : null,
       backgroundColor: Colors.grey.shade200,
-      body: CartController.to.isCartEmpty
+      body: CartController.to.cartItems.isEmpty
           ? Container(
               padding: const EdgeInsets.only(left: 10),
               child: Column(

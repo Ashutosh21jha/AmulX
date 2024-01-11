@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
-import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/models/items_model.dart';
 import 'package:amul/screens/cartPage.dart';
@@ -9,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/utils/item_card.dart';
 
@@ -150,7 +147,7 @@ class FoodPageState extends State<FoodPage> {
     oodItem>.from(_foodItems);*/
     /*_showDefaultOrder();*/
     ItemController.to.fetchItems();
-    reloadFetchData();
+    // reloadFetchData();
     CartController.to.tappedList = List.filled(mergedList.length, false);
     CartController.to.countList = List.filled(mergedList.length, 0);
     selected = 0;

@@ -27,6 +27,7 @@ class _ItemCardState extends State<ItemCard> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool added = false;
   int count = 0;
+  bool tap=false;
 
   @override
   void initState() {
@@ -136,21 +137,27 @@ class _ItemCardState extends State<ItemCard> {
                     icon: const Icon(
                       Icons.remove,
                     ),
-                    color: AppColors.blue,
-                    onPressed: () {
+                    color: tap==false?AppColors.blue:Colors.grey,
+                    onPressed: tap==false?() async {
+                      setState(() {
+                        tap=true;
+                      });
                       if (count == 1) {
                         setState(() {
                           added = false;
                         });
-                        FirebaseFirestore.instance
+                        await FirebaseFirestore.instance
                             .collection('User')
                             .doc(_auth.currentUser!.email)
                             .collection('cart')
                             .doc(widget.itemData.id)
                             .delete();
+                        setState(() {
+                          tap=false;
+                        });
                       }
-                      if (count >= 1) {
-                        FirebaseFirestore.instance
+                      if (count >1) {
+                       await FirebaseFirestore.instance
                             .collection('User')
                             .doc(_auth.currentUser!.email)
                             .collection('cart')
@@ -160,6 +167,7 @@ class _ItemCardState extends State<ItemCard> {
                         });
                         setState(() {
                           count--;
+                          tap=false;
                         });
                       }
                       // if (CartController.to.countList[widget.index] ==
@@ -178,7 +186,7 @@ class _ItemCardState extends State<ItemCard> {
                       //       price: double.parse(
                       //           widget.itemData.price),
                       //     ));
-                    },
+                    }:(){},
                   ),
                   Text(
                     "$count",
@@ -189,25 +197,34 @@ class _ItemCardState extends State<ItemCard> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.add),
-                    color: AppColors.blue,
-                    onPressed: () {
+                    color:tap==false? AppColors.blue:Colors.grey,
+                    onPressed:tap==false? () async{
                       setState(() {
-                        FirebaseFirestore.instance
-                            .collection('User')
-                            .doc(_auth.currentUser!.email)
-                            .collection('cart')
-                            .doc(widget.itemData.id)
-                            .update({
-                          'count': FieldValue.increment(1),
-                        });
-                        setState(() {
-                          count++;
-                        });
+                        tap=true;
+                      });
+
                         if (count == 1) {
                           setState(() {
                             added = true;
+                            // tap=false;
                           });
                         }
+                      await  FirebaseFirestore.instance
+                          .collection('User')
+                          .doc(_auth.currentUser!.email)
+                          .collection('cart')
+                          .doc(widget.itemData.id)
+                          .update({
+                        'count': FieldValue.increment(1),
+                      });
+                      setState(() {
+                        count++;
+                        // tap=false;
+                      });
+                        setState(() {
+                          tap=false;
+                        });
+
                         // CartController.to.countList[widget.index]++;
                         // CartController.to
                         //     .addItem(CartItem(
@@ -215,8 +232,8 @@ class _ItemCardState extends State<ItemCard> {
                         //   price: double.parse(
                         //       widget.itemData.price),
                         // ));
-                      });
-                    },
+
+                    }:(){},
                   ),
                 ],
               ): GestureDetector(
