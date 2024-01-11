@@ -1,7 +1,9 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/orderPage.dart';
 import 'package:amul/screens/profile.dart';
+import 'package:amul/screens/utils/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:amul/screens/order_review.dart';
@@ -33,7 +35,7 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Obx(() => Scaffold(
       appBar: widget.fromFoodPage
           ? AppBar(
         elevation: 0,
@@ -46,7 +48,7 @@ class _CartPageState extends State<CartPage> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>const Mainscreen()));
                 },
               ),
               centerTitle: true,
@@ -92,100 +94,101 @@ class _CartPageState extends State<CartPage> {
                       itemCount: cartController.cartItems.length,
                       itemBuilder: (context, index) {
                         final item = cartController.cartItems[index];
-                        return Container(
-                          height: 90,
-                          width: 100,
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey, width: 1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 16),
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Flexible(
-                                  child: Transform.translate(
-                                    offset: const Offset(0, 22),
-                                    child: Text(
-                                      item.name,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  '\₹${item.price.toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    color: AppColors.green,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            subtitle: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                SizedBox(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 11),
-                                    child: Container(
-                                      height: 35,
-                                      padding: const EdgeInsets.all(0),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.grey, width: 1),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(Icons.remove),
-                                            iconSize: 18,
-                                            onPressed: () {
-                                              cartController.removeItem(item);
-                                              CartController.to.fetchCart();
-                                              CartController.to.reloadCart();
-                                              /* updateItemCount();*/
-                                            },
-                                          ),
-                                          Text(
-                                            item.quantity.toString(),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.add),
-                                            iconSize: 18,
-                                            onPressed: () {
-                                              cartController.addItem(item);
-                                              CartController.to.fetchCart();
-                                              CartController.to.reloadCart();
-                                              /*updateItemCount();*/
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
+                        return CartItemCard(item: item);
+                        // return Container(
+                        //   height: 90,
+                        //   width: 100,
+                        //   margin: const EdgeInsets.symmetric(
+                        //       vertical: 10, horizontal: 15),
+                        //   decoration: BoxDecoration(
+                        //     border: Border.all(color: Colors.grey, width: 1),
+                        //     borderRadius: BorderRadius.circular(12),
+                        //   ),
+                        //   child: ListTile(
+                        //     contentPadding:
+                        //         const EdgeInsets.symmetric(horizontal: 16),
+                        //     title: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        //       children: [
+                        //         Flexible(
+                        //           child: Transform.translate(
+                        //             offset: const Offset(0, 22),
+                        //             child: Text(
+                        //               item.name,
+                        //               textAlign: TextAlign.center,
+                        //               style: const TextStyle(
+                        //                 fontSize: 16,
+                        //                 fontWeight: FontWeight.bold,
+                        //               ),
+                        //               maxLines: 1,
+                        //               overflow: TextOverflow.ellipsis,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         const Spacer(),
+                        //         Text(
+                        //           '\₹${item.price.toStringAsFixed(2)}',
+                        //           style: const TextStyle(
+                        //             color: AppColors.green,
+                        //             fontSize: 14,
+                        //             fontWeight: FontWeight.w900,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //     subtitle: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.end,
+                        //       children: [
+                        //         SizedBox(
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.only(top: 11),
+                        //             child: Container(
+                        //               height: 35,
+                        //               padding: const EdgeInsets.all(0),
+                        //               decoration: BoxDecoration(
+                        //                 border: Border.all(
+                        //                     color: Colors.grey, width: 1),
+                        //                 borderRadius: BorderRadius.circular(30),
+                        //               ),
+                        //               child: Row(
+                        //                 crossAxisAlignment:
+                        //                     CrossAxisAlignment.center,
+                        //                 children: [
+                        //                   IconButton(
+                        //                     icon: const Icon(Icons.remove),
+                        //                     iconSize: 18,
+                        //                     onPressed: () {
+                        //                       cartController.removeItem(item);
+                        //                       CartController.to.fetchCart();
+                        //                       CartController.to.reloadCart();
+                        //                       /* updateItemCount();*/
+                        //                     },
+                        //                   ),
+                        //                   Text(
+                        //                     item.quantity.toString(),
+                        //                     style: const TextStyle(
+                        //                       fontWeight: FontWeight.bold,
+                        //                     ),
+                        //                   ),
+                        //                   IconButton(
+                        //                     icon: const Icon(Icons.add),
+                        //                     iconSize: 18,
+                        //                     onPressed: () {
+                        //                       cartController.addItem(item);
+                        //                       CartController.to.fetchCart();
+                        //                       CartController.to.reloadCart();
+                        //                       /*updateItemCount();*/
+                        //                     },
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // );
                       },
                     );
                   }),
@@ -353,6 +356,6 @@ class _CartPageState extends State<CartPage> {
                     )),
               ],
             ),
-    );
+    ));
   }
 }

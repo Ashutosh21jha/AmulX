@@ -145,6 +145,7 @@ class _ItemCardState extends State<ItemCard> {
                       if (count == 1) {
                         setState(() {
                           added = false;
+                          count--;
                         });
                         await FirebaseFirestore.instance
                             .collection('User')

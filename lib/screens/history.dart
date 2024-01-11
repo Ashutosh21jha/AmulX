@@ -53,7 +53,7 @@ class _HistoryState extends State<History> {
       body: Stack(
         children: [
           Container(
-            height: 100,
+            height: MediaQuery.of(context).size.height*0.18,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -71,11 +71,15 @@ class _HistoryState extends State<History> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 80),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      IconButton(onPressed: (){
+                        Navigator.pop(context);
+                      }, icon:Icon(Icons.arrow_back_ios,color: Colors.white,) ),
+                      SizedBox(width: MediaQuery.of(context).size.width*0.27),
                       Text(
                         "Orders",
                         style: TextStyle(
