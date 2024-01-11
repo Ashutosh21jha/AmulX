@@ -99,6 +99,22 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     CartController.to.reloadCart();
   }
 
+  Future<String> getUserName(String userId) async {
+    try {
+      final userDoc =
+          await FirebaseFirestore.instance.collection('User').doc(userId).get();
+
+      if (userDoc.exists) {
+        return userDoc['name'];
+      } else {
+        return '';
+      }
+    } catch (error) {
+      print('Error getting user name: $error');
+      return '';
+    }
+  }
+
   void handlePaymentSuccessResponse(
       PaymentSuccessResponse response, CartController cartController) async {
     try {
@@ -145,6 +161,8 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         'items': itemsMap,
         'orderID': 'ORD-$count',
         'orderStatus': 'Placed',
+        'name': await getUserName(userId),
+        'time': DateTime.now(),
       };
 
       final docSnapshot = await historyCollection.doc(formattedDate).get();
