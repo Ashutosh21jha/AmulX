@@ -162,7 +162,8 @@ class _OrderPageState extends State<OrderPage> {
                                           ),
                                           TextSpan(
                                             text: snapshot.data?['orderID']
-                                                .toString(),
+                                                    .toString() ??
+                                                '',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black,

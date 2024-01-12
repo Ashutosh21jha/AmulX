@@ -202,6 +202,11 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         }
       });
 
+      await FirebaseFirestore.instance
+          .collection('User')
+          .doc(userId)
+          .update({'currentOrder': true});
+
       CartController.to.deleteCart();
 
       Get.snackbar(
