@@ -14,10 +14,8 @@ class OrderPage extends StatefulWidget {
 
 class _OrderPageState extends State<OrderPage> {
   String orderId = '';
-  late double totalAmount =0;
-  void calamount(double itemTotal){
-    totalAmount=itemTotal;
-  }
+  late double totalAmount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -39,8 +37,48 @@ class _OrderPageState extends State<OrderPage> {
           'Filtered Docs: ${filteredDocs.toList().elementAt(0).get('orderID')}');
       setState(() {
         orderId = filteredDocs.toList().elementAt(0).get('orderID');
+        calculateTotalAmount(filteredDocs.toList().elementAt(0).get('items'));
       });
+    } else {
+      // If no orders are found in 'prepList', check 'Declined'
+      QuerySnapshot declinedSnapshot = await FirebaseFirestore.instance
+          .collection('Declined')
+          .where('email', isEqualTo: widget.userId)
+          .where('isRefunded', isEqualTo: false)
+          .get();
+
+      print('Declined Collection Documents: ${declinedSnapshot.docs.length}');
+
+      var filteredDocs = declinedSnapshot.docs
+          .where((doc) =>
+              RegExp(r'^ORD-\d{3}$').hasMatch(doc.id.toString()) &&
+              doc['orderStatus'] == 'Declined')
+          .toList();
+
+      print('Filtered Docs Count: ${filteredDocs.length}');
+      if (filteredDocs.isNotEmpty) {
+        var firstDoc = filteredDocs.first;
+        print('First Document ID: ${filteredDocs.first.id}');
+        print('First Document Data: ${filteredDocs.first.data()}');
+        print(
+            'Filtered Docs: ${filteredDocs.toList().elementAt(0).get('orderID')}');
+        setState(() {
+          orderId = filteredDocs.toList().elementAt(0).get('orderID');
+          calculateTotalAmount(filteredDocs.toList().elementAt(0).get('items'));
+        });
+      } else {
+        print('No matching documents found in Declined collection');
+      }
     }
+  }
+
+  void calculateTotalAmount(Map<String, dynamic> items) {
+    totalAmount = 0;
+
+    items.forEach((key, value) {
+      double itemTotal = value['count'] * value['price'];
+      totalAmount += itemTotal;
+    });
   }
 
   @override
@@ -79,9 +117,10 @@ class _OrderPageState extends State<OrderPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 child: orderId == ''
-                    ? const Center(child: CircularProgressIndicator(
-                  color:AppColors.blue,
-                ))
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                        color: AppColors.blue,
+                      ))
                     : StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('prepList')
@@ -100,108 +139,12 @@ class _OrderPageState extends State<OrderPage> {
                               snapshot.data == null) {
                             return const Text('No orders found.');
                           } else {
-                            // List<Map<String, dynamic>> latestOrders = snapshot.data!;
                             if (snapshot.data == null) {
                               return const Text('No orders found.');
                             }
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                /*Container(
-                            height: 150,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TimelineTile(
-                                  axis: TimelineAxis.horizontal,
-                                  alignment: TimelineAlign.manual,
-                                  lineXY: 0.3,
-                                  isFirst: true,
-                                  isLast: false,
-                                  indicatorStyle: IndicatorStyle(
-                                    width: 20,
-                                    color: getStepColor(0, snapshot.data?['orderStatus']),
-                                  ),
-                                  beforeLineStyle: LineStyle(
-                                    color: getStepColor(0, snapshot.data?['orderStatus']),
-                                  ),
-                                  endChild: Container(
-                                    constraints: const BoxConstraints(
-                                      minHeight: 80,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Placed',
-                                        style: TextStyle(
-                                          color:
-                                              getStepColor(0, snapshot.data?['orderStatus']),
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                TimelineTile(
-                                  axis: TimelineAxis.horizontal,
-                                  alignment: TimelineAlign.manual,
-                                  lineXY: 0.3,
-                                  isFirst: false,
-                                  isLast: false,
-                                  indicatorStyle: IndicatorStyle(
-                                    width: 40,
-                                    color: getStepColor(1, snapshot.data?['orderStatus']),
-                                  ),
-                                  beforeLineStyle: LineStyle(
-                                    color: getStepColor(1, snapshot.data?['orderStatus']),
-                                  ),
-                                  endChild: Container(
-                                    constraints: const BoxConstraints(
-                                      minHeight: 80,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Preparing',
-                                        style: TextStyle(
-                                          color:
-                                              getStepColor(1, snapshot.data?['orderStatus']),
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                TimelineTile(
-                                  axis: TimelineAxis.horizontal,
-                                  alignment: TimelineAlign.manual,
-                                  lineXY: 0.3,
-                                  isFirst: false,
-                                  isLast: true,
-                                  indicatorStyle: IndicatorStyle(
-                                    width: 20,
-                                    color: getStepColor(2, snapshot.data?['orderStatus']),
-                                  ),
-                                  beforeLineStyle: LineStyle(
-                                    color: getStepColor(2, snapshot.data?['orderStatus']),
-                                  ),
-                                  endChild: Container(
-                                    constraints: const BoxConstraints(
-                                      minHeight: 80,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Ready',
-                                        style: TextStyle(
-                                          color:
-                                              getStepColor(2, snapshot.data?['orderStatus']),
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),*/
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -365,26 +308,17 @@ class _OrderPageState extends State<OrderPage> {
                                 Container(
                                   decoration: const BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
                                   ),
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     itemCount: snapshot.data?['items'].length,
                                     itemBuilder: (context, index) {
                                       Map<String, dynamic> map =
-                                      snapshot.data?['items'];
+                                          snapshot.data?['items'];
                                       final key = map.keys.elementAt(index);
                                       final value = map[key];
-                                      double itemTotal =
-                                          value['count'] * value['price'];
-                                      totalAmount = itemTotal;
-                                      if(itemTotal!=null){
-                                        calamount(itemTotal);
-                                      }
-                                      else{
-                                        calamount(0);
-                                      }
-
                                       /*return Column(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.start,
@@ -405,9 +339,10 @@ class _OrderPageState extends State<OrderPage> {
                                     const SizedBox(height: 10),
                                   ],
                                 );*/
+
                                       return ListTile(
                                         leading: Text(
-                                          '${value['count']} ${map.keys.elementAt(index)}',
+                                          ' ${map.keys.elementAt(index)} (x ${value['count']})',
                                           style: const TextStyle(
                                               color: Colors.black,
                                               fontSize: 14),
@@ -439,28 +374,10 @@ class _OrderPageState extends State<OrderPage> {
                                             ],
                                           ),
                                         ),
-
                                       );
                                     },
                                   ),
                                 ),
-
-                                /* Padding(
-                            padding: EdgeInsets.only(top: 8),
-                            child: Text(
-                              'Order ID: ${snapshot.data?['orderID']}',
-                              style: TextStyle(color: Colors.indigo, fontSize: 20),
-                            ),
-                          ),*/
-                                /* Padding(
-                            padding: EdgeInsets.only(top: 8),
-                            child: Text(
-                              'Status: ${snapshot.data?['orderStatus']}',
-                              style: TextStyle(color: Colors.indigo, fontSize: 20),
-                            ),
-                          ),*/
-
-
                               ],
                             );
                           }
@@ -493,40 +410,5 @@ class _OrderPageState extends State<OrderPage> {
     } else {
       return 0; // Default active step
     }
-  }
-
-  Future<List<Map<String, dynamic>>> getLatestOrders() async {
-    try {
-      print('Fetching orders for userId: ${widget.userId}');
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('prepList').get();
-      if (querySnapshot.docs.isNotEmpty) {
-        print('Fetching orders for userId: ${widget.userId}');
-        var filteredDocs = querySnapshot.docs
-            .where((doc) =>
-                RegExp(r'^ORD-\d{3}$').hasMatch(doc.id.toString()) &&
-                (doc['userId'] == widget.userId) &&
-                doc['orderStatus'] != 'Placed')
-            .toList();
-        print(
-            'Filtered Docs: ${filteredDocs.toList().elementAt(0).get('orderID')}');
-
-        var ordersWithStatus = filteredDocs
-            .where((doc) => doc['orderStatus'] != 'preparing')
-            .toList();
-        print('Orders with Status: $ordersWithStatus');
-
-        if (filteredDocs.isNotEmpty) {
-          // Return the latest orders
-          return filteredDocs
-              .map((doc) => doc.data() as Map<String, dynamic>)
-              .toList();
-        }
-      }
-    } catch (e) {
-      print('Error fetching latest orders: $e');
-    }
-
-    return [];
   }
 }
