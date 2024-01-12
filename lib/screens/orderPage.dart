@@ -15,7 +15,7 @@ class OrderPage extends StatefulWidget {
 class _OrderPageState extends State<OrderPage> {
   String orderId = '';
   late double totalAmount = 0;
-
+  bool isDeclined=false;
   @override
   void initState() {
     super.initState();
@@ -65,6 +65,7 @@ class _OrderPageState extends State<OrderPage> {
         setState(() {
           orderId = filteredDocs.toList().elementAt(0).get('orderID');
           calculateTotalAmount(filteredDocs.toList().elementAt(0).get('items'));
+          isDeclined=true;
         });
       } else {
         print('No matching documents found in Declined collection');
@@ -122,10 +123,10 @@ class _OrderPageState extends State<OrderPage> {
                         color: AppColors.blue,
                       ))
                     : StreamBuilder(
-                        stream: FirebaseFirestore.instance
+                        stream: isDeclined==false?FirebaseFirestore.instance
                             .collection('prepList')
                             .doc(orderId)
-                            .snapshots(),
+                            .snapshots():FirebaseFirestore.instance.collection('Declined').doc(orderId).snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -199,7 +200,7 @@ class _OrderPageState extends State<OrderPage> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Container(
+                                isDeclined==false?Container(
                                   height: 100,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -305,6 +306,9 @@ class _OrderPageState extends State<OrderPage> {
                                       ),
                                     ],
                                   ),
+                                ):Container(
+                                  height: 100,
+                                  child: Text('Order Declined your Code is ${snapshot.data?['code']}'),
                                 ),
                                 Container(
                                   decoration: const BoxDecoration(

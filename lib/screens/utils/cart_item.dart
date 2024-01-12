@@ -82,12 +82,16 @@ class _CartItemCardState extends State<CartItemCard> {
                             tap=true;
                           });
                           await CartController.to.removeItem(widget.item);
-                          await CartController.to.fetchCart();
-                          await CartController.to.reloadCart().then((value){
+                          await CartController.to.fetchCart().then((value){
                             setState(() {
                               tap=false;
                             });
                           });
+                          // await CartController.to.reloadCart().then((value){
+                          //   setState(() {
+                          //     tap=false;
+                          //   });
+                          // });
                           /* updateItemCount();*/
                         }:(){}
                       ),
@@ -105,12 +109,16 @@ class _CartItemCardState extends State<CartItemCard> {
                             tap=true;
                           });
                           await CartController.to.addItem(widget.item);
-                          await CartController.to.fetchCart();
-                          await CartController.to.reloadCart().then((value) {
+                          await CartController.to.fetchCart().then((value){
                             setState(() {
                               tap=false;
                             });
                           });
+                          // await CartController.to.reloadCart().then((value) {
+                          //   setState(() {
+                          //     tap=false;
+                          //   });
+                          // });
                           /*updateItemCount();*/
                         }:(){},
                       ),

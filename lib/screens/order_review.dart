@@ -181,25 +181,25 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       prepListCollection.doc('ORD-$count').snapshots().listen((event) async {
         // Check if the orderStatus field has changed
         final newOrderStatus = event['orderStatus'];
-        if (newOrderStatus != 'Placed') {
-          await historyCollection.doc(formattedDate).update({
-            'orders': FieldValue.arrayUnion([
-              {
-                'items': cartController.cartItems.fold<Map<String, dynamic>>({},
-                    (map, item) {
-                  map[item.name] = {
-                    'count': item.quantity,
-                    'price': item.price,
-                  };
-                  return map;
-                }),
-                'orderID': 'ORD-$count',
-                'time': DateTime.now(),
-                'orderStatus': newOrderStatus,
-              }
-            ]),
-          });
-        }
+        // if (newOrderStatus != 'Placed') {
+        //   await historyCollection.doc(formattedDate).update({
+        //     'orders': FieldValue.arrayUnion([
+        //       {
+        //         'items': cartController.cartItems.fold<Map<String, dynamic>>({},
+        //             (map, item) {
+        //           map[item.name] = {
+        //             'count': item.quantity,
+        //             'price': item.price,
+        //           };
+        //           return map;
+        //         }),
+        //         'orderID': 'ORD-$count',
+        //         'time': DateTime.now(),
+        //         'orderStatus': newOrderStatus,
+        //       }
+        //     ]),
+        //   });
+        // }
       });
 
       await FirebaseFirestore.instance
