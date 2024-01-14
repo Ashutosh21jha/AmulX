@@ -106,8 +106,11 @@ class _ProfileState extends State<Profile> {
       // var metadata = await ref.getMetadata().onError((error, stackTrace) {
       //   return Future.value(null);
       // });
+    var metadata = await ref.getData().onError((error, stackTrace) {
+      return null;
+    });
 
-      if (!ref.isNull) {
+      if (metadata!=null) {
         String downloadURL = await ref.getDownloadURL();
         yield NetworkImage(downloadURL);
       } else {
