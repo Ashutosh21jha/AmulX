@@ -9,17 +9,19 @@ class ListItem extends StatefulWidget {
   final String id;
   final String items;
   final String orderStatus;
-  final Timestamp timestamp;
+  final DateTime timestamp;
   final String orderID;
+  final double totalAmount;
 
-  const ListItem(
-      {Key? key,
-      required this.id,
-      required this.items,
-      required this.orderStatus,
-      required this.orderID,
-      required this.timestamp})
-      : super(key: key);
+  const ListItem({
+    Key? key,
+    required this.id,
+    required this.items,
+    required this.orderStatus,
+    required this.orderID,
+    required this.timestamp,
+    required this.totalAmount,
+  }) : super(key: key);
 
   @override
   _ListItemState createState() => _ListItemState();
@@ -87,7 +89,7 @@ class _ListItemState extends State<ListItem>
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom :8.0),
+      padding: const EdgeInsets.only(bottom: 8.0),
       child: Column(
         children: [
           InkWell(
@@ -175,7 +177,8 @@ class _ListItemState extends State<ListItem>
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            DateFormat('MMM d, y h:mm a').format(widget.timestamp.toDate()),
+                            DateFormat('MMM d, y h:mm a')
+                                .format(widget.timestamp),
                             style: const TextStyle(
                               color: Color(0xFF36414C),
                               fontSize: 14,
@@ -250,6 +253,27 @@ class _ListItemState extends State<ListItem>
                       ),
                       Text(
                         widget.items,
+                        style: const TextStyle(
+                          color: Color(0xFF36414C),
+                          fontSize: 14,
+                          fontFamily: 'Epilogue',
+                          fontWeight: FontWeight.w400,
+                          height: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Total Amount:',
+                        style: TextStyle(
+                          color: Color(0xFF282828),
+                          fontSize: 14,
+                          fontFamily: 'Epilogue',
+                          fontWeight: FontWeight.w700,
+                          height: 0.7,
+                        ),
+                      ),
+                      Text(
+                        '₹${widget.totalAmount.toStringAsFixed(2)}',
                         style: const TextStyle(
                           color: Color(0xFF36414C),
                           fontSize: 14,

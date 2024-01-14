@@ -23,20 +23,19 @@ class _HistoryState extends State<History> {
   Stream<ImageProvider> getProfilePicture() async* {
     FirebaseStorage storage = FirebaseStorage.instance;
 
-      var ref = storage.ref('user/pp_$userId.jpg');
-      var metadata = await ref.getMetadata().onError((error, stackTrace) {
-        return Future.value(null);
-      });
+    var ref = storage.ref('user/pp_$userId.jpg');
+    var metadata = await ref.getMetadata().onError((error, stackTrace) {
+      return Future.value(null);
+    });
 
-      if (metadata != null) {
-        String downloadURL = await ref.getDownloadURL();
-        yield NetworkImage(downloadURL);
-      } else {
-        yield const AssetImage('assets/images/avatar.png');
-      }
+    if (metadata != null) {
+      String downloadURL = await ref.getDownloadURL();
+      yield NetworkImage(downloadURL);
+    } else {
+      yield const AssetImage('assets/images/avatar.png');
+    }
 
-      // await Future.delayed(const Duration(seconds: 2));
-
+    // await Future.delayed(const Duration(seconds: 2));
   }
 
   @override
@@ -53,7 +52,7 @@ class _HistoryState extends State<History> {
       body: Stack(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height*0.18,
+            height: MediaQuery.of(context).size.height * 0.18,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -76,10 +75,15 @@ class _HistoryState extends State<History> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      IconButton(onPressed: (){
-                        Navigator.pop(context);
-                      }, icon:Icon(Icons.arrow_back_ios,color: Colors.white,) ),
-                      SizedBox(width: MediaQuery.of(context).size.width*0.27),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                          )),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.27),
                       Text(
                         "Orders",
                         style: TextStyle(
@@ -117,6 +121,15 @@ class _HistoryState extends State<History> {
                           .map((doc) => doc.data() as Map<String, dynamic>)
                           .toList();
 
+                      // Sort orders by timestamp in descending order
+                      orders.sort((a, b) {
+                        DateTime timeA =
+                            (a['orders'][0]['time'] as Timestamp).toDate();
+                        DateTime timeB =
+                            (b['orders'][0]['time'] as Timestamp).toDate();
+                        return timeB.compareTo(timeA);
+                      });
+
                       return ListView.builder(
                         itemCount: orders.length,
                         itemBuilder: (context, index) {
@@ -127,18 +140,30 @@ class _HistoryState extends State<History> {
                             children: orderList.map((orderItem) {
                               Map<String, dynamic> items =
                                   Map<String, dynamic>.from(orderItem['items']);
+                              double totalAmount = 0.0;
+
+                              items.entries.forEach((entry) {
+                                Map<String, dynamic> item =
+                                    Map<String, dynamic>.from(entry.value);
+                                totalAmount += (item['price'] as double) *
+                                    (item['count'] as int);
+                              });
+
                               String itemsString = items.entries.map((e) {
                                 Map<String, dynamic> item =
                                     Map<String, dynamic>.from(e.value);
-                                return '${item['count']} x ${e.key}: ₹${item['price']}';
+                                return '${e.key} (x${item['count']}): ₹${item['price']} each';
                               }).join('\n');
                               String orderName = orderItem['orderID'];
+                              DateTime orderTime =
+                                  (orderItem['time'] as Timestamp).toDate();
                               return ListItem(
                                 id: snapshot.data!.docs[index].id,
                                 items: itemsString,
                                 orderStatus: orderItem['orderStatus'],
-                                timestamp: orderItem['time'],
+                                timestamp: orderTime,
                                 orderID: orderName,
+                                totalAmount: totalAmount.toDouble(),
                               );
                             }).toList(),
                           );
