@@ -51,7 +51,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         .then((value) {
       count = value.get('ID');
     });
-    FirebaseFirestore.instance.collection('orderID').doc('IDCount').update({
+    await FirebaseFirestore.instance.collection('orderID').doc('IDCount').update({
       'ID': ++count,
     });
   }

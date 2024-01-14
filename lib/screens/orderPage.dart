@@ -25,7 +25,7 @@ class _OrderPageState extends State<OrderPage> {
   void fetchId() async {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('prepList').get();
-    if (querySnapshot.docs.isNotEmpty) {
+    try{
       print('Fetching orders for userId: ${widget.userId}');
       var filteredDocs = querySnapshot.docs
           .where((doc) =>
@@ -39,7 +39,7 @@ class _OrderPageState extends State<OrderPage> {
         orderId = filteredDocs.toList().elementAt(0).get('orderID');
         calculateTotalAmount(filteredDocs.toList().elementAt(0).get('items'));
       });
-    } else {
+    } catch(e){
       // If no orders are found in 'prepList', check 'Declined'
       QuerySnapshot declinedSnapshot = await FirebaseFirestore.instance
           .collection('Declined')
@@ -84,6 +84,17 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    // StreamBuilder(stream: FirebaseFirestore.instance
+    //     .collection('prepList')
+    //     .doc(orderId)
+    //     .snapshots(), builder:(context,snap){
+    //     if(snap.hasError){
+    //       setState(() {
+    //         isDeclined=true;
+    //       });
+    //     }
+    //     return Container();
+    // });
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

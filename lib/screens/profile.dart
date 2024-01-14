@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'profile_screens/about.dart';
 import 'profile_screens/terms.dart';
@@ -102,11 +103,11 @@ class _ProfileState extends State<Profile> {
     FirebaseStorage storage = FirebaseStorage.instance;
 
       var ref = storage.ref('user/pp_$userId.jpg');
-      var metadata = await ref.getMetadata().onError((error, stackTrace) {
-        return Future.value(null);
-      });
+      // var metadata = await ref.getMetadata().onError((error, stackTrace) {
+      //   return Future.value(null);
+      // });
 
-      if (metadata!= null) {
+      if (!ref.isNull) {
         String downloadURL = await ref.getDownloadURL();
         yield NetworkImage(downloadURL);
       } else {

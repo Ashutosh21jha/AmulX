@@ -145,8 +145,8 @@ class _HistoryState extends State<History> {
                               items.entries.forEach((entry) {
                                 Map<String, dynamic> item =
                                     Map<String, dynamic>.from(entry.value);
-                                totalAmount += (item['price'] as double) *
-                                    (item['count'] as int);
+                                totalAmount += (item['price']) *
+                                    (item['count']);
                               });
 
                               String itemsString = items.entries.map((e) {
