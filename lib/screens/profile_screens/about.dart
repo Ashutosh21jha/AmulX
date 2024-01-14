@@ -44,6 +44,7 @@ class About extends StatelessWidget {
                   height: 0.06,
                 ),
               ),
+                  const SizedBox(height: 16),
               Text(
                 'Welcome to DevComm, where innovation meets community spirit at NSUT. We\'re the driving force behind apps like NSUT X, AmulX , connecting developers and fostering creativity in the digital realm. Join us in shaping the future together.',
                 style: TextStyle(

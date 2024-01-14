@@ -37,7 +37,7 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Obx(() => WillPopScope(
       onWillPop: () async {
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>Mainscreen()));
+        Navigator.push(context,MaterialPageRoute(builder: (context)=>const Mainscreen()));
         return true;
       },
       child: Scaffold(
