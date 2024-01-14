@@ -281,7 +281,7 @@ class _ProfileState extends State<Profile> {
                                 builder: (BuildContext context,
                                     AsyncSnapshot snapshot) {
                                   if (snapshot.data == null) {
-                                    return Center(
+                                    return const Center(
                                         child: CircularProgressIndicator());
                                   } else {
                                     return Column(
