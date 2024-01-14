@@ -52,15 +52,27 @@ class _EditProfileState extends State<EditProfile> {
 
   Future<void> uploadImageToFirebase(XFile image) async {
     File imageFile = File(image.path);
-
-    try {
-      await FirebaseStorage.instance
+    FirebaseStorage storage = FirebaseStorage.instance;
+    var ref = storage.ref('user/pp_$userId.jpg');
+    var metadata = await ref.getData().onError((error, stackTrace) {
+      return null;
+    });
+    if(metadata!=null){
+      await storage
           .ref('user/pp_$userId.jpg')
           .putFile(imageFile);
       setState(() {});
-    } on FirebaseException catch (e) {
-      print(e);
+    }else{
+      print("Image not found");
     }
+    // try {
+    //   await FirebaseStorage.instance
+    //       .ref('user/pp_$userId.jpg')
+    //       .putFile(imageFile);
+    //   setState(() {});
+    // } on FirebaseException catch (e) {
+    //   print(e);
+    // }
   }
 
   Future<void> pickImage() async {
@@ -76,12 +88,23 @@ class _EditProfileState extends State<EditProfile> {
   Future<ImageProvider> fetchImage() async {
     String filePath = 'user/pp_$userId.jpg';
     var ref = FirebaseStorage.instance.ref().child(filePath);
-
-    return ref.getDownloadURL().then((url) {
-      return NetworkImage(url);
-    }, onError: (error) {
-      return const AssetImage('assets/images/avatar.png');
+    FirebaseStorage storage = FirebaseStorage.instance;
+    var refL = storage.ref('user/pp_$userId.jpg');
+    var metadata = await refL.getData().onError((error, stackTrace) {
+      return null;
     });
+    if(metadata!=null){
+      return ref.getDownloadURL().then((url){
+        return NetworkImage(url);
+      });
+    }else{
+      return const AssetImage('assets/images/avatar.png');
+    }
+    // return ref.getDownloadURL().then((url) {
+    //   return NetworkImage(url);
+    // }, onError: (error) {
+    //   return const AssetImage('assets/images/avatar.png');
+    // });
   }
 
   @override
