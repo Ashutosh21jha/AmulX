@@ -11,7 +11,7 @@ class CartController extends GetxController {
   late List<int> countList;
   final RxList<CartItem> cartItems = <CartItem>[].obs;
   bool isCartEmpty = false;
-  bool currentOrder=false;
+  bool currentOrder = false;
 
   final db = FirebaseFirestore.instance;
   late Timer _timer;
@@ -222,8 +222,8 @@ class CartController extends GetxController {
 
   Future<void> reloadFetchData() async {
     // _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
-      CartController.to.fetchCart();
-      CartController.to.reloadCart();
+    CartController.to.fetchCart();
+    CartController.to.reloadCart();
     // });
   }
 
@@ -268,16 +268,11 @@ class CartController extends GetxController {
             if (newStock == 0) {
               transaction.update(
                 availableCollection.doc(cartItem.name),
-                {'availability': false,
-                  'stock': newStock
-                },
+                {'availability': false, 'stock': newStock},
               );
-
-            }
-            else {
+            } else {
               // Handle out-of-stock case
               print('Item ${cartItem.name} is out of stock.');
-              // You may want to throw an exception or handle this case appropriately
             }
           }
         }
@@ -314,7 +309,7 @@ Future<void> addBackStock(List<CartItem> cartItems) async {
     print('Error adding back stock: $error');
     // Handle the error as needed
   }
-  CartController.to.reloadCart(); // Reload the cart after adding back stock
+  CartController.to.reloadCart();
 }
 
 Future<void> updateStockOnPay(List<CartItem> cartItems) async {
@@ -331,7 +326,6 @@ Future<void> updateStockOnPay(List<CartItem> cartItems) async {
           final newStock = currentStock - cartItem.quantity;
 
           if (newStock >= 0) {
-            // Update the stock
             transaction.update(
               availableCollection.doc(cartItem.name),
               {'stock': newStock},

@@ -92,33 +92,34 @@ class _ProfileState extends State<Profile> {
     final docRef = await db.collection("User").doc(userId).get();
     Map<String, dynamic>? userData = docRef.data() as Map<String, dynamic>?;
     if (userData != null) {
-      setState(() {
-        name = userData['name'] ?? '';
-        s_id = userData['student id'] ?? '';
-      });
+      if (mounted) {
+        setState(() {
+          name = userData['name'] ?? '';
+          s_id = userData['student id'] ?? '';
+        });
+      }
     }
   }
 
   Stream<ImageProvider> getProfilePicture() async* {
     FirebaseStorage storage = FirebaseStorage.instance;
 
-      var ref = storage.ref('user/pp_$userId.jpg');
-      // var metadata = await ref.getMetadata().onError((error, stackTrace) {
-      //   return Future.value(null);
-      // });
-      var metadata = await ref.getData().onError((error, stackTrace) {
-        return null;
-      });
+    var ref = storage.ref('user/pp_$userId.jpg');
+    // var metadata = await ref.getMetadata().onError((error, stackTrace) {
+    //   return Future.value(null);
+    // });
+    var metadata = await ref.getData().onError((error, stackTrace) {
+      return null;
+    });
 
-      if (metadata!=null) {
-        String downloadURL = await ref.getDownloadURL();
-        yield NetworkImage(downloadURL);
-      } else {
-        yield const AssetImage('assets/images/avatar.png');
-      }
+    if (metadata != null) {
+      String downloadURL = await ref.getDownloadURL();
+      yield NetworkImage(downloadURL);
+    } else {
+      yield const AssetImage('assets/images/avatar.png');
+    }
 
-      await Future.delayed(const Duration(seconds: 2));
-
+    await Future.delayed(const Duration(seconds: 2));
   }
 
   @override
