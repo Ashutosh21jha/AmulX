@@ -1,4 +1,4 @@
-import 'package:amul/Screens/profile.dart';
+import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/cartPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

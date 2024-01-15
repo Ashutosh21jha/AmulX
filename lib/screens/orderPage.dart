@@ -20,6 +20,17 @@ class _OrderPageState extends State<OrderPage> {
   void initState() {
     super.initState();
     fetchId();
+    FirebaseFirestore.instance.collection('Declined').snapshots().forEach((element) {
+      for (var element in element.docs) {
+        if (element.id == orderId) {
+          print("$orderId is declined.");
+          setState(() {
+            isDeclined = true;
+          });
+        }
+      }
+    });
+    
   }
 
   void fetchId() async {
@@ -71,6 +82,7 @@ class _OrderPageState extends State<OrderPage> {
         print('No matching documents found in Declined collection');
       }
     }
+    
   }
 
   void calculateTotalAmount(Map<String, dynamic> items) {
@@ -95,6 +107,9 @@ class _OrderPageState extends State<OrderPage> {
     //     }
     //     return Container();
     // });
+    
+
+    
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -211,7 +226,7 @@ class _OrderPageState extends State<OrderPage> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                isDeclined==false?Container(
+                                isDeclined==false?SizedBox(
                                   height: 100,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -317,7 +332,7 @@ class _OrderPageState extends State<OrderPage> {
                                       ),
                                     ],
                                   ),
-                                ):Container(
+                                ):SizedBox(
                                   height: 100,
                                   child: Text('Order Declined your Code is ${snapshot.data?['code']}'),
                                 ),
