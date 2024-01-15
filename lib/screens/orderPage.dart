@@ -355,9 +355,11 @@ class _OrderPageState extends State<OrderPage> {
                                         ),
                                       )
                                     : SizedBox(
-                                        height: 100,
+                                        height: 40,
                                         child: Text(
-                                            'Order Declined your Code is ${snapshot.data?['code']}'),
+                                          'Order Declined\nYour Code is ${snapshot.data?['code']}',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
                                       ),
                                 Container(
                                   decoration: const BoxDecoration(
@@ -399,7 +401,7 @@ class _OrderPageState extends State<OrderPage> {
                                           ' ${map.keys.elementAt(index)} (x ${value['count']})',
                                           style: const TextStyle(
                                               color: Colors.black,
-                                              fontSize: 14),
+                                              fontSize: 16),
                                         ),
                                         trailing: RichText(
                                           text: TextSpan(
@@ -415,14 +417,14 @@ class _OrderPageState extends State<OrderPage> {
                                                 text: ' ${value['price']}',
                                                 style: const TextStyle(
                                                   color: AppColors.green,
-                                                  fontSize: 14,
+                                                  fontSize: 16,
                                                 ),
                                               ),
                                               const TextSpan(
                                                 text: '  each',
                                                 style: TextStyle(
                                                   color: Colors.black,
-                                                  fontSize: 14,
+                                                  fontSize: 16,
                                                 ),
                                               ),
                                             ],
