@@ -1,3 +1,4 @@
+import 'package:amul/Utils/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +72,7 @@ class _HistoryState extends State<History> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 80),
+                  padding: const EdgeInsets.only(top: 80),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -79,12 +80,12 @@ class _HistoryState extends State<History> {
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.arrow_back_ios,
                             color: Colors.white,
                           )),
                       SizedBox(width: MediaQuery.of(context).size.width * 0.27),
-                      Text(
+                      const Text(
                         "Orders",
                         style: TextStyle(
                           color: Colors.white,
@@ -97,7 +98,7 @@ class _HistoryState extends State<History> {
                     ],
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
                     stream: historyCollection.snapshots(),
@@ -112,7 +113,11 @@ class _HistoryState extends State<History> {
                           child: Container(
                             width: Get.width * 0.5,
                             height: Get.height * 0.3,
-                            child: const CircularProgressIndicator(),
+                            child: const Center(
+                              child:  CircularProgressIndicator(
+                               color: AppColors.blue,
+                              ),
+                            ),
                           ),
                         );
                       }
@@ -122,13 +127,13 @@ class _HistoryState extends State<History> {
                           .toList();
 
                       // Sort orders by timestamp in descending order
-                      orders.sort((a, b) {
+                      /*orders.sort((a, b) {
                         DateTime timeA =
                             (a['orders'][0]['time'] as Timestamp).toDate();
                         DateTime timeB =
                             (b['orders'][0]['time'] as Timestamp).toDate();
                         return timeB.compareTo(timeA);
-                      });
+                      });*/
 
                       return ListView.builder(
                         itemCount: orders.length,

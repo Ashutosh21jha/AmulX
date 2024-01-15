@@ -1,3 +1,4 @@
+import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/history.dart';
@@ -37,7 +38,7 @@ class _HomeState extends State<HomePage> {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.red,
+              color: AppColors.red,
             ),
           ),
         ),

@@ -40,7 +40,7 @@ class _OrderPageState extends State<OrderPage> {
       print('Fetching orders for userId: ${widget.userId}');
       var filteredDocs = querySnapshot.docs
           .where((doc) =>
-              RegExp(r'^ORD-\d{3}$').hasMatch(doc.id.toString()) &&
+              RegExp(r'^ORD-\d+$').hasMatch(doc.id.toString()) &&
               (doc['userId'] == widget.userId) &&
               doc['orderStatus'] != 'Placed')
           .toList();

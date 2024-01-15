@@ -36,11 +36,12 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => WillPopScope(
-      onWillPop: () async {
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>const Mainscreen()));
-        return true;
-      },
-      child: Scaffold(
+          onWillPop: () async {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Mainscreen()));
+            return true;
+          },
+          child: Scaffold(
             appBar: widget.fromFoodPage
                 ? AppBar(
                     elevation: 0,
@@ -77,6 +78,7 @@ class _CartPageState extends State<CartPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Visibility(child: SizedBox(height: Get.height * 0.15)),
                         const Text(
                           "Your Cart is Empty!",
                           style: TextStyle(
@@ -89,6 +91,35 @@ class _CartPageState extends State<CartPage> {
                           width: double.infinity,
                           repeat: false,
                           frameRate: FrameRate(30),
+                        ),
+                        SizedBox(height: Get.height * 0.15),
+                        Visibility(
+                          visible: CartController.to.currentOrder,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Get.to(() => OrderPage(
+                                    userId: userId,
+                                  ));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              textStyle: const TextStyle(fontSize: 24),
+                              backgroundColor: const Color(0xFF2546A9),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 40,
+                                vertical: 16,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(48),
+                              ),
+                            ),
+                            child: const Text(
+                              'Track Orders',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18, // Increase font size
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -243,7 +274,8 @@ class _CartPageState extends State<CartPage> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
                                     const Text(
                                       'Summary',
@@ -380,6 +412,6 @@ class _CartPageState extends State<CartPage> {
                     ],
                   ),
           ),
-    ));
+        ));
   }
 }
