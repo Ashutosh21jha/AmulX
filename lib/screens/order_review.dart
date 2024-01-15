@@ -43,17 +43,20 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     fetch();
   }
 
-  void fetch() async {
-    await FirebaseFirestore.instance
-        .collection('orderID')
-        .doc('IDCount')
-        .get()
-        .then((value) {
-      count = value.get('ID');
-    });
-    await FirebaseFirestore.instance.collection('orderID').doc('IDCount').update({
-      'ID': ++count,
-    });
+  Future<void> fetch() async {
+    try {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentReference countRef =
+            FirebaseFirestore.instance.collection('orderID').doc('IDCount');
+
+        DocumentSnapshot countSnapshot = await transaction.get(countRef);
+        int count = countSnapshot.get('ID');
+
+        transaction.update(countRef, {'ID': ++count});
+      });
+    } catch (error) {
+      print('Error updating order count: $error');
+    }
   }
 
   Future<void> addBackStock(List<CartItem> cartItems) async {
@@ -122,6 +125,14 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
       final historyCollection =
           FirebaseFirestore.instance.collection('User/$userId/history');
+      count = 0;
+      await FirebaseFirestore.instance
+          .collection('orderID')
+          .doc('IDCount')
+          .get()
+          .then((value) {
+        count = value.get('ID');
+      });
 
       final prepListCollection =
           FirebaseFirestore.instance.collection('prepList');
@@ -155,7 +166,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           return map;
         },
       );
-
       final prepListOrderData = {
         'userId': userId,
         'items': itemsMap,
