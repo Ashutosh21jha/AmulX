@@ -45,7 +45,7 @@ class _signupPageState extends State<signupPage> {
 
       try {
         await signUp(
-          email: email,
+          email: email.toLowerCase(),
           context: context,
           name: name,
           password: password,
@@ -82,9 +82,8 @@ class _signupPageState extends State<signupPage> {
         Map<String, dynamic>? userData =
             existingDocument.data() as Map<String, dynamic>?;
         if (userData != null &&
-                userData['name'] == name &&
-                userData['student id'] ==
-                    rollno /*&&
+                userData['name'].toString().toLowerCase() == name.toLowerCase() &&
+                userData['student id'].toString().toLowerCase() == rollno.toLowerCase() /*&&
           userData['password'] == password*/
             ) {
           signIn(
