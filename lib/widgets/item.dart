@@ -104,14 +104,14 @@ class _ListItemState extends State<ListItem>
                   side: const BorderSide(width: 1, color: Color(0xFFF3F3F3)),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                shadows: [
-                  const BoxShadow(
+                shadows: const [
+                  BoxShadow(
                     color: Color(0x28606170),
                     blurRadius: 2,
                     offset: Offset(0, 0.50),
                     spreadRadius: 0,
                   ),
-                  const BoxShadow(
+                  BoxShadow(
                     color: Color(0x1428293D),
                     blurRadius: 1,
                     offset: Offset(0, 0),
@@ -194,8 +194,8 @@ class _ListItemState extends State<ListItem>
                   const SizedBox(height: 16),
                   Text(
                     widget.orderStatus,
-                    style: const TextStyle(
-                      color: Color(0xFF18AE86),
+                    style: TextStyle(
+                      color: widget.orderStatus == "Declined" ? AppColors.red : const Color(0xFF18AE86),
                       fontSize: 14,
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w700,
@@ -218,14 +218,14 @@ class _ListItemState extends State<ListItem>
                   side: const BorderSide(width: 1, color: Color(0xFFF3F3F3)),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                shadows: [
-                  const BoxShadow(
+                shadows: const [
+                  BoxShadow(
                     color: Color(0x28606170),
                     blurRadius: 2,
                     offset: Offset(0, 0.50),
                     spreadRadius: 0,
                   ),
-                  const BoxShadow(
+                  BoxShadow(
                     color: Color(0x1428293D),
                     blurRadius: 1,
                     offset: Offset(0, 0),
