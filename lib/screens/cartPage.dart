@@ -54,10 +54,7 @@ class _CartPageState extends State<CartPage> {
                         color: Colors.black,
                       ),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Mainscreen()));
+                        Navigator.pop(context);
                       },
                     ),
                     centerTitle: true,

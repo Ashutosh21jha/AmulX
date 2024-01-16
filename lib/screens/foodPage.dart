@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/models/items_model.dart';
 import 'package:amul/screens/cartPage.dart';
@@ -29,8 +30,13 @@ class FoodPageState extends State<FoodPage> {
   final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
   late final Timer _timer;
 
+
+
+  String get userId => auth.currentUser?.email ?? '';
+  int selected = 0;
+  final TextEditingController _searchController = TextEditingController();
+
   void separateItems() {
-    /*Filterlist.values.forEach((rxList) => rxList.clear());*/
     for (ItemsModel itemData in widget.itemList) {
       bool available = itemData.availability;
       ItemsModel item = ItemsModel(
@@ -51,110 +57,26 @@ class FoodPageState extends State<FoodPage> {
     mergedList.addAll(unavailableItems);
   }
 
-  /*RxMap<String, RxList<Map<String, dynamic>>> Filterlist = {
-    'availableItems': <Map<String, dynamic>>[].obs,
-    'unavailableItems': <Map<String, dynamic>>[].obs,
-  }.obs;*/
-
-  /*Future<void> getUpdateCount() async {
-    try {
-      final RxList<CartItem> cartItems = CartController.to.cartItems;
-      final List<Map<String, dynamic>>? availableItems =
-          Filterlist['availableItems'];
-
-      for (final Item in cartItems) {
-        final matchingItem = availableItems?.firstWhere(
-          (availableItem) => availableItem['name'] == Item.name,
-        );
-        if (matchingItem != null) {
-          Item.quantity = matchingItem['count'];
-        }
-      }
-    } catch (e) {
-      print("Error updating item count: $e");
-    }
-  }*/
-
-  /* RxList<Map<String, dynamic>> perfectlist() {
-    RxList availableItems = Filterlist['availableItems'] ?? [].obs;
-    RxList unavailableItems = Filterlist['unavailableItems'] ?? [].obs;
-
-    */ /*Set<String> uniqueKeys = Set<String>();
-
-    availableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
-    unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));*/ /*
-
-    RxList<Map<String, dynamic>> result = <Map<String, dynamic>>[].obs;
-    result.addAll(availableItems as Iterable<Map<String, dynamic>>);
-    result.addAll(unavailableItems as Iterable<Map<String, dynamic>>);
-
-    return result;
+  Widget closedStoreMessage() {
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Text(
+            'Store is Closed',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.red,
+            ),
+          ),
+        ),
+        SizedBox(height: 20),
+      ],
+    );
   }
-*/
-  /* Set<String> uniqueKeys = Set<String>();
-
-  availableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
-  unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
-
-  return [...availableItems, ...unavailableItems];
-*/
-
-  void _sortListByPriceLowestToHighest() {
-    setState(() {
-      availableItems.sort(
-        (a, b) => a.price.compareTo(b.price),
-      );
-      mergedList.clear();
-      mergedList.addAll(availableItems);
-      mergedList.addAll(unavailableItems);
-    });
-  }
-
-  void _sortListByPriceHighestToLowest() {
-    setState(() {
-      availableItems.sort(
-        (a, b) => b.price.compareTo(a.price),
-      );
-      mergedList.clear();
-      mergedList.addAll(availableItems);
-      mergedList.addAll(unavailableItems);
-    });
-  }
-
-  /*void _showDefaultOrder() {
-    setState(() {
-      mergedList.clear();
-      mergedList.addAll(widget.itemList);
-    });
-  }*/
-
-  Future<void> reloadFetchData() async {
-    _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
-      ItemController.to.fetchItems();
-    });
-  }
-
-  String get userId => auth.currentUser?.email ?? '';
-
-  int selected = 0;
-  final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    separateItems();
-    /*   _defaultOrder = List<F
-    oodItem>.from(_foodItems);*/
-    /*_showDefaultOrder();*/
-    ItemController.to.fetchItems();
-    // reloadFetchData();
-    CartController.to.tappedList = List.filled(mergedList.length, false);
-    CartController.to.countList = List.filled(mergedList.length, 0);
-    selected = 0;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget openStoreContent() {
     int index1 = 0;
     int index2 = 1;
     int index3 = 2;
@@ -249,18 +171,18 @@ class FoodPageState extends State<FoodPage> {
                             width: 1, // Border width
                           ),
                           borderRadius:
-                              BorderRadius.circular(32.0), // Border radius
+                          BorderRadius.circular(32.0), // Border radius
                         ),
                         child: Center(
                             child: Text(
-                          "Most Popular",
-                          style: TextStyle(
-                            color: selected == index1
-                                ? Colors.white
-                                : const Color(0xFF2546A9),
-                          ),
-                          //style: TextStyle(color: Colors.white),
-                        )),
+                              "Most Popular",
+                              style: TextStyle(
+                                color: selected == index1
+                                    ? Colors.white
+                                    : const Color(0xFF2546A9),
+                              ),
+                              //style: TextStyle(color: Colors.white),
+                            )),
                       ),
                     ),
                   ),
@@ -268,7 +190,14 @@ class FoodPageState extends State<FoodPage> {
                     onTap: () {
                       setState(() {
                         selected = index2;
-                        _sortListByPriceLowestToHighest();
+                          availableItems.sort(
+                                (a, b) => int.parse(a.price).compareTo(int.parse(b.price)),
+                          );
+                          mergedList.clear();
+                          mergedList.addAll(availableItems);
+                          mergedList.addAll(unavailableItems);
+
+                        /*_sortListByPriceLowestToHighest();*/
                       });
                     },
                     /* onTap: () {
@@ -297,18 +226,18 @@ class FoodPageState extends State<FoodPage> {
                             width: 1, // Border width
                           ),
                           borderRadius:
-                              BorderRadius.circular(32.0), // Border radius
+                          BorderRadius.circular(32.0), // Border radius
                         ),
                         child: Center(
                             child: Text(
-                          "Price: Lowest - Highest",
-                          style: TextStyle(
-                            color: selected == index2
-                                ? Colors.white
-                                : const Color(0xFF2546A9),
-                          ),
-                          // style: TextStyle(color: Colors.white),
-                        )),
+                              "Price: Lowest - Highest",
+                              style: TextStyle(
+                                color: selected == index2
+                                    ? Colors.white
+                                    : const Color(0xFF2546A9),
+                              ),
+                              // style: TextStyle(color: Colors.white),
+                            )),
                       ),
                     ),
                   ),
@@ -316,7 +245,15 @@ class FoodPageState extends State<FoodPage> {
                     onTap: () {
                       setState(() {
                         selected = index3;
-                        _sortListByPriceHighestToLowest();
+
+                          availableItems.sort(
+                                (a, b) => int.parse(b.price).compareTo(int.parse(a.price)),
+                          );
+                          mergedList.clear();
+                          mergedList.addAll(availableItems);
+                          mergedList.addAll(unavailableItems);
+
+                        /*_sortListByPriceHighestToLowest();*/
                       });
                     },
                     /*onTap: () {
@@ -344,17 +281,17 @@ class FoodPageState extends State<FoodPage> {
                             width: 1, // Border width
                           ),
                           borderRadius:
-                              BorderRadius.circular(32.0), // Border radius
+                          BorderRadius.circular(32.0), // Border radius
                         ),
                         child: Center(
                             child: Text(
-                          "Price: Highest - Lowest",
-                          style: TextStyle(
-                            color: selected == index3
-                                ? Colors.white
-                                : const Color(0xFF2546A9),
-                          ),
-                        )),
+                              "Price: Highest - Lowest",
+                              style: TextStyle(
+                                color: selected == index3
+                                    ? Colors.white
+                                    : const Color(0xFF2546A9),
+                              ),
+                            )),
                       ),
                     ),
                   ),
@@ -385,8 +322,8 @@ class FoodPageState extends State<FoodPage> {
 
                       if (_searchController.text.isNotEmpty &&
                           !itemname!.toLowerCase().contains(
-                                _searchController.text.toLowerCase(),
-                              )) {
+                            _searchController.text.toLowerCase(),
+                          )) {
                         return Container();
                       }
 
@@ -422,7 +359,7 @@ class FoodPageState extends State<FoodPage> {
               color: const Color(0xFF2546A9),
               shape: RoundedRectangleBorder(
                 borderRadius:
-                    BorderRadius.circular(30), // Customize the border radius
+                BorderRadius.circular(30), // Customize the border radius
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -459,6 +396,137 @@ class FoodPageState extends State<FoodPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+
+  /*RxMap<String, RxList<Map<String, dynamic>>> Filterlist = {
+    'availableItems': <Map<String, dynamic>>[].obs,
+    'unavailableItems': <Map<String, dynamic>>[].obs,
+  }.obs;*/
+
+  /*Future<void> getUpdateCount() async {
+    try {
+      final RxList<CartItem> cartItems = CartController.to.cartItems;
+      final List<Map<String, dynamic>>? availableItems =
+          Filterlist['availableItems'];
+
+      for (final Item in cartItems) {
+        final matchingItem = availableItems?.firstWhere(
+          (availableItem) => availableItem['name'] == Item.name,
+        );
+        if (matchingItem != null) {
+          Item.quantity = matchingItem['count'];
+        }
+      }
+    } catch (e) {
+      print("Error updating item count: $e");
+    }
+  }*/
+
+  /* RxList<Map<String, dynamic>> perfectlist() {
+    RxList availableItems = Filterlist['availableItems'] ?? [].obs;
+    RxList unavailableItems = Filterlist['unavailableItems'] ?? [].obs;
+
+    */ /*Set<String> uniqueKeys = Set<String>();
+
+    availableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
+    unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));*/ /*
+
+    RxList<Map<String, dynamic>> result = <Map<String, dynamic>>[].obs;
+    result.addAll(availableItems as Iterable<Map<String, dynamic>>);
+    result.addAll(unavailableItems as Iterable<Map<String, dynamic>>);
+
+    return result;
+  }
+*/
+  /* Set<String> uniqueKeys = Set<String>();
+
+  availableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
+  unavailableItems.removeWhere((item) => !uniqueKeys.add(item['name']));
+
+  return [...availableItems, ...unavailableItems];
+*/
+
+/*  void _sortListByPriceLowestToHighest() {
+    setState(() {
+      availableItems.sort(
+        (a, b) => a.price.compareTo(b.price),
+      );
+      mergedList.clear();
+      mergedList.addAll(availableItems);
+      mergedList.addAll(unavailableItems);
+    });
+  }*/
+
+  /*void _sortListByPriceHighestToLowest() {
+    setState(() {
+      availableItems.sort(
+        (a, b) => b.price.compareTo(a.price),
+      );
+      mergedList.clear();
+      mergedList.addAll(availableItems);
+      mergedList.addAll(unavailableItems);
+    });
+  }*/
+
+  /*void _showDefaultOrder() {
+    setState(() {
+      mergedList.clear();
+      mergedList.addAll(widget.itemList);
+    });
+  }*/
+
+/*
+  Future<void> reloadFetchData() async {
+    _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+      ItemController.to.fetchItems();
+    });
+  }
+*/
+
+  @override
+  void initState() {
+    super.initState();
+    separateItems();
+    /*   _defaultOrder = List<F
+    oodItem>.from(_foodItems);*/
+    /*_showDefaultOrder();*/
+    ItemController.to.fetchItems();
+    // reloadFetchData();
+    CartController.to.tappedList = List.filled(mergedList.length, false);
+    CartController.to.countList = List.filled(mergedList.length, 0);
+    selected = 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return  StreamBuilder<DocumentSnapshot>(
+      stream: db.collection('menu').doc('today menu').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: Center(
+              child: Text('Error: ${snapshot.error}'),
+            ),
+          );
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        final sessionData = snapshot.data;
+        final bool isStoreOpen = sessionData?['session'] ?? false;
+
+        return Scaffold(
+          body: isStoreOpen ? openStoreContent() : closedStoreMessage(),
+        );
+      },
     );
   }
 }

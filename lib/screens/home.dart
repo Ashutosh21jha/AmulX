@@ -29,16 +29,47 @@ class _HomeState extends State<HomePage> {
 
   Widget closedStoreMessage() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Center(
-          child: const Text(
-            'Store is Closed',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.red,
+        const SizedBox(
+          height: 40,
+        ),
+        Padding(
+          padding:
+          const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
+          child: SizedBox(
+            height: 92,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SvgPicture.asset(
+                    "assets/images/logo.svg",
+                    width: 85,
+                    height: 30,
+                  ),
+                  GestureDetector(
+                    onTap: () => Get.to(History()),
+                    child: const Icon(
+                      Icons.history,
+                      size: 30,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: const Text(
+              'Store is Closed',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.red,
+              ),
             ),
           ),
         ),
@@ -54,11 +85,9 @@ class _HomeState extends State<HomePage> {
           const SizedBox(
             height: 40,
           ),
-
-          // logo and avatar container
           Padding(
             padding:
-                const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
+            const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
             child: SizedBox(
               height: 92,
               child: Center(
