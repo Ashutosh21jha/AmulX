@@ -100,7 +100,7 @@ class _signupPageState extends State<signupPage> {
           );
         }
       } else {
-        auth.createUserWithEmailAndPassword(email: email, password: password);
+        await auth.createUserWithEmailAndPassword(email: email, password: password);
         sendEmailVerification();
         isLoading = false;
         Navigator.push(

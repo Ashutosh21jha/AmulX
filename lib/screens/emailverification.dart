@@ -190,8 +190,35 @@ class _EmailverificationState extends State<Emailverification> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        child: Container(
+          width: 140,
+          height: 50,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: const Color(0xFF2546A9), // Border color
+              width: 1, // Border width
+            ),
+          ),
+          child: InkWell(
+            onTap: () => resendlink(),
+            child: const Center(
+              child: Text(
+                "Resend Link",
+                style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: Color(0xFF2546A9),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14),
+              ),
+            ),
+          ),
+        ),
+      ),
+      /*bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               width: 140,
@@ -217,7 +244,7 @@ class _EmailverificationState extends State<Emailverification> {
                 ),
               ),
             ),
-            InkWell(
+            *//*InkWell(
               onTap: () {
                 signIn(context, widget.loginMail, widget.name, widget.s_id,
                     widget.password);
@@ -246,10 +273,10 @@ class _EmailverificationState extends State<Emailverification> {
                   ),
                 ),
               ),
-            ),
+            ),*//*
           ],
         ),
-      ),
+      ),*/
     );
   }
 }
