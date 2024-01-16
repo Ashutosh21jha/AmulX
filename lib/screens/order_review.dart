@@ -378,138 +378,133 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.only(top: 60),
-            child: Center(
-              child: Row(
-                children: [
-                  const SizedBox(width: 5),
-                  IconButton(
+      appBar: AppBar(
+        title: const Text(
+                    'Summary',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+        centerTitle: true,
+        leading: IconButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
                       icon: const Icon(Icons.arrow_back_ios)),
-                  SizedBox(width: Get.width * 0.26),
-                  const Text(
-                    'Summary',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              height: 350,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.transparent,
-                border: Border.all(color: Colors.grey, width: 1),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Order Summary',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: widget.cartItems.length,
-                    itemBuilder: (context, index) {
-                      final item = widget.cartItems[index];
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${item.name} (${item.quantity} items)',
-                            style: const TextStyle(
-                              fontSize: 17,
-                            ),
-                          ), // Item name with count
-                          Text(
-                            '\₹${item.price.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 17,
-                            ),
-                          ), // Item price
-                        ],
-                      );
-                    },
-                  ),
-                  const Divider(
-                    thickness: 2,
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Total',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          const Spacer(),
-                          Text(
-                            '\₹${totalAmount.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.transparent,
+                  border: Border.all(color: Colors.grey, width: 1),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+                      child: Text(
+                        'Order Summary',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 30),
-          ElevatedButton(
-            onPressed: () async {
-              setState(() {
-                isLoading = true;
-              });
-              navigateToPayment();
-              await CartController.to
-                  .updateStockOnPay(CartController.to.cartItems);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40),
-              ),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
-              textStyle: const TextStyle(fontSize: 20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: isLoading
-                  ? const SizedBox(
-                      height: 10,
-                      width: 10,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
+                    ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: widget.cartItems.length,
+                      itemBuilder: (context, index) {
+                        final item = widget.cartItems[index];
+                        return ListTile(
+                          dense: true,
+                          visualDensity: VisualDensity.compact,
+                          title: Text(
+                              '${item.name} (${item.quantity} ${item.quantity == 1 ? 'item' : 'items'})',
+                              style: const TextStyle(
+                                fontSize: 17,
+                              ),
+                            ),
+                          trailing: Text(
+                              '₹${item.price.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 17,
+                              ),
+                            ),
+                        );
+                      },
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Divider(
+                        thickness: 2,
                       ),
-                    )
-                  : const Text(
-                      'Pay',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                    ),
+                    Align(
+                        alignment: Alignment.bottomLeft,
+                        child: ListTile(
+                          dense: true,
+                          title: const Text(
+                              'Total',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                          trailing: Text(
+                              '₹${totalAmount.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                        )
+                      ),
+                    
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                navigateToPayment();
+                await CartController.to
+                    .updateStockOnPay(CartController.to.cartItems);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
+                textStyle: const TextStyle(fontSize: 20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: isLoading
+                    ? const SizedBox(
+                        height: 10,
+                        width: 10,
+                        child: CircularProgressIndicator(
                           color: Colors.white,
-                          fontSize: 18),
-                    ),
+                        ),
+                      )
+                    : const Text(
+                        'Pay',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18),
+                      ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

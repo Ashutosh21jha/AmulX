@@ -358,10 +358,11 @@ class _OrderPageState extends State<OrderPage> {
                                         height: 40,
                                         child: Text(
                                           'Order Declined\nYour Code is ${snapshot.data?['code']}',
-                                          style: TextStyle(fontSize: 16),
+                                          style: const TextStyle(fontSize: 16),
                                         ),
                                       ),
                                 Container(
+                                  margin: const EdgeInsets.symmetric(vertical: 16),
                                   decoration: const BoxDecoration(
                                     color: Colors.white,
                                     borderRadius:
