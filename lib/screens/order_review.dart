@@ -430,7 +430,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                               ),
                             ),
                           trailing: Text(
-                              '₹${item.price.toStringAsFixed(2)}',
+                              '₹${(item.price * item.quantity).toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontSize: 17,
                               ),
