@@ -135,7 +135,10 @@ class _HistoryState extends State<History> {
                             (b['orders'][0]['time'] as Timestamp).toDate();
                         return timeB.compareTo(timeA);
                       });*/
-                      print(orders);
+                      orders.sort((order1, order2) => (order2['orders'][0]
+                              ['time'] as Timestamp)
+                          .compareTo(order1['orders'][0]['time'] as Timestamp));
+
                       return ListView.builder(
                         itemCount: orders.length,
                         itemBuilder: (context, index) {
@@ -164,6 +167,7 @@ class _HistoryState extends State<History> {
                               String orderName = orderItem['orderID'];
                               DateTime orderTime =
                                   (orderItem['time'] as Timestamp).toDate();
+
                               return ListItem(
                                 id: snapshot.data!.docs[index].id,
                                 items: historyItems,
