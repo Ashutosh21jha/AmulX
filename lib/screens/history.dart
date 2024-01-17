@@ -1,4 +1,5 @@
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -114,8 +115,8 @@ class _HistoryState extends State<History> {
                             width: Get.width * 0.5,
                             height: Get.height * 0.3,
                             child: const Center(
-                              child:  CircularProgressIndicator(
-                               color: AppColors.blue,
+                              child: CircularProgressIndicator(
+                                color: AppColors.blue,
                               ),
                             ),
                           ),
@@ -134,7 +135,7 @@ class _HistoryState extends State<History> {
                             (b['orders'][0]['time'] as Timestamp).toDate();
                         return timeB.compareTo(timeA);
                       });*/
-
+                      print(orders);
                       return ListView.builder(
                         itemCount: orders.length,
                         itemBuilder: (context, index) {
@@ -150,21 +151,22 @@ class _HistoryState extends State<History> {
                               items.entries.forEach((entry) {
                                 Map<String, dynamic> item =
                                     Map<String, dynamic>.from(entry.value);
-                                totalAmount += (item['price']) *
-                                    (item['count']);
+                                totalAmount +=
+                                    (item['price']) * (item['count']);
                               });
 
-                              String itemsString = items.entries.map((e) {
-                                Map<String, dynamic> item =
-                                    Map<String, dynamic>.from(e.value);
-                                return '${e.key} (x${item['count']}): ₹${item['price']} each';
-                              }).join('\n');
+                              List<CartItem> historyItems = items.entries
+                                  .map((item) => CartItem(
+                                      name: item.key,
+                                      price: item.value['price'],
+                                      quantity: item.value['count']))
+                                  .toList();
                               String orderName = orderItem['orderID'];
                               DateTime orderTime =
                                   (orderItem['time'] as Timestamp).toDate();
                               return ListItem(
                                 id: snapshot.data!.docs[index].id,
-                                items: itemsString,
+                                items: historyItems,
                                 orderStatus: orderItem['orderStatus'],
                                 timestamp: orderTime,
                                 orderID: orderName,
