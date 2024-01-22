@@ -391,7 +391,7 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.question_answer_outlined,
                             text: "FAQ",
-                            screen: const Faq(),
+                            screen: Faq(),
                             color: const Color(0xFFFC6DBB)),
                         const SizedBox(height: 16),
                         // TERMS AND CONDITION
