@@ -10,7 +10,9 @@ import 'dart:io';
 import '../../Utils/AppColors.dart';
 
 class EditProfile extends StatefulWidget {
-  const EditProfile({Key? key}) : super(key: key);
+  const EditProfile({Key? key, required this.parentImageUrl}) : super(key: key);
+
+  final RxString parentImageUrl;
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -19,6 +21,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final auth = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
+  final overlayPortalController = OverlayPortalController();
 
   String get userId => auth.currentUser?.email ?? '';
   String? imageUrl;
@@ -31,6 +34,19 @@ class _EditProfileState extends State<EditProfile> {
     fetchImage();
     receivedata();
     nameController = TextEditingController(text: name);
+  }
+
+  Widget overlayChildBuilder(BuildContext ctx) {
+    return Container(
+      height: MediaQuery.sizeOf(context).height,
+      width: MediaQuery.sizeOf(context).width,
+      color: Colors.blueGrey.shade300.withAlpha(120),
+      child: Center(
+        child: CircularProgressIndicator(
+          color: AppColors.blue,
+        ),
+      ),
+    );
   }
 
   Future<void> receivedata() async {
@@ -51,18 +67,19 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> uploadImageToFirebase(XFile image) async {
+    overlayPortalController.show();
     File imageFile = File(image.path);
     FirebaseStorage storage = FirebaseStorage.instance;
     var ref = storage.ref('user/pp_$userId.jpg');
     var metadata = await ref.getData().onError((error, stackTrace) {
+      overlayPortalController.hide();
       return null;
     });
-    if(metadata!=null){
-      await storage
-          .ref('user/pp_$userId.jpg')
-          .putFile(imageFile);
+    if (metadata != null) {
+      await storage.ref('user/pp_$userId.jpg').putFile(imageFile);
       setState(() {});
-    }else{
+      widget.parentImageUrl.value = await ref.getDownloadURL();
+    } else {
       print("Image not found");
     }
     // try {
@@ -73,6 +90,27 @@ class _EditProfileState extends State<EditProfile> {
     // } on FirebaseException catch (e) {
     //   print(e);
     // }
+    overlayPortalController.hide();
+    Get.snackbar(
+      'Success',
+      'Profile Image Updated',
+      barBlur: 10,
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFF98181),
+          AppColors.red,
+          Color(0xFF850000),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 1),
+      icon: Image.asset(
+        'assets/images/devcommlogo.png',
+        width: 24,
+        height: 24,
+      ),
+    );
   }
 
   Future<void> pickImage() async {
@@ -93,11 +131,11 @@ class _EditProfileState extends State<EditProfile> {
     var metadata = await refL.getData().onError((error, stackTrace) {
       return null;
     });
-    if(metadata!=null){
-      return ref.getDownloadURL().then((url){
+    if (metadata != null) {
+      return ref.getDownloadURL().then((url) {
         return NetworkImage(url);
       });
-    }else{
+    } else {
       return const AssetImage('assets/images/avatar.png');
     }
     // return ref.getDownloadURL().then((url) {
@@ -116,52 +154,86 @@ class _EditProfileState extends State<EditProfile> {
       ),
     );
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 80),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Edit profile",
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontSize: 18,
-                          fontFamily: 'Epilogue',
-                          fontWeight: FontWeight.w700,
-                          height: 0.06,
-                        ),
-                      ),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            Color(0xFF00084B),
+            Color(0xFF2E55C0),
+            Color(0xFF148BFA),
+          ],
+        ))),
+        title: Text(
+          "Edit profile",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontFamily: 'Epilogue',
+            fontWeight: FontWeight.w700,
+            height: 0.06,
+          ),
+        ),
+        // leading: IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back)),
+        centerTitle: true,
+      ),
+      // extendBodyBehindAppBar: true,
+      body: OverlayPortal(
+        controller: overlayPortalController,
+        overlayChildBuilder: overlayChildBuilder,
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              child: Container(
+                  height: 100,
+                  width: MediaQuery.sizeOf(context).width,
+                  // color: AppColors.blue,
+                  decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color(0xFF00084B),
+                      Color(0xFF2E55C0),
+                      Color(0xFF148BFA),
                     ],
-                  ),
-                ),
-                const SizedBox(height: 40),
-                Align(
-                  alignment: Alignment.topLeft,
+                  ))),
+            ),
+            Positioned(
+                top: 200,
+                child: Container(
+                  width: MediaQuery.sizeOf(context).width,
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Full Name',
-                          style: TextStyle(
-                            color: Color(0xFF141414),
-                            fontSize: 16,
-                            fontFamily: 'Epilogue',
-                            fontWeight: FontWeight.w500,
-                            height: 0.06,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
+                        // const Text(
+                        //   'Full Name',
+                        //   style: TextStyle(
+                        //     color: Color(0xFF141414),
+                        //     fontSize: 16,
+                        //     fontFamily: 'Epilogue',
+                        //     fontWeight: FontWeight.w500,
+                        //     height: 0.06,
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 8),
                         TextField(
                           controller: nameController,
                           decoration: InputDecoration(
+                            labelText: 'Name',
+                            labelStyle: TextStyle(
+                              color: Color(0xFF141414),
+                              fontSize: 16,
+                              fontFamily: 'Epilogue',
+                              fontWeight: FontWeight.w500,
+                              height: 0.06,
+                            ),
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 20),
                             border: OutlineInputBorder(
@@ -190,118 +262,292 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const Text(
-                          'Profile Picture',
-                          style: TextStyle(
-                            color: Color(0xFF141414),
-                            fontSize: 16,
-                            fontFamily: 'Epilogue',
-                            fontWeight: FontWeight.w500,
-                            height: 0.06,
+                        Center(
+                          child: SizedBox(
+                            width: MediaQuery.sizeOf(context).width / 4,
+                            child: TextButton(
+                              onPressed: () async {
+                                overlayPortalController.show();
+                                await db.collection('User').doc(userId).update({
+                                  'name': nameController.text,
+                                }).then((value) {
+                                  Get.snackbar(
+                                    'Success',
+                                    'Name Updated',
+                                    barBlur: 10,
+                                    backgroundGradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFFF98181),
+                                        AppColors.red,
+                                        Color(0xFF850000),
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    ),
+                                    duration: const Duration(seconds: 1),
+                                    icon: Image.asset(
+                                      'assets/images/devcommlogo.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                  );
+                                  overlayPortalController.hide();
+                                });
+
+                                // Get.back();
+                              },
+                              style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    const EdgeInsets.symmetric(vertical: 16)),
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color(0xFF2546A9)),
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(48),
+                                  ),
+                                ),
+                              ),
+                              child: InkWell(
+                                onTap: () {},
+                                child: const Text(
+                                  'Save',
+                                  textAlign: TextAlign.justify,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontFamily: 'Epilogue',
+                                    fontWeight: FontWeight.w500,
+                                    height: 0.06,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        GestureDetector(
+                      ]),
+                )),
+            Positioned(
+              top: 50,
+              left: MediaQuery.of(context).size.width / 2 - 50,
+              child: FutureBuilder<ImageProvider>(
+                future: fetchImage(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<ImageProvider> snapshot) {
+                  if (snapshot.hasData) {
+                    return Stack(alignment: Alignment.bottomRight, children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: snapshot.data!,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 32,
+                        height: 32,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.yellow,
+                        ),
+                        child: InkWell(
                           onTap: () {
                             pickImage();
                           },
-                          child: FutureBuilder<ImageProvider>(
-                            future: fetchImage(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<ImageProvider> snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const SizedBox(
-                                  height: 60,
-                                  width: 60,
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      color: AppColors.blue,
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return Container(
-                                  width: 100,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(8),
-                                    image: DecorationImage(
-                                      image: snapshot.data!,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 12,
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextButton(
-                            onPressed: () async {
-                              await db.collection('User').doc(userId).update({
-                                'name': nameController.text,
-                              }).then((value) {
-                                Get.snackbar(
-                                  'Success',
-                                  'Name Updated',
-                                  barBlur: 10,
-                                  backgroundGradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFFF98181),
-                                      AppColors.red,
-                                      Color(0xFF850000),
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ),
-                                  duration: const Duration(seconds: 1),
-                                  icon: Image.asset(
-                                    'assets/images/devcommlogo.png',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                );
-                              });
-
-                              // Get.back();
-                            },
-                            style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.symmetric(vertical: 16)),
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color(0xFF2546A9)),
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(48),
-                                ),
-                              ),
-                            ),
-                            child: InkWell(
-                              onTap: () {},
-                              child: const Text(
-                                'Save',
-                                textAlign: TextAlign.justify,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontFamily: 'Epilogue',
-                                  fontWeight: FontWeight.w500,
-                                  height: 0.06,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ]),
-                ),
-              ],
+                      ),
+                    ]);
+                  } else {
+                    return Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/avatar.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        ],
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 16),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.center,
+            //     children: [
+            //       Align(
+            //         alignment: Alignment.topLeft,
+            //         child: Column(
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: [
+            //               const Text(
+            //                 'Full Name',
+            //                 style: TextStyle(
+            //                   color: Color(0xFF141414),
+            //                   fontSize: 16,
+            //                   fontFamily: 'Epilogue',
+            //                   fontWeight: FontWeight.w500,
+            //                   height: 0.06,
+            //                 ),
+            //               ),
+            //               const SizedBox(height: 8),
+            //               TextField(
+            //                 controller: nameController,
+            //                 decoration: InputDecoration(
+            //                   contentPadding: const EdgeInsets.symmetric(
+            //                       vertical: 10, horizontal: 20),
+            //                   border: OutlineInputBorder(
+            //                     borderRadius: BorderRadius.circular(8),
+            //                     borderSide: const BorderSide(
+            //                       width: 1,
+            //                       color: Color(0xFFD1D2D3),
+            //                     ),
+            //                   ),
+            //                   enabledBorder: OutlineInputBorder(
+            //                     borderRadius: BorderRadius.circular(8),
+            //                     borderSide: const BorderSide(
+            //                       width: 1,
+            //                       color: Color(0xFFD1D2D3),
+            //                     ),
+            //                   ),
+            //                   focusedBorder: OutlineInputBorder(
+            //                     borderRadius: BorderRadius.circular(8),
+            //                     borderSide: const BorderSide(
+            //                       width: 1,
+            //                       color: Colors.blue,
+            //                     ),
+            //                   ),
+            //                   filled: true,
+            //                   fillColor: Colors.white,
+            //                 ),
+            //               ),
+            //               const SizedBox(height: 20),
+            //               const Text(
+            //                 'Profile Picture',
+            //                 style: TextStyle(
+            //                   color: Color(0xFF141414),
+            //                   fontSize: 16,
+            //                   fontFamily: 'Epilogue',
+            //                   fontWeight: FontWeight.w500,
+            //                   height: 0.06,
+            //                 ),
+            //               ),
+            //               const SizedBox(height: 8),
+            //               GestureDetector(
+            //                 onTap: () {
+            //                   pickImage();
+            //                 },
+            //                 child: FutureBuilder<ImageProvider>(
+            //                   future: fetchImage(),
+            //                   builder: (BuildContext context,
+            //                       AsyncSnapshot<ImageProvider> snapshot) {
+            //                     if (snapshot.connectionState ==
+            //                         ConnectionState.waiting) {
+            //                       return const SizedBox(
+            //                         height: 60,
+            //                         width: 60,
+            //                         child: Center(
+            //                           child: CircularProgressIndicator(
+            //                             color: AppColors.blue,
+            //                           ),
+            //                         ),
+            //                       );
+            //                     } else {
+            //                       return Container(
+            //                         width: 100,
+            //                         height: 100,
+            //                         decoration: BoxDecoration(
+            //                           color: Colors.grey,
+            //                           borderRadius: BorderRadius.circular(8),
+            //                           image: DecorationImage(
+            //                             image: snapshot.data!,
+            //                             fit: BoxFit.cover,
+            //                           ),
+            //                         ),
+            //                       );
+            //                     }
+            //                   },
+            //                 ),
+            //               ),
+            //               const SizedBox(height: 20),
+            //               SizedBox(
+            //                 width: double.infinity,
+            //                 child: TextButton(
+            //                   onPressed: () async {
+            //                     await db.collection('User').doc(userId).update({
+            //                       'name': nameController.text,
+            //                     }).then((value) {
+            //                       Get.snackbar(
+            //                         'Success',
+            //                         'Name Updated',
+            //                         barBlur: 10,
+            //                         backgroundGradient: const LinearGradient(
+            //                           colors: [
+            //                             Color(0xFFF98181),
+            //                             AppColors.red,
+            //                             Color(0xFF850000),
+            //                           ],
+            //                           begin: Alignment.topCenter,
+            //                           end: Alignment.bottomCenter,
+            //                         ),
+            //                         duration: const Duration(seconds: 1),
+            //                         icon: Image.asset(
+            //                           'assets/images/devcommlogo.png',
+            //                           width: 24,
+            //                           height: 24,
+            //                         ),
+            //                       );
+            //                     });
+
+            //                     // Get.back();
+            //                   },
+            //                   style: ButtonStyle(
+            //                     padding: MaterialStateProperty.all(
+            //                         const EdgeInsets.symmetric(vertical: 16)),
+            //                     backgroundColor: MaterialStateProperty.all(
+            //                         const Color(0xFF2546A9)),
+            //                     shape: MaterialStateProperty.all(
+            //                       RoundedRectangleBorder(
+            //                         borderRadius: BorderRadius.circular(48),
+            //                       ),
+            //                     ),
+            //                   ),
+            //                   child: InkWell(
+            //                     onTap: () {},
+            //                     child: const Text(
+            //                       'Save',
+            //                       textAlign: TextAlign.justify,
+            //                       style: TextStyle(
+            //                         color: Colors.white,
+            //                         fontSize: 16,
+            //                         fontFamily: 'Epilogue',
+            //                         fontWeight: FontWeight.w500,
+            //                         height: 0.06,
+            //                       ),
+            //                     ),
+            //                   ),
+            //                 ),
+            //               )
+            //             ]),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+          ],
+        ),
       ),
     );
   }

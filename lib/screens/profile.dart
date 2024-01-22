@@ -57,12 +57,13 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String name = "";
   String s_id = "";
-  String? imageUrl;
+  RxString? imageUrl = ''.obs;
 
   @override
   void initState() {
     super.initState();
     receivedata();
+    getProfilePicture();
   }
 
   Future<void> uploadImageToFirebase(XFile image) async {
@@ -101,7 +102,7 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  Stream<ImageProvider> getProfilePicture() async* {
+  Future<void> getProfilePicture() async {
     FirebaseStorage storage = FirebaseStorage.instance;
 
     var ref = storage.ref('user/pp_$userId.jpg');
@@ -112,14 +113,17 @@ class _ProfileState extends State<Profile> {
       return null;
     });
 
-    if (metadata != null) {
-      String downloadURL = await ref.getDownloadURL();
-      yield NetworkImage(downloadURL);
-    } else {
-      yield const AssetImage('assets/images/avatar.png');
-    }
+    String downloadURL = await ref.getDownloadURL();
+    imageUrl!.value = downloadURL;
 
-    await Future.delayed(const Duration(seconds: 2));
+    // if (metadata != null) {
+    //   String downloadURL = await ref.getDownloadURL();
+    //   yield NetworkImage(downloadURL);
+    // } else {
+    //   yield const AssetImage('assets/images/avatar.png');
+    // }
+
+    // await Future.delayed(const Duration(seconds: 2));
   }
 
   @override
@@ -236,26 +240,10 @@ class _ProfileState extends State<Profile> {
                                           Positioned(
                                               left: 0,
                                               top: 0,
-                                              child:
-                                                  StreamBuilder<ImageProvider>(
-                                                stream: getProfilePicture(),
-                                                builder: (BuildContext context,
-                                                    AsyncSnapshot<ImageProvider>
-                                                        snapshot) {
-                                                  if (snapshot
-                                                          .connectionState ==
-                                                      ConnectionState.waiting) {
-                                                    return const SizedBox(
-                                                      height: 60,
-                                                      width: 60,
-                                                      child: Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          color: AppColors.blue,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  } else {
+                                              child: Obx(
+                                                () {
+                                                  if (imageUrl!
+                                                      .value.isNotEmpty) {
                                                     return Stack(
                                                       children: [
                                                         Container(
@@ -267,8 +255,9 @@ class _ProfileState extends State<Profile> {
                                                                 BoxShape.circle,
                                                             image:
                                                                 DecorationImage(
-                                                              image: snapshot
-                                                                  .data!,
+                                                              image: NetworkImage(
+                                                                  imageUrl!
+                                                                      .value),
                                                               fit: BoxFit.cover,
                                                             ),
                                                           ),
@@ -300,6 +289,17 @@ class _ProfileState extends State<Profile> {
                                                           ),
                                                         ),
                                                       ],
+                                                    );
+                                                  } else {
+                                                    return const SizedBox(
+                                                      height: 60,
+                                                      width: 60,
+                                                      child: Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          color: AppColors.blue,
+                                                        ),
+                                                      ),
                                                     );
                                                   }
                                                 },
@@ -377,7 +377,9 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.person,
                             text: "Profile",
-                            screen: const EditProfile(),
+                            screen: EditProfile(
+                              parentImageUrl: imageUrl!,
+                            ),
                             color: const Color(0xFFA287F8)),
                         const SizedBox(height: 16),
                         // ABOUT US
