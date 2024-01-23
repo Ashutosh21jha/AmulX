@@ -1,7 +1,10 @@
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lottie/lottie.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'package:get/get.dart';
 
 class OrderPage extends StatefulWidget {
   final String userId;
@@ -16,6 +19,8 @@ class _OrderPageState extends State<OrderPage> {
   String orderId = '';
   late double totalAmount = 0;
   bool isDeclined = false;
+  bool isRefunded = true;
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +38,52 @@ class _OrderPageState extends State<OrderPage> {
         }
       }
     });
+  }
+
+  void listenForRefundStatus() {
+    if (orderId.isNotEmpty) {
+      FirebaseFirestore.instance
+          .collection('Declined')
+          .doc(orderId)
+          .snapshots()
+          .listen((snapshot) {
+        if (snapshot.exists) {
+          print('Snapshot data: ${snapshot.data()}');
+          if (snapshot['isRefunded'] == true) {
+            print('Refund initiated. Navigating to Mainscreen...');
+            Get.to(Mainscreen());
+            Get.snackbar(
+              'Refund Initiated',
+              'Check your account.',
+              backgroundGradient: const LinearGradient(
+                colors: [
+                  Color(0xFFA2E8D8),
+                  AppColors.green,
+                  Color(0xFF007A52),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              duration: const Duration(seconds: 1),
+              barBlur: 10,
+              icon: Image.asset(
+                'assets/images/devcommlogo.png',
+                width: 24,
+                height: 24,
+              ),
+            );
+            setState(() {
+              isRefunded = true;
+            });
+          }
+        } else {
+          print('Document does not exist.');
+          // Handle the case when the document does not exist
+        }
+      });
+    } else {
+      print('OrderId is empty. Cannot listen for changes.');
+    }
   }
 
   void fetchId() async {
@@ -80,6 +131,7 @@ class _OrderPageState extends State<OrderPage> {
           calculateTotalAmount(filteredDocs.toList().elementAt(0).get('items'));
           isDeclined = true;
         });
+        listenForRefundStatus();
       } else {
         print('No matching documents found in Declined collection');
       }
@@ -97,23 +149,12 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    // StreamBuilder(stream: FirebaseFirestore.instance
-    //     .collection('prepList')
-    //     .doc(orderId)
-    //     .snapshots(), builder:(context,snap){
-    //     if(snap.hasError){
-    //       setState(() {
-    //         isDeclined=true;
-    //       });
-    //     }
-    //     return Container();
-    // });
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 70,
         automaticallyImplyLeading: false,
+        backgroundColor: AppColors.blue,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_sharp,
@@ -132,298 +173,73 @@ class _OrderPageState extends State<OrderPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Card(
-          elevation: 2,
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                child: orderId == ''
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                        color: AppColors.blue,
-                      ))
-                    : StreamBuilder(
-                        stream: isDeclined == false
-                            ? FirebaseFirestore.instance
-                                .collection('prepList')
-                                .doc(orderId)
-                                .snapshots()
-                            : FirebaseFirestore.instance
-                                .collection('Declined')
-                                .doc(orderId)
-                                .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                              child: Container(
-                                  child: const CircularProgressIndicator()),
-                            );
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (!snapshot.hasData ||
-                              snapshot.data == null) {
-                            return const Text('No orders found.');
-                          } else {
-                            if (snapshot.data == null) {
-                              return const Text('No orders found.');
-                            }
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+        child: Column(
+          children: [
+            Card(
+              elevation: 2,
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    child: orderId == ''
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                            color: AppColors.blue,
+                          ))
+                        : StreamBuilder(
+                            stream: isDeclined == false
+                                ? FirebaseFirestore.instance
+                                    .collection('prepList')
+                                    .doc(orderId)
+                                    .snapshots()
+                                : FirebaseFirestore.instance
+                                    .collection('Declined')
+                                    .doc(orderId)
+                                    .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: Container(
+                                      child: const CircularProgressIndicator()),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data == null) {
+                                return const Text('No orders found.');
+                              } else {
+                                if (snapshot.data == null) {
+                                  return const Text('No orders found.');
+                                }
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          const TextSpan(
-                                            text: "ID: ",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.blue,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: snapshot.data?['orderID']
-                                                    .toString() ??
-                                                '',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          const WidgetSpan(
-                                            child: Icon(
-                                              Icons.currency_rupee_outlined,
-                                              color: Colors.green,
-                                              size: 17,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: totalAmount.toString(),
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.green,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                isDeclined == false
-                                    ? SizedBox(
-                                        height: 100,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            TimelineTile(
-                                              axis: TimelineAxis.horizontal,
-                                              alignment: TimelineAlign.manual,
-                                              lineXY: 0.3,
-                                              isFirst: true,
-                                              isLast: false,
-                                              indicatorStyle: IndicatorStyle(
-                                                width: 20,
-                                                color: getStepColor(
-                                                    0,
-                                                    snapshot
-                                                        .data?['orderStatus']),
-                                              ),
-                                              beforeLineStyle: LineStyle(
-                                                color: getStepColor(
-                                                    0,
-                                                    snapshot
-                                                        .data?['orderStatus']),
-                                              ),
-                                              endChild: Container(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                  minHeight: 80,
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    'Placed',
-                                                    style: TextStyle(
-                                                      color: getStepColor(
-                                                          0,
-                                                          snapshot.data?[
-                                                              'orderStatus']),
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            TimelineTile(
-                                              axis: TimelineAxis.horizontal,
-                                              alignment: TimelineAlign.manual,
-                                              lineXY: 0.3,
-                                              isFirst: false,
-                                              isLast: false,
-                                              indicatorStyle: IndicatorStyle(
-                                                width: 40,
-                                                color: getStepColor(
-                                                    1,
-                                                    snapshot
-                                                        .data?['orderStatus']),
-                                              ),
-                                              beforeLineStyle: LineStyle(
-                                                color: getStepColor(
-                                                    1,
-                                                    snapshot
-                                                        .data?['orderStatus']),
-                                              ),
-                                              endChild: Container(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                  minHeight: 80,
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    'Preparing',
-                                                    style: TextStyle(
-                                                      color: getStepColor(
-                                                          1,
-                                                          snapshot.data?[
-                                                              'orderStatus']),
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            TimelineTile(
-                                              axis: TimelineAxis.horizontal,
-                                              alignment: TimelineAlign.manual,
-                                              lineXY: 0.3,
-                                              isFirst: false,
-                                              isLast: true,
-                                              indicatorStyle: IndicatorStyle(
-                                                width: 20,
-                                                color: getStepColor(
-                                                    2,
-                                                    snapshot
-                                                        .data?['orderStatus']),
-                                              ),
-                                              beforeLineStyle: LineStyle(
-                                                color: getStepColor(
-                                                    2,
-                                                    snapshot
-                                                        .data?['orderStatus']),
-                                              ),
-                                              endChild: Container(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                  minHeight: 80,
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    'Ready',
-                                                    style: TextStyle(
-                                                      color: getStepColor(
-                                                          2,
-                                                          snapshot.data?[
-                                                              'orderStatus']),
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : SizedBox(
-                                        height: 40,
-                                        child: Text(
-                                          'Order Declined\nYour Code is ${snapshot.data?['code']}',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                      ),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 16),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: snapshot.data?['items'].length,
-                                    itemBuilder: (context, index) {
-                                      Map<String, dynamic> map =
-                                          snapshot.data?['items'];
-                                      final key = map.keys.elementAt(index);
-                                      final value = map[key];
-                                      /*return Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${map.keys.elementAt(index)}:',
-                                      style: const TextStyle(
-                                          color: Colors.indigo,
-                                          fontSize: 20),
-                                    ),
-                                    Text(
-                                      '${value['count']} items, ₹${value['price']} each',
-                                      style: const TextStyle(
-                                          color: Colors.indigo,
-                                          fontSize: 20),
-                                    ),
-                                    // Add a SizedBox to create a gap between items
-                                    const SizedBox(height: 10),
-                                  ],
-                                );*/
-
-                                      return ListTile(
-                                        leading: Text(
-                                          ' ${map.keys.elementAt(index)} (x ${value['count']})',
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16),
-                                        ),
-                                        trailing: RichText(
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        RichText(
                                           text: TextSpan(
                                             children: [
-                                              const WidgetSpan(
-                                                child: Icon(
-                                                  Icons.currency_rupee_outlined,
-                                                  color: Colors.green,
-                                                  size: 16,
+                                              const TextSpan(
+                                                text: "ID: ",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.blue,
+                                                  fontSize: 18,
                                                 ),
                                               ),
                                               TextSpan(
-                                                text: ' ${value['price']}',
+                                                text: snapshot.data?['orderID']
+                                                        .toString() ??
+                                                    '',
                                                 style: const TextStyle(
-                                                  color: AppColors.green,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                              const TextSpan(
-                                                text: '  each',
-                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
                                                   color: Colors.black,
                                                   fontSize: 16,
                                                 ),
@@ -431,18 +247,246 @@ class _OrderPageState extends State<OrderPage> {
                                             ],
                                           ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                        },
-                      ),
+                                        RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              const WidgetSpan(
+                                                child: Icon(
+                                                  Icons.currency_rupee_outlined,
+                                                  color: Colors.green,
+                                                  size: 17,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: totalAmount.toString(),
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    isDeclined == false
+                                        ? SizedBox(
+                                            height: 100,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                TimelineTile(
+                                                  axis: TimelineAxis.horizontal,
+                                                  alignment:
+                                                      TimelineAlign.manual,
+                                                  lineXY: 0.3,
+                                                  isFirst: true,
+                                                  isLast: false,
+                                                  indicatorStyle:
+                                                      IndicatorStyle(
+                                                    width: 20,
+                                                    color: getStepColor(
+                                                        0,
+                                                        snapshot.data?[
+                                                            'orderStatus']),
+                                                  ),
+                                                  beforeLineStyle: LineStyle(
+                                                    color: getStepColor(
+                                                        0,
+                                                        snapshot.data?[
+                                                            'orderStatus']),
+                                                  ),
+                                                  endChild: Container(
+                                                    constraints:
+                                                        const BoxConstraints(
+                                                      minHeight: 80,
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Placed',
+                                                        style: TextStyle(
+                                                          color: getStepColor(
+                                                              0,
+                                                              snapshot.data?[
+                                                                  'orderStatus']),
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                TimelineTile(
+                                                  axis: TimelineAxis.horizontal,
+                                                  alignment:
+                                                      TimelineAlign.manual,
+                                                  lineXY: 0.3,
+                                                  isFirst: false,
+                                                  isLast: false,
+                                                  indicatorStyle:
+                                                      IndicatorStyle(
+                                                    width: 40,
+                                                    color: getStepColor(
+                                                        1,
+                                                        snapshot.data?[
+                                                            'orderStatus']),
+                                                  ),
+                                                  beforeLineStyle: LineStyle(
+                                                    color: getStepColor(
+                                                        1,
+                                                        snapshot.data?[
+                                                            'orderStatus']),
+                                                  ),
+                                                  endChild: Container(
+                                                    constraints:
+                                                        const BoxConstraints(
+                                                      minHeight: 80,
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Preparing',
+                                                        style: TextStyle(
+                                                          color: getStepColor(
+                                                              1,
+                                                              snapshot.data?[
+                                                                  'orderStatus']),
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                TimelineTile(
+                                                  axis: TimelineAxis.horizontal,
+                                                  alignment:
+                                                      TimelineAlign.manual,
+                                                  lineXY: 0.3,
+                                                  isFirst: false,
+                                                  isLast: true,
+                                                  indicatorStyle:
+                                                      IndicatorStyle(
+                                                    width: 20,
+                                                    color: getStepColor(
+                                                        2,
+                                                        snapshot.data?[
+                                                            'orderStatus']),
+                                                  ),
+                                                  beforeLineStyle: LineStyle(
+                                                    color: getStepColor(
+                                                        2,
+                                                        snapshot.data?[
+                                                            'orderStatus']),
+                                                  ),
+                                                  endChild: Container(
+                                                    constraints:
+                                                        const BoxConstraints(
+                                                      minHeight: 80,
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Ready',
+                                                        style: TextStyle(
+                                                          color: getStepColor(
+                                                              2,
+                                                              snapshot.data?[
+                                                                  'orderStatus']),
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            height: 40,
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  'Order Declined',
+                                                  style: const TextStyle(
+                                                      fontSize: 16),
+                                                ),
+                                                Text(
+                                                  'Your Code is ${snapshot.data?['code']}',
+                                                  style: const TextStyle(
+                                                      fontSize: 16),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 16),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                      ),
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount:
+                                            snapshot.data?['items'].length,
+                                        itemBuilder: (context, index) {
+                                          Map<String, dynamic> map =
+                                              snapshot.data?['items'];
+                                          final key = map.keys.elementAt(index);
+                                          final value = map[key];
+
+                                          return ListTile(
+                                            leading: Text(
+                                              ' ${map.keys.elementAt(index)} (x ${value['count']})',
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16),
+                                            ),
+                                            trailing: RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  const WidgetSpan(
+                                                    child: Icon(
+                                                      Icons
+                                                          .currency_rupee_outlined,
+                                                      color: Colors.green,
+                                                      size: 16,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: ' ${value['price']}',
+                                                    style: const TextStyle(
+                                                      color: AppColors.green,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  const TextSpan(
+                                                    text: '  each',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
