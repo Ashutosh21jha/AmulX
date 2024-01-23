@@ -1,3 +1,4 @@
+import 'package:amul/Utils/AppColors.dart';
 import 'package:flutter/material.dart';
 
 const EdgeInsets _paddingButtons =
@@ -22,18 +23,36 @@ class ProfileCard extends StatelessWidget {
   final String text;
   final IconData icon;
   final Widget screen;
-  final Color color;
+  final Color iconColor;
+  final Color textColor;
+  final bool top;
+  final bool bottom;
 
-  ProfileCard(
-      {Key? key,
-      required this.text,
-      required this.icon,
-      required this.screen,
-      required this.color})
-      : super(key: key);
+  ProfileCard({
+    Key? key,
+    required this.text,
+    required this.icon,
+    required this.screen,
+    required this.iconColor,
+    this.textColor = Colors.white,
+    this.top = false,
+    this.bottom = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    late final BorderRadius borderRadius;
+
+    if (top) {
+      borderRadius = BorderRadius.only(
+          topRight: Radius.circular(12), topLeft: Radius.circular(12));
+    } else if (bottom) {
+      borderRadius = BorderRadius.only(
+          bottomLeft: Radius.circular(12), bottomRight: Radius.circular(12));
+    } else {
+      borderRadius = BorderRadius.circular(0);
+    }
+
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -41,94 +60,151 @@ class ProfileCard extends StatelessWidget {
           MaterialPageRoute(builder: (context) => screen),
         );
       },
-      child: Container(
-        width: 327,
-        padding: _paddingButtons,
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 1, color: Color(0xFFF3F3F3)),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          shadows: _shadows,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: ShapeDecoration(
-                color: color ?? Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 24,
-                        height: 24,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(),
-                        child: Icon(
-                          icon,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: SizedBox(
-                child: Text(
-                  text,
-                  style: const TextStyle(
-                    color: Color(0xFF282828),
-                    fontSize: 16,
-                    fontFamily: 'Epilogue',
-                    fontWeight: FontWeight.w400,
-                    height: 0.08,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+        child: Card(
+          clipBehavior: Clip.hardEdge,
+          margin: EdgeInsets.symmetric(vertical: 1),
+          shape: RoundedRectangleBorder(borderRadius: borderRadius),
+          elevation: 0.5,
+          // color: Colors.blueGrey.shade100,
+          child: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Color(0xFF00084B).withAlpha(240),
+                Color(0xFF2E55C0).withAlpha(240),
+                Color(0xFF148BFA).withAlpha(240),
+              ],
+            )),
+            child: ListTile(
+              leading: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: ShapeDecoration(
+                  color: iconColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: const BoxDecoration(),
+                  child: Icon(
+                    icon,
+                    color: Colors.white,
+                    size: 20,
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: 16),
-            SizedBox(
-              width: 16,
-              height: 16,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: Icon(
-                      Icons.arrow_forward_ios_sharp,
-                      color: const Color.fromARGB(255, 0, 0, 0),
-                      size: 16,
-                    ),
-                  ),
-                ],
+              title: Text(
+                text,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 16,
+                  fontFamily: 'Epilogue',
+                  fontWeight: FontWeight.w400,
+                  height: 0.08,
+                ),
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios_sharp,
+                color: const Color.fromARGB(255, 0, 0, 0),
+                size: 16,
               ),
             ),
-          ],
+          ),
         ),
       ),
+      // child: Container(
+      //   width: 327,
+      //   padding: _paddingButtons,
+      //   decoration: ShapeDecoration(
+      //     color: Colors.white,
+      //     shape: RoundedRectangleBorder(
+      //         side: const BorderSide(width: 1, color: Color(0xFFF3F3F3)),
+      //         borderRadius: borderRadius),
+      //     shadows: _shadows,
+      //   ),
+      //   child: Row(
+      //     mainAxisSize: MainAxisSize.min,
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     crossAxisAlignment: CrossAxisAlignment.center,
+      //     children: [
+      //       Container(
+      //         padding: const EdgeInsets.all(4),
+      //         decoration: ShapeDecoration(
+      //           color: iconColor ?? Colors.white,
+      //           shape: RoundedRectangleBorder(
+      //               borderRadius: BorderRadius.circular(8)),
+      //         ),
+      //         child: Row(
+      //           mainAxisSize: MainAxisSize.min,
+      //           mainAxisAlignment: MainAxisAlignment.start,
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: [
+      //             Row(
+      //               mainAxisSize: MainAxisSize.min,
+      //               mainAxisAlignment: MainAxisAlignment.center,
+      //               crossAxisAlignment: CrossAxisAlignment.center,
+      //               children: [
+      //                 Container(
+      //                   width: 24,
+      //                   height: 24,
+      //                   clipBehavior: Clip.antiAlias,
+      //                   decoration: const BoxDecoration(),
+      //                   child: Icon(
+      //                     icon,
+      //                     color: Colors.white,
+      //                     size: 20,
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //       const SizedBox(width: 16),
+      //       Expanded(
+      //         child: SizedBox(
+      //           child: Text(
+      //             text,
+      //             style: TextStyle(
+      //               color: textColor,
+      //               fontSize: 16,
+      //               fontFamily: 'Epilogue',
+      //               fontWeight: FontWeight.w400,
+      //               height: 0.08,
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //       const SizedBox(width: 16),
+      //       SizedBox(
+      //         width: 16,
+      //         height: 16,
+      //         child: Row(
+      //           mainAxisSize: MainAxisSize.min,
+      //           mainAxisAlignment: MainAxisAlignment.center,
+      //           crossAxisAlignment: CrossAxisAlignment.center,
+      //           children: [
+      //             SizedBox(
+      //               width: 16,
+      //               height: 16,
+      //               child: Icon(
+      //                 Icons.arrow_forward_ios_sharp,
+      //                 color: const Color.fromARGB(255, 0, 0, 0),
+      //                 size: 16,
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

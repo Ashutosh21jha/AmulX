@@ -211,9 +211,9 @@ class _ProfileState extends State<Profile> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * .90,
+                          // width: MediaQuery.of(context).size.width * .6,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                              horizontal: 36, vertical: 8),
                           decoration: ShapeDecoration(
                             color: const Color.fromARGB(255, 255, 255, 255),
                             shape: RoundedRectangleBorder(
@@ -226,135 +226,116 @@ class _ProfileState extends State<Profile> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Expanded(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                              SizedBox(
+                                width: 60,
+                                height: 60,
+                                child: Stack(
                                   children: [
-                                    SizedBox(
-                                      width: 60,
-                                      height: 60,
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                              left: 0,
-                                              top: 0,
-                                              child: Obx(
-                                                () {
-                                                  if (imageUrl!
-                                                      .value.isNotEmpty) {
-                                                    return Stack(
-                                                      children: [
-                                                        Container(
-                                                          width: 60,
-                                                          height: 60,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            shape:
-                                                                BoxShape.circle,
-                                                            image:
-                                                                DecorationImage(
-                                                              image: NetworkImage(
-                                                                  imageUrl!
-                                                                      .value),
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Positioned(
-                                                          bottom: 0,
-                                                          right: 0,
-                                                          child: Container(
-                                                            width: 22,
-                                                            height: 22,
-                                                            decoration:
-                                                                const BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                              color: AppColors
-                                                                  .yellow,
-                                                            ),
-                                                            child: InkWell(
-                                                              onTap: () {
-                                                                pickImage();
-                                                              },
-                                                              child: const Icon(
-                                                                Icons.edit,
-                                                                color: Colors
-                                                                    .white,
-                                                                size: 12,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  } else {
-                                                    return const SizedBox(
-                                                      height: 60,
-                                                      width: 60,
-                                                      child: Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          color: AppColors.blue,
+                                    Positioned(
+                                        left: 0,
+                                        top: 0,
+                                        child: Obx(
+                                          () {
+                                            if (imageUrl!.value.isNotEmpty) {
+                                              return Stack(
+                                                children: [
+                                                  Container(
+                                                    width: 60,
+                                                    height: 60,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            imageUrl!.value),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    child: Container(
+                                                      width: 22,
+                                                      height: 22,
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: AppColors.yellow,
+                                                      ),
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          pickImage();
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.edit,
+                                                          color: Colors.white,
+                                                          size: 12,
                                                         ),
                                                       ),
-                                                    );
-                                                  }
-                                                },
-                                              )),
-                                        ],
-                                      ),
-                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            } else {
+                                              return const SizedBox(
+                                                height: 60,
+                                                width: 60,
+                                                child: Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: AppColors.blue,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        )),
                                   ],
                                 ),
                               ),
-                              /*   const SizedBox(width: 16),*/
-                              Expanded(
-                                child: StreamBuilder(
-                                    stream: db
-                                        .collection("User")
-                                        .doc(userId)
-                                        .snapshots(),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot snapshot) {
-                                      if (snapshot.data == null) {
-                                        return const Center(
-                                            child: CircularProgressIndicator());
-                                      } else {
-                                        return Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              snapshot.data['name'],
-                                              style: const TextStyle(
-                                                color: Color(0xFF414042),
-                                                fontSize: 18,
-                                                fontFamily: 'Epilogue',
-                                                fontWeight: FontWeight.w700,
-                                              ),
+                              const SizedBox(width: 16),
+                              StreamBuilder(
+                                  stream: db
+                                      .collection("User")
+                                      .doc(userId)
+                                      .snapshots(),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    if (snapshot.data == null) {
+                                      return const Center(
+                                          child: CircularProgressIndicator());
+                                    } else {
+                                      return Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            snapshot.data['name'],
+                                            style: const TextStyle(
+                                              color: Color(0xFF414042),
+                                              fontSize: 18,
+                                              fontFamily: 'Epilogue',
+                                              fontWeight: FontWeight.w700,
                                             ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              snapshot.data['student id'],
-                                              style: const TextStyle(
-                                                color: Color(0xFF57585B),
-                                                fontSize: 14,
-                                                fontFamily: 'Epilogue',
-                                                fontWeight: FontWeight.w400,
-                                                height: 0.07,
-                                              ),
-                                              textAlign: TextAlign.center,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            snapshot.data['student id'],
+                                            style: const TextStyle(
+                                              color: Color(0xFF57585B),
+                                              fontSize: 14,
+                                              fontFamily: 'Epilogue',
+                                              fontWeight: FontWeight.w400,
+                                              height: 0.07,
                                             ),
-                                          ],
-                                        );
-                                      }
-                                    }),
-                              )
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  }),
                             ],
                           ),
                         ),
@@ -377,131 +358,143 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.person,
                             text: "Profile",
+                            top: true,
                             screen: EditProfile(
                               parentImageUrl: imageUrl!,
                             ),
-                            color: const Color(0xFFA287F8)),
-                        const SizedBox(height: 16),
+                            iconColor: const Color(0xFFA287F8)),
+                        // const SizedBox(height: 4),
                         // ABOUT US
                         ProfileCard(
                             icon: Icons.info_outline,
                             text: "About Us",
                             screen: const About(),
-                            color: const Color(0xFF02B9F0)),
-                        const SizedBox(height: 16),
+                            iconColor: const Color(0xFF02B9F0)),
+                        // const SizedBox(height: 4),
                         // FAQ
                         ProfileCard(
                             icon: Icons.question_answer_outlined,
                             text: "FAQ",
                             screen: Faq(),
-                            color: const Color(0xFFFC6DBB)),
-                        const SizedBox(height: 16),
+                            iconColor: const Color(0xFFFC6DBB)),
+                        // const SizedBox(height: 4),
                         // TERMS AND CONDITION
                         ProfileCard(
                             icon: Icons.file_copy,
                             text: "Terms and Conditions",
                             screen: const Terms(),
-                            color: const Color(0xFF3BA889)),
-                        const SizedBox(height: 16),
+                            iconColor: const Color(0xFF3BA889)),
+                        // const SizedBox(height: 4),
                         // PRIVACY POLICY
                         ProfileCard(
                             icon: Icons.shield_outlined,
                             text: "Privacy Policy",
                             screen: const Privacy(),
-                            color: const Color(0xFFFBBC04)),
-                        const SizedBox(height: 16),
+                            iconColor: const Color(0xFFFBBC04)),
+                        // const SizedBox(height: 4),
                         // LOGOUT
-                        InkWell(
-                          onTap: () => signOut().then((value) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const signupPage(),
-                                ));
-                          }),
-                          child: Container(
-                            width: 327,
-                            padding: _paddingButtons,
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    width: 1, color: Color(0xFFF3F3F3)),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              shadows: _shadows,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFFF57878),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            width: 24,
-                                            height: 24,
-                                            clipBehavior: Clip.antiAlias,
-                                            decoration: const BoxDecoration(),
-                                            child: const Icon(
-                                              Icons.logout,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                const Expanded(
-                                  child: SizedBox(
-                                    child: Text(
-                                      'Logout',
-                                      style: TextStyle(
-                                        color: Color(0xFFF46363),
-                                        fontSize: 16,
-                                        fontFamily: 'Epilogue',
-                                        fontWeight: FontWeight.w400,
-                                        height: 0.08,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        ProfileCard(
+                          icon: Icons.logout,
+                          text: "Logout",
+                          bottom: true,
+                          screen: signupPage(),
+                          iconColor: const Color(0xFFF57878),
+                          textColor: Color(0xFFF46363),
                         ),
+                        // InkWell(
+                        //   onTap: () => signOut().then((value) {
+                        //     Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //           builder: (context) => const signupPage(),
+                        //         ));
+                        //   }),
+                        //   child: Container(
+                        //     width: 327,
+                        //     padding: _paddingButtons,
+                        //     decoration: ShapeDecoration(
+                        //       color: Colors.white,
+                        //       shape: RoundedRectangleBorder(
+                        //         side: const BorderSide(
+                        //             width: 1, color: Color(0xFFF3F3F3)),
+                        //         borderRadius: BorderRadius.circular(12),
+                        //       ),
+                        //       shadows: _shadows,
+                        //     ),
+                        //     child: Row(
+                        //       mainAxisSize: MainAxisSize.min,
+                        //       mainAxisAlignment: MainAxisAlignment.center,
+                        //       crossAxisAlignment: CrossAxisAlignment.center,
+                        //       children: [
+                        //         Container(
+                        //           padding: const EdgeInsets.all(4),
+                        //           decoration: ShapeDecoration(
+                        //             color: const Color(0xFFF57878),
+                        //             shape: RoundedRectangleBorder(
+                        //                 borderRadius: BorderRadius.circular(8)),
+                        //           ),
+                        //           child: Row(
+                        //             mainAxisSize: MainAxisSize.min,
+                        //             mainAxisAlignment: MainAxisAlignment.start,
+                        //             crossAxisAlignment:
+                        //                 CrossAxisAlignment.start,
+                        //             children: [
+                        //               Row(
+                        //                 mainAxisSize: MainAxisSize.min,
+                        //                 mainAxisAlignment:
+                        //                     MainAxisAlignment.center,
+                        //                 crossAxisAlignment:
+                        //                     CrossAxisAlignment.center,
+                        //                 children: [
+                        //                   Container(
+                        //                     width: 24,
+                        //                     height: 24,
+                        //                     clipBehavior: Clip.antiAlias,
+                        //                     decoration: const BoxDecoration(),
+                        //                     child: const Icon(
+                        //                       Icons.logout,
+                        //                       color: Colors.white,
+                        //                       size: 20,
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //         const SizedBox(width: 16),
+                        //         const Expanded(
+                        //           child: SizedBox(
+                        //             child: Text(
+                        //               'Logout',
+                        //               style: TextStyle(
+                        //                 color: Color(0xFFF46363),
+                        //                 fontSize: 16,
+                        //                 fontFamily: 'Epilogue',
+                        //                 fontWeight: FontWeight.w400,
+                        //                 height: 0.08,
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
 
                         const SizedBox(height: 16),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Image.asset(
+                              'assets/images/devcommlogo_noBG.png',
+                              height: 50,
+                              width: 50,
+                            ),
                             Text(
-                              "Powered by ",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                            )
+                              "Powered by\nDevComm",
+                              style: TextStyle(fontSize: 10),
+                            ),
                           ],
                         ),
                       ]),
