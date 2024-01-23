@@ -383,6 +383,23 @@ class _EditProfileState extends State<EditProfile> {
                 },
               ),
             ),
+            Positioned(
+              bottom: 10,
+              left: MediaQuery.of(context).size.width / 2 - 50,
+              child: Row(
+                children: [
+                  Image.asset(
+                    'assets/images/devcommlogo_noBG.png',
+                    height: 50,
+                    width: 50,
+                  ),
+                  Text(
+                    "Powered by\nDevcomm",
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ],
+              ),
+            ),
             // Padding(
             //   padding: const EdgeInsets.symmetric(horizontal: 16),
             //   child: Column(
