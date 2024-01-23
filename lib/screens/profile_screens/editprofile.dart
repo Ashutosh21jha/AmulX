@@ -394,7 +394,7 @@ class _EditProfileState extends State<EditProfile> {
                     width: 50,
                   ),
                   Text(
-                    "Powered by\nDevcomm",
+                    "Powered by\nDevComm",
                     style: TextStyle(fontSize: 10),
                   ),
                 ],
