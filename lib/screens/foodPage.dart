@@ -29,11 +29,12 @@ class FoodPageState extends State<FoodPage> {
   final RxList<ItemsModel> unavailableItems = <ItemsModel>[].obs;
   final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
   late final Timer _timer;
-
-
+  RxList<ItemsModel> defaultOrder = <ItemsModel>[].obs;
 
   String get userId => auth.currentUser?.email ?? '';
-  int selected = 0;
+  final RxInt selected = 0.obs;
+
+  // int selected = 0;
   final TextEditingController _searchController = TextEditingController();
 
   void separateItems() {
@@ -53,8 +54,17 @@ class FoodPageState extends State<FoodPage> {
       }
     }
     mergedList.clear();
+    defaultOrder.addAll(widget.itemList);
+    print(defaultOrder);
     mergedList.addAll(availableItems);
     mergedList.addAll(unavailableItems);
+  }
+
+  void _showDefaultOrder() {
+    print('Before : $mergedList');
+    mergedList.clear();
+    mergedList.addAll(defaultOrder);
+    print(mergedList(defaultOrder));
   }
 
   Widget closedStoreMessage() {
@@ -76,6 +86,7 @@ class FoodPageState extends State<FoodPage> {
       ],
     );
   }
+
   Widget openStoreContent() {
     int index1 = 0;
     int index2 = 1;
@@ -147,156 +158,151 @@ class FoodPageState extends State<FoodPage> {
             ),
             SizedBox(
               height: 50,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selected = index1;
-                        /*  _showDefaultOrder();*/
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                        width: 160,
-                        decoration: BoxDecoration(
-                          color: selected == index1
-                              ? const Color(0xFF2546A9)
-                              : Colors.white,
-                          border: Border.all(
-                            color: const Color(0xFF2546A9),
-                            width: 1, // Border width
+              child: Obx(() {
+                return ListView(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        selected.value = index1;
+                        print(selected.value);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Container(
+                          width: 160,
+                          decoration: BoxDecoration(
+                            color: selected.value == index1
+                                ? AppColors.blue
+                                : Colors.white,
+                            border: Border.all(
+                              color: const Color(0xFF2546A9),
+                              width: 1, // Border width
+                            ),
+                            borderRadius:
+                                BorderRadius.circular(32.0), // Border radius
                           ),
-                          borderRadius:
-                          BorderRadius.circular(32.0), // Border radius
+                          child: Center(
+                              child: Text(
+                            "Most Popular",
+                            style: TextStyle(
+                              color: selected.value == index1
+                                  ? Colors.white
+                                  : AppColors.blue,
+                            ),
+                            //style: TextStyle(color: Colors.white),
+                          )),
                         ),
-                        child: Center(
-                            child: Text(
-                              "Most Popular",
-                              style: TextStyle(
-                                color: selected == index1
-                                    ? Colors.white
-                                    : const Color(0xFF2546A9),
-                              ),
-                              //style: TextStyle(color: Colors.white),
-                            )),
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selected = index2;
-                          availableItems.sort(
-                                (a, b) => int.parse(a.price).compareTo(int.parse(b.price)),
-                          );
-                          mergedList.clear();
-                          mergedList.addAll(availableItems);
-                          mergedList.addAll(unavailableItems);
-
-                        /*_sortListByPriceLowestToHighest();*/
-                      });
-                    },
-                    /* onTap: () {
-                      setState(() {
-                        selected = index2;
-                        _isSortedByPriceLowestToHighest =
-                            !_isSortedByPriceLowestToHighest;
-                        _isSortedByPriceHighestToLowest =
-                            !_isSortedByPriceHighestToLowest;
-                        if (_isSortedByPriceLowestToHighest) {
-                          _foodItems.sort((a, b) =>
-                              a.price.compareTo(b.price)); // Ascending order
-                        }
-                      });
-                    },*/
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                        width: 240,
-                        decoration: BoxDecoration(
-                          color: selected == index2
-                              ? const Color(0xFF2546A9)
-                              : Colors.white,
-                          border: Border.all(
-                            color: const Color(0xFF2546A9), // Border color
-                            width: 1, // Border width
+                    GestureDetector(
+                      onTap: () {
+                        selected.value = index2;
+                        print(selected.value);
+                        availableItems.sort(
+                          (a, b) =>
+                              int.parse(a.price).compareTo(int.parse(b.price)),
+                        );
+                        mergedList.clear();
+                        mergedList.addAll(availableItems);
+                        mergedList.addAll(unavailableItems);
+                      },
+                      /* onTap: () {
+                        setState(() {
+                          selected = index2;
+                          _isSortedByPriceLowestToHighest =
+                              !_isSortedByPriceLowestToHighest;
+                          _isSortedByPriceHighestToLowest =
+                              !_isSortedByPriceHighestToLowest;
+                          if (_isSortedByPriceLowestToHighest) {
+                            _foodItems.sort((a, b) =>
+                                a.price.compareTo(b.price)); // Ascending order
+                          }
+                        });
+                      },*/
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Container(
+                          width: 240,
+                          decoration: BoxDecoration(
+                            color: selected.value == index2
+                                ? AppColors.blue
+                                : Colors.white,
+                            border: Border.all(
+                              color: const Color(0xFF2546A9), // Border color
+                              width: 1, // Border width
+                            ),
+                            borderRadius:
+                                BorderRadius.circular(32.0), // Border radius
                           ),
-                          borderRadius:
-                          BorderRadius.circular(32.0), // Border radius
+                          child: Center(
+                              child: Text(
+                            "Price: Lowest - Highest",
+                            style: TextStyle(
+                              color: selected.value == index2
+                                  ? Colors.white
+                                  : AppColors.blue,
+                            ),
+                            // style: TextStyle(color: Colors.white),
+                          )),
                         ),
-                        child: Center(
-                            child: Text(
-                              "Price: Lowest - Highest",
-                              style: TextStyle(
-                                color: selected == index2
-                                    ? Colors.white
-                                    : const Color(0xFF2546A9),
-                              ),
-                              // style: TextStyle(color: Colors.white),
-                            )),
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selected = index3;
+                    GestureDetector(
+                      onTap: () {
+                        selected.value = index3;
 
-                          availableItems.sort(
-                                (a, b) => int.parse(b.price).compareTo(int.parse(a.price)),
-                          );
-                          mergedList.clear();
-                          mergedList.addAll(availableItems);
-                          mergedList.addAll(unavailableItems);
-
-                        /*_sortListByPriceHighestToLowest();*/
-                      });
-                    },
-                    /*onTap: () {
-                      setState(() {
-                        selected = index3;
-                        if (_isSortedByPriceHighestToLowest) {
-                          _foodItems.sort((a, b) => b.price.compareTo(a.price));
-                        }
-                        _isSortedByPriceHighestToLowest =
-                            !_isSortedByPriceHighestToLowest;
-                        _isSortedByPriceLowestToHighest =
-                            !_isSortedByPriceLowestToHighest;
-                      });
-                    },*/
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                        width: 240,
-                        decoration: BoxDecoration(
-                          color: selected == index3
-                              ? const Color(0xFF2546A9)
-                              : Colors.white,
-                          border: Border.all(
-                            color: const Color(0xFF2546A9), // Border color
-                            width: 1, // Border width
+                        availableItems.sort(
+                          (a, b) =>
+                              int.parse(b.price).compareTo(int.parse(a.price)),
+                        );
+                        mergedList.clear();
+                        mergedList.addAll(availableItems);
+                        mergedList.addAll(unavailableItems);
+                      },
+                      /*onTap: () {
+                        setState(() {
+                          selected = index3;
+                          if (_isSortedByPriceHighestToLowest) {
+                            _foodItems.sort((a, b) => b.price.compareTo(a.price));
+                          }
+                          _isSortedByPriceHighestToLowest =
+                              !_isSortedByPriceHighestToLowest;
+                          _isSortedByPriceLowestToHighest =
+                              !_isSortedByPriceLowestToHighest;
+                        });
+                      },*/
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Container(
+                          width: 240,
+                          decoration: BoxDecoration(
+                            color: selected.value == index3
+                                ? AppColors.blue
+                                : Colors.white,
+                            border: Border.all(
+                              color: const Color(0xFF2546A9), // Border color
+                              width: 1, // Border width
+                            ),
+                            borderRadius:
+                                BorderRadius.circular(32.0), // Border radius
                           ),
-                          borderRadius:
-                          BorderRadius.circular(32.0), // Border radius
+                          child: Center(
+                              child: Text(
+                            "Price: Highest - Lowest",
+                            style: TextStyle(
+                              color: selected.value == index3
+                                  ? Colors.white
+                                  : AppColors.blue,
+                            ),
+                          )),
                         ),
-                        child: Center(
-                            child: Text(
-                              "Price: Highest - Lowest",
-                              style: TextStyle(
-                                color: selected == index3
-                                    ? Colors.white
-                                    : const Color(0xFF2546A9),
-                              ),
-                            )),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              }),
             ),
             const SizedBox(
               height: 10,
@@ -322,8 +328,8 @@ class FoodPageState extends State<FoodPage> {
 
                       if (_searchController.text.isNotEmpty &&
                           !itemname!.toLowerCase().contains(
-                            _searchController.text.toLowerCase(),
-                          )) {
+                                _searchController.text.toLowerCase(),
+                              )) {
                         return Container();
                       }
 
@@ -341,11 +347,12 @@ class FoodPageState extends State<FoodPage> {
         ),
       ),
       floatingActionButton: InkWell(
-        onTap: () async{
-          await Navigator.push(context, MaterialPageRoute(builder: (context)=>CartPage(true))).then((value){
-            if(value==true){
-              setState(() {
-              });
+        onTap: () async {
+          await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CartPage(true)))
+              .then((value) {
+            if (value == true) {
+              setState(() {});
             }
           });
           // Get.to(() => CartPage(true));
@@ -356,10 +363,10 @@ class FoodPageState extends State<FoodPage> {
             height: 85,
             child: Card(
               elevation: 10, // You can adjust the elevation for the card
-              color: const Color(0xFF2546A9),
+              color: AppColors.blue,
               shape: RoundedRectangleBorder(
                 borderRadius:
-                BorderRadius.circular(30), // Customize the border radius
+                    BorderRadius.circular(30), // Customize the border radius
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -398,7 +405,6 @@ class FoodPageState extends State<FoodPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
-
 
   /*RxMap<String, RxList<Map<String, dynamic>>> Filterlist = {
     'availableItems': <Map<String, dynamic>>[].obs,
@@ -496,12 +502,12 @@ class FoodPageState extends State<FoodPage> {
     // reloadFetchData();
     CartController.to.tappedList = List.filled(mergedList.length, false);
     CartController.to.countList = List.filled(mergedList.length, 0);
-    selected = 0;
+    selected.value = 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    return  StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder<DocumentSnapshot>(
       stream: db.collection('menu').doc('today menu').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
