@@ -55,7 +55,7 @@ class _FaqPageState extends State<Faq> {
                       'FAQs',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 22,
+                        fontSize: 20,
                         fontFamily: 'Epilogue',
                         fontWeight: FontWeight.w700,
                         height: 0.06,
@@ -66,7 +66,7 @@ class _FaqPageState extends State<Faq> {
             Stack(
               children: [
                 Container(
-                  height: 50,
+                  height: 45,
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.centerLeft,
@@ -114,8 +114,8 @@ class _FaqPageState extends State<Faq> {
                           height: 5,
                         ),
                         FAQItem(
-                          question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          question: 'How do I create an account on the Amulx app?',
+                          answer: ' You can create an account on the Amulx app by downloading it from the app store, opening it, and following the prompts to sign up.',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -127,8 +127,8 @@ class _FaqPageState extends State<Faq> {
                           height: 5,
                         ),
                         FAQItem(
-                          question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          question: 'Is the Amulx app secure?',
+                          answer: 'Yes, the Amulx app uses industry-standard security measures to protect your personal and payment information.',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -140,8 +140,8 @@ class _FaqPageState extends State<Faq> {
                           height: 5,
                         ),
                         FAQItem(
-                          question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          question: 'How do I pay for my order on the Amulx app?',
+                          answer: 'You can pay for your order on the Amulx app using phone pe, gpay, paytm, or COD.',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -153,8 +153,8 @@ class _FaqPageState extends State<Faq> {
                           height: 5,
                         ),
                         FAQItem(
-                          question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          question: 'How do I know if my order is ready for pickup?',
+                          answer: 'You will receive a notification on the Amulx app when your order is ready for pickup.',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -166,8 +166,48 @@ class _FaqPageState extends State<Faq> {
                           height: 5,
                         ),
                         FAQItem(
-                          question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          question: 'Can I use the Amulx app to order food for delivery?',
+                          answer: 'No, the Amulx app is currently only available for pickup orders.',
+                          isExpanded: _isExpanded2,
+                          onExpansionChanged: (value) {
+                            setState(() {
+                              _isExpanded2 = value;
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        FAQItem(
+                          question: 'What if I have a problem with my order on the Amulx app?',
+                          answer: 'If you have a problem with your order on the Amulx app, you can contact customer support through the app or by email.',
+                          isExpanded: _isExpanded2,
+                          onExpansionChanged: (value) {
+                            setState(() {
+                              _isExpanded2 = value;
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        FAQItem(
+                          question: 'How do I update my account information on the Amulx app?',
+                          answer: ' You can update your account information on the Amulx app by going to the "Profile" section and making the necessary changes.',
+                          isExpanded: _isExpanded2,
+                          onExpansionChanged: (value) {
+                            setState(() {
+                              _isExpanded2 = value;
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        FAQItem(
+                          question: 'How do I get a refund for a declined order? ',
+                          answer: '  If your order is declined by the owner, you will receive a code to your app.'
+                              ' You will need to provide this code to the owner to receive a refund.',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {

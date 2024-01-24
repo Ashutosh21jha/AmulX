@@ -7,58 +7,100 @@ class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'About Us',
-          style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 0),
-            fontSize: 18,
-            fontFamily: 'Epilogue',
-            fontWeight: FontWeight.w700,
-            height: 0.06,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          color: const Color.fromARGB(255, 0, 0, 0),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(30),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                'About DevComm',
-                style: TextStyle(
-                  color: Color(0xFF282828),
-                  fontSize: 18,
-                  fontFamily: 'Epilogue',
-                  fontWeight: FontWeight.w700,
-                  height: 0.06,
-                ),
-              ),
-                  const SizedBox(height: 16),
-              Text(
-                'Welcome to DevComm, where innovation meets community spirit at NSUT. We\'re the driving force behind apps like NSUT X, AmulX , connecting developers and fostering creativity in the digital realm. Join us in shaping the future together.',
-                style: TextStyle(
-                  color: Color(0xFF282828),
-                  fontSize: 14,
-                  fontFamily: 'Epilogue',
-                  fontWeight: FontWeight.w400,
-                  height: 1.5,
-                ),
-              ),
-            ]),
-          ),
-        ],
-      ),
+        body: SingleChildScrollView(
+            child: Column(
+                children: [
+                  Container(
+                    height: 60,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Color(0xFF00084B),
+                          Color(0xFF2E55C0),
+                          Color(0xFF148BFA),
+                        ],
+                      ),
+                      /* borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(80),
+                  bottomRight: Radius.circular(80),
+                ),*/
+                    ),
+                  ),
+                  Container(
+                    height: 75,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Color(0xFF00084B),
+                          Color(0xFF2E55C0),
+                          Color(0xFF148BFA),
+                        ],
+                      ),
+                      /* borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(80),
+                  bottomRight: Radius.circular(80),
+                ),*/
+                    ),
+                    child: Center(
+                      child: const Text(
+                        'About Us',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'Epilogue',
+                          fontWeight: FontWeight.w700,
+                          height: 0.06,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Stack(
+                      children: [
+                        Container(
+                          height: 45,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                Color(0xFF00084B),
+                                Color(0xFF2E55C0),
+                                Color(0xFF148BFA),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.elliptical(40,20),
+                              bottomRight: Radius.elliptical(40, 20),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                SizedBox(height: 80,),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text('Amulx is an app made by the largest tech society of NSUT, Devcomm.',
+                                    style: TextStyle(fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Epilogue'
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ]
+                  )
+                ]
+            )
+        )
     );
   }
 }

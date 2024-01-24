@@ -386,11 +386,11 @@ class _ProfileState extends State<Profile> {
                             iconColor: const Color(0xFF3BA889)),
                         // const SizedBox(height: 4),
                         // PRIVACY POLICY
-                        ProfileCard(
-                            icon: Icons.shield_outlined,
-                            text: "Privacy Policy",
-                            screen: const Privacy(),
-                            iconColor: const Color(0xFFFBBC04)),
+                        // ProfileCard(
+                        //     icon: Icons.shield_outlined,
+                        //     text: "Privacy Policy",
+                        //     screen: const Privacy(),
+                        //     iconColor: const Color(0xFFFBBC04)),
                         // const SizedBox(height: 4),
                         // LOGOUT
                         ProfileCard(
