@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/signupPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -339,6 +340,10 @@ class _ProfileState extends State<Profile> {
                             ],
                           ),
                         ),
+                        IconButton(
+                            onPressed: () =>
+                                AdaptiveTheme.of(context).toggleThemeMode(),
+                            icon: Icon(Icons.dark_mode)),
                         const SizedBox(height: 32),
                         const SizedBox(
                           width: 327,

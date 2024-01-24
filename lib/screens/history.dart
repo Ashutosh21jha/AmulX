@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,8 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
   final auth = FirebaseAuth.instance;
+  late final bool _isDarkTheme =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   String get userId => auth.currentUser?.email ?? '';
 
@@ -50,7 +53,9 @@ class _HistoryState extends State<History> {
     );
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: _isDarkTheme
+          ? Theme.of(context).scaffoldBackgroundColor
+          : Colors.grey.shade200,
       body: Stack(
         children: [
           Container(

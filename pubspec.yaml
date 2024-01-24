@@ -48,6 +48,7 @@ dependencies:
   im_stepper: ^1.0.1+1
   timeline_tile: ^2.0.0
   image_picker: ^0.8.4+4
+  adaptive_theme: ^3.5.0
 
 
 dev_dependencies:
