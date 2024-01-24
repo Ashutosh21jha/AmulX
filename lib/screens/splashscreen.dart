@@ -5,6 +5,7 @@ import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/signupPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 final auth = FirebaseAuth.instance;
@@ -64,6 +65,10 @@ class _Splashscreenstate extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(

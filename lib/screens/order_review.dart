@@ -1,15 +1,14 @@
 import 'dart:math';
-
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'cart_components/cart_controller.dart';
 import 'cart_components/cartItem_model.dart';
 import 'mainscreen.dart';
-import 'order_icons.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -18,6 +17,7 @@ class OrderReviewPage extends StatefulWidget {
 
   String get userId => auth.currentUser?.email ?? '';
   final auth = FirebaseAuth.instance;
+
 
   final RxList<CartItem> cartItems;
 
@@ -35,19 +35,27 @@ String generateRandomOrderID() {
 class _OrderReviewPageState extends State<OrderReviewPage> {
   late int count;
   bool isLoading = false;
+  final messaging = FirebaseMessaging.instance;
+  late String fcm_token;
+
+  Future<void> getToken() async {
+    fcm_token = (await messaging.getToken())!;
+    print('Token is : $fcm_token');
+  }
 
   @override
   void initState() {
     super.initState();
     priceFetch();
     fetch();
+    getToken();
   }
 
   Future<void> fetch() async {
     try {
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         DocumentReference countRef =
-            FirebaseFirestore.instance.collection('orderID').doc('IDCount');
+        FirebaseFirestore.instance.collection('orderID').doc('IDCount');
 
         DocumentSnapshot countSnapshot = await transaction.get(countRef);
         int count = countSnapshot.get('ID');
@@ -63,7 +71,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     try {
       await db.runTransaction((transaction) async {
         final availableCollection =
-            db.collection('menu').doc('today menu').collection('available');
+        db.collection('menu').doc('today menu').collection('available');
 
         for (final cartItem in cartItems) {
           final itemDoc = await availableCollection.doc(cartItem.name).get();
@@ -105,7 +113,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
   Future<String> getUserName(String userId) async {
     try {
       final userDoc =
-          await FirebaseFirestore.instance.collection('User').doc(userId).get();
+      await FirebaseFirestore.instance.collection('User').doc(userId).get();
 
       if (userDoc.exists) {
         return userDoc['name'];
@@ -118,13 +126,13 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     }
   }
 
-  void handlePaymentSuccessResponse(
-      PaymentSuccessResponse response, CartController cartController) async {
+  void handlePaymentSuccessResponse(PaymentSuccessResponse response,
+      CartController cartController) async {
     try {
       final formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
       final historyCollection =
-          FirebaseFirestore.instance.collection('User/$userId/history');
+      FirebaseFirestore.instance.collection('User/$userId/history');
       count = 0;
       await FirebaseFirestore.instance
           .collection('orderID')
@@ -135,30 +143,32 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       });
 
       final prepListCollection =
-          FirebaseFirestore.instance.collection('prepList');
+      FirebaseFirestore.instance.collection('prepList');
 
       String orderID = generateRandomOrderID();
+
       final orderData = {
         'orders': FieldValue.arrayUnion([
           {
             'items': cartController.cartItems.fold<Map<String, dynamic>>({},
-                (map, item) {
-              map[item.name] = {
-                'count': item.quantity,
-                'price': item.price,
-              };
-              return map;
-            }),
+                    (map, item) {
+                  map[item.name] = {
+                    'count': item.quantity,
+                    'price': item.price,
+                  };
+                  return map;
+                }),
             'orderID': 'ORD-$count',
             'time': DateTime.now(),
             'orderStatus': 'Placed',
+
           }
         ]),
       };
 
       final itemsMap = cartController.cartItems.fold<Map<String, dynamic>>(
         {},
-        (map, item) {
+            (map, item) {
           map[item.name] = {
             'count': item.quantity,
             'price': item.price,
@@ -173,6 +183,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         'orderStatus': 'Preparing',
         'name': await getUserName(userId),
         'time': DateTime.now(),
+        'token': '$fcm_token',
       };
 
       final docSnapshot = await historyCollection.doc(formattedDate).get();
@@ -426,13 +437,16 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                           dense: true,
                           visualDensity: VisualDensity.compact,
                           title: Text(
-                            '${item.name} (${item.quantity} ${item.quantity == 1 ? 'item' : 'items'})',
+                            '${item.name} (${item.quantity} ${item.quantity == 1
+                                ? 'item'
+                                : 'items'})',
                             style: const TextStyle(
                               fontSize: 17,
                             ),
                           ),
                           trailing: Text(
-                            '₹${(item.price * item.quantity).toStringAsFixed(2)}',
+                            '₹${(item.price * item.quantity).toStringAsFixed(
+                                2)}',
                             style: const TextStyle(
                               fontSize: 17,
                             ),
@@ -481,26 +495,26 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                   borderRadius: BorderRadius.circular(40),
                 ),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
                 textStyle: const TextStyle(fontSize: 20),
               ),
               child: Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 child: isLoading
                     ? const SizedBox(
-                        height: 10,
-                        width: 10,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
-                      )
+                  height: 10,
+                  width: 10,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                )
                     : const Text(
-                        'Pay',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 18),
-                      ),
+                  'Pay',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 18),
+                ),
               ),
             ),
           ],
