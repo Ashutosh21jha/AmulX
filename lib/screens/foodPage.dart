@@ -30,6 +30,7 @@ class FoodPageState extends State<FoodPage> {
   final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
   late final Timer _timer;
   RxList<ItemsModel> defaultOrder = <ItemsModel>[].obs;
+  RxList<ItemsModel> searchResults = <ItemsModel>[].obs;
 
   String get userId => auth.currentUser?.email ?? '';
   final RxInt selected = 0.obs;
@@ -58,6 +59,9 @@ class FoodPageState extends State<FoodPage> {
     print(defaultOrder);
     mergedList.addAll(availableItems);
     mergedList.addAll(unavailableItems);
+
+    searchResults.clear();
+    searchResults.addAll(mergedList);
   }
 
   void _showDefaultOrder() {
@@ -143,6 +147,10 @@ class FoodPageState extends State<FoodPage> {
                   ),
                   onChanged: (value) {
                     setState(() {
+                      searchResults.clear();
+                      searchResults.addAll(mergedList.where((item) => item.id!
+                          .toLowerCase()
+                          .contains(value.toLowerCase())));
                       /* _foodItems = _defaultOrder
                           .where((item) => item.name
                               .toLowerCase()

@@ -309,7 +309,6 @@ Future<void> addBackStock(List<CartItem> cartItems) async {
     print('Error adding back stock: $error');
     // Handle the error as needed
   }
-  CartController.to.reloadCart();
 }
 
 Future<void> updateStockOnPay(List<CartItem> cartItems) async {
