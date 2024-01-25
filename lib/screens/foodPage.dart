@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/models/items_model.dart';
@@ -29,8 +30,9 @@ class FoodPageState extends State<FoodPage> {
   final RxList<ItemsModel> unavailableItems = <ItemsModel>[].obs;
   final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
   late final Timer _timer;
-
-
+  late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   String get userId => auth.currentUser?.email ?? '';
   int selected = 0;
@@ -76,21 +78,22 @@ class FoodPageState extends State<FoodPage> {
       ],
     );
   }
+
   Widget openStoreContent() {
     int index1 = 0;
     int index2 = 1;
     int index3 = 2;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: appColors.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: appColors.scaffoldBackgroundColor,
         toolbarHeight: 70,
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new_sharp,
-            color: Colors.black,
+            color: _isDarkMode ? Colors.white : Colors.black,
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -99,8 +102,10 @@ class FoodPageState extends State<FoodPage> {
         centerTitle: true,
         title: Text(
           widget.cat,
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 30,
+              color: _isDarkMode ? Colors.white : Colors.black),
         ),
       ),
       body: SafeArea(
@@ -171,18 +176,18 @@ class FoodPageState extends State<FoodPage> {
                             width: 1, // Border width
                           ),
                           borderRadius:
-                          BorderRadius.circular(32.0), // Border radius
+                              BorderRadius.circular(32.0), // Border radius
                         ),
                         child: Center(
                             child: Text(
-                              "Most Popular",
-                              style: TextStyle(
-                                color: selected == index1
-                                    ? Colors.white
-                                    : const Color(0xFF2546A9),
-                              ),
-                              //style: TextStyle(color: Colors.white),
-                            )),
+                          "Most Popular",
+                          style: TextStyle(
+                            color: selected == index1
+                                ? Colors.white
+                                : const Color(0xFF2546A9),
+                          ),
+                          //style: TextStyle(color: Colors.white),
+                        )),
                       ),
                     ),
                   ),
@@ -190,12 +195,13 @@ class FoodPageState extends State<FoodPage> {
                     onTap: () {
                       setState(() {
                         selected = index2;
-                          availableItems.sort(
-                                (a, b) => int.parse(a.price).compareTo(int.parse(b.price)),
-                          );
-                          mergedList.clear();
-                          mergedList.addAll(availableItems);
-                          mergedList.addAll(unavailableItems);
+                        availableItems.sort(
+                          (a, b) =>
+                              int.parse(a.price).compareTo(int.parse(b.price)),
+                        );
+                        mergedList.clear();
+                        mergedList.addAll(availableItems);
+                        mergedList.addAll(unavailableItems);
 
                         /*_sortListByPriceLowestToHighest();*/
                       });
@@ -220,24 +226,26 @@ class FoodPageState extends State<FoodPage> {
                         decoration: BoxDecoration(
                           color: selected == index2
                               ? const Color(0xFF2546A9)
-                              : Colors.white,
+                              : (_isDarkMode
+                                  ? Color(0xFFE6E6E6)
+                                  : Colors.white),
                           border: Border.all(
                             color: const Color(0xFF2546A9), // Border color
                             width: 1, // Border width
                           ),
                           borderRadius:
-                          BorderRadius.circular(32.0), // Border radius
+                              BorderRadius.circular(32.0), // Border radius
                         ),
                         child: Center(
                             child: Text(
-                              "Price: Lowest - Highest",
-                              style: TextStyle(
-                                color: selected == index2
-                                    ? Colors.white
-                                    : const Color(0xFF2546A9),
-                              ),
-                              // style: TextStyle(color: Colors.white),
-                            )),
+                          "Price: Lowest - Highest",
+                          style: TextStyle(
+                            color: selected == index2
+                                ? Colors.white
+                                : const Color(0xFF2546A9),
+                          ),
+                          // style: TextStyle(color: Colors.white),
+                        )),
                       ),
                     ),
                   ),
@@ -246,12 +254,13 @@ class FoodPageState extends State<FoodPage> {
                       setState(() {
                         selected = index3;
 
-                          availableItems.sort(
-                                (a, b) => int.parse(b.price).compareTo(int.parse(a.price)),
-                          );
-                          mergedList.clear();
-                          mergedList.addAll(availableItems);
-                          mergedList.addAll(unavailableItems);
+                        availableItems.sort(
+                          (a, b) =>
+                              int.parse(b.price).compareTo(int.parse(a.price)),
+                        );
+                        mergedList.clear();
+                        mergedList.addAll(availableItems);
+                        mergedList.addAll(unavailableItems);
 
                         /*_sortListByPriceHighestToLowest();*/
                       });
@@ -275,23 +284,25 @@ class FoodPageState extends State<FoodPage> {
                         decoration: BoxDecoration(
                           color: selected == index3
                               ? const Color(0xFF2546A9)
-                              : Colors.white,
+                              : (_isDarkMode
+                                  ? Color(0xFFE6E6E6)
+                                  : Colors.white),
                           border: Border.all(
                             color: const Color(0xFF2546A9), // Border color
                             width: 1, // Border width
                           ),
                           borderRadius:
-                          BorderRadius.circular(32.0), // Border radius
+                              BorderRadius.circular(32.0), // Border radius
                         ),
                         child: Center(
                             child: Text(
-                              "Price: Highest - Lowest",
-                              style: TextStyle(
-                                color: selected == index3
-                                    ? Colors.white
-                                    : const Color(0xFF2546A9),
-                              ),
-                            )),
+                          "Price: Highest - Lowest",
+                          style: TextStyle(
+                            color: selected == index3
+                                ? Colors.white
+                                : const Color(0xFF2546A9),
+                          ),
+                        )),
                       ),
                     ),
                   ),
@@ -322,8 +333,8 @@ class FoodPageState extends State<FoodPage> {
 
                       if (_searchController.text.isNotEmpty &&
                           !itemname!.toLowerCase().contains(
-                            _searchController.text.toLowerCase(),
-                          )) {
+                                _searchController.text.toLowerCase(),
+                              )) {
                         return Container();
                       }
 
@@ -341,11 +352,12 @@ class FoodPageState extends State<FoodPage> {
         ),
       ),
       floatingActionButton: InkWell(
-        onTap: () async{
-          await Navigator.push(context, MaterialPageRoute(builder: (context)=>CartPage(true))).then((value){
-            if(value==true){
-              setState(() {
-              });
+        onTap: () async {
+          await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CartPage(true)))
+              .then((value) {
+            if (value == true) {
+              setState(() {});
             }
           });
           // Get.to(() => CartPage(true));
@@ -359,7 +371,7 @@ class FoodPageState extends State<FoodPage> {
               color: const Color(0xFF2546A9),
               shape: RoundedRectangleBorder(
                 borderRadius:
-                BorderRadius.circular(30), // Customize the border radius
+                    BorderRadius.circular(30), // Customize the border radius
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -398,7 +410,6 @@ class FoodPageState extends State<FoodPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
-
 
   /*RxMap<String, RxList<Map<String, dynamic>>> Filterlist = {
     'availableItems': <Map<String, dynamic>>[].obs,
@@ -501,7 +512,7 @@ class FoodPageState extends State<FoodPage> {
 
   @override
   Widget build(BuildContext context) {
-    return  StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder<DocumentSnapshot>(
       stream: db.collection('menu').doc('today menu').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {

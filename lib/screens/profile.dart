@@ -59,6 +59,9 @@ class _ProfileState extends State<Profile> {
   String name = "";
   String s_id = "";
   RxString? imageUrl = ''.obs;
+  late AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+  late bool _isDarkMode =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   @override
   void initState() {
@@ -174,7 +177,7 @@ class _ProfileState extends State<Profile> {
               ),*/
             ),
             child: Center(
-              child: const Text(
+              child: Text(
                 'My Profile',
                 style: TextStyle(
                   color: Colors.white,
@@ -216,7 +219,7 @@ class _ProfileState extends State<Profile> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 36, vertical: 8),
                           decoration: ShapeDecoration(
-                            color: const Color.fromARGB(255, 255, 255, 255),
+                            color: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(40),
                             ),
@@ -340,29 +343,34 @@ class _ProfileState extends State<Profile> {
                             ],
                           ),
                         ),
-                        IconButton(
-                            onPressed: () =>
-                                AdaptiveTheme.of(context).toggleThemeMode(),
-                            icon: Icon(Icons.dark_mode)),
-                        const SizedBox(height: 32),
-                        const SizedBox(
-                          width: 327,
-                          child: Text(
-                            'Account',
+                        TextButton.icon(
+                          onPressed: () {
+                            AdaptiveTheme.of(context)
+                                .toggleThemeMode(useSystem: false);
+                            setState(() {
+                              _isDarkMode = !_isDarkMode;
+                              appColors =
+                                  Theme.of(context).extension<AppColors2>()!;
+                            });
+                          },
+                          label: Text(
+                            _isDarkMode ? "Dark Mode" : "Light Mode",
                             style: TextStyle(
-                              color: Color(0xFF57585B),
-                              fontSize: 14,
-                              fontFamily: 'Epilogue',
-                              fontWeight: FontWeight.w500,
-                              height: 0.08,
-                            ),
+                                color: _isDarkMode
+                                    ? Colors.white70
+                                    : Colors.black),
+                          ),
+                          icon: Icon(
+                            _isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                            color: _isDarkMode ? Colors.white70 : Colors.black,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 32),
                         // PROFILE
                         ProfileCard(
                             icon: Icons.person,
                             text: "Profile",
+                            textColor: appColors.whiteText,
                             top: true,
                             screen: EditProfile(
                               parentImageUrl: imageUrl!,
@@ -373,6 +381,7 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.info_outline,
                             text: "About Us",
+                            textColor: appColors.whiteText,
                             screen: const About(),
                             iconColor: const Color(0xFF02B9F0)),
                         // const SizedBox(height: 4),
@@ -380,6 +389,7 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.question_answer_outlined,
                             text: "FAQ",
+                            textColor: appColors.whiteText,
                             screen: Faq(),
                             iconColor: const Color(0xFFFC6DBB)),
                         // const SizedBox(height: 4),
@@ -387,6 +397,7 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.file_copy,
                             text: "Terms and Conditions",
+                            textColor: appColors.whiteText,
                             screen: const Terms(),
                             iconColor: const Color(0xFF3BA889)),
                         // const SizedBox(height: 4),
@@ -394,6 +405,7 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.shield_outlined,
                             text: "Privacy Policy",
+                            textColor: appColors.whiteText,
                             screen: const Privacy(),
                             iconColor: const Color(0xFFFBBC04)),
                         // const SizedBox(height: 4),

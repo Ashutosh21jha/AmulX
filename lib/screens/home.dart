@@ -21,7 +21,7 @@ class _HomeState extends State<HomePage> {
   final db = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  late final bool _isDarkTheme =
+  late final bool _isDarkMode =
       AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   @override
@@ -119,7 +119,7 @@ class _HomeState extends State<HomePage> {
           Text(
             "Answer your\nappetite!",
             style: TextStyle(
-              color: _isDarkTheme ? Colors.white60 : Color(0xFF414042),
+              color: _isDarkMode ? Colors.white60 : Color(0xFF414042),
               fontSize: 26,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.02 * 16,
@@ -148,7 +148,7 @@ class _HomeState extends State<HomePage> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color:
-                              _isDarkTheme ? AppColors.blackbase : Colors.white,
+                              _isDarkMode ? AppColors.blackbase : Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),
@@ -198,7 +198,7 @@ class _HomeState extends State<HomePage> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color:
-                              _isDarkTheme ? AppColors.blackbase : Colors.white,
+                              _isDarkMode ? AppColors.blackbase : Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),
@@ -248,7 +248,7 @@ class _HomeState extends State<HomePage> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color:
-                              _isDarkTheme ? AppColors.blackbase : Colors.white,
+                              _isDarkMode ? AppColors.blackbase : Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),
@@ -299,7 +299,7 @@ class _HomeState extends State<HomePage> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color:
-                              _isDarkTheme ? AppColors.blackbase : Colors.white,
+                              _isDarkMode ? AppColors.blackbase : Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),

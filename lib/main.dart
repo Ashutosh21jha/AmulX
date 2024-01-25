@@ -24,12 +24,12 @@ class MyApp extends StatelessWidget {
       statusBarIconBrightness: Brightness.dark,
     ));
     return AdaptiveTheme(
-      light: lightThemeData,
-      dark: darkThemeData,
-      initial: AdaptiveThemeMode.dark,
-      builder: (theme, darkTheme) => GetMaterialApp(
+      light: lightThemeData(),
+      dark: darkThemeData(),
+      initial: AdaptiveThemeMode.system,
+      builder: (lightTheme, darkTheme) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: theme,
+        theme: lightTheme,
         darkTheme: darkTheme,
         home: SplashScreen(),
       ),

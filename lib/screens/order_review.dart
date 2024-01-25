@@ -380,15 +380,15 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-                    'Summary',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
+          'Summary',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         leading: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back_ios)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -411,7 +411,10 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                       padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
                       child: Text(
                         'Order Summary',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     ListView.builder(
@@ -424,17 +427,17 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                           dense: true,
                           visualDensity: VisualDensity.compact,
                           title: Text(
-                              '${item.name} (${item.quantity} ${item.quantity == 1 ? 'item' : 'items'})',
-                              style: const TextStyle(
-                                fontSize: 17,
-                              ),
+                            '${item.name} (${item.quantity} ${item.quantity == 1 ? 'item' : 'items'})',
+                            style: const TextStyle(
+                              fontSize: 17,
                             ),
+                          ),
                           trailing: Text(
-                              '₹${(item.price * item.quantity).toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                fontSize: 17,
-                              ),
+                            '₹${(item.price * item.quantity).toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 17,
                             ),
+                          ),
                         );
                       },
                     ),
@@ -449,18 +452,16 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                         child: ListTile(
                           dense: true,
                           title: const Text(
-                              'Total',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
+                            'Total',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
                           trailing: Text(
-                              '₹${totalAmount.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                        )
-                      ),
-                    
+                            '₹${totalAmount.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                        )),
                   ],
                 ),
               ),

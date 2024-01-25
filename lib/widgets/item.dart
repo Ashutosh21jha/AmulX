@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ListItem extends StatefulWidget {
@@ -36,7 +37,8 @@ class _ListItemState extends State<ListItem>
   late Animation<double> _heightFactorAnimation;
   final auth = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
-  late final bool _isDarkTheme =
+  late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
       AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   String get userId => auth.currentUser?.email ?? '';
@@ -109,7 +111,7 @@ class _ListItemState extends State<ListItem>
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               decoration: ShapeDecoration(
-                color: _isDarkTheme ? Colors.white10 : Colors.white,
+                color: appColors.cardColor,
                 // gradient: LinearGradient(
                 //   begin: Alignment.topCenter,
                 //   end: Alignment.bottomCenter,
@@ -177,8 +179,7 @@ class _ListItemState extends State<ListItem>
                     title: Text(
                       widget.orderID,
                       style: TextStyle(
-                        color:
-                            _isDarkTheme ? Colors.white70 : Color(0xFF282828),
+                        color: _isDarkMode ? Colors.white70 : Color(0xFF282828),
                         fontSize: 12,
                         fontFamily: 'Epilogue',
                         fontWeight: FontWeight.w700,
@@ -188,8 +189,7 @@ class _ListItemState extends State<ListItem>
                     subtitle: Text(
                       DateFormat('MMM d, y h:mm a').format(widget.timestamp),
                       style: TextStyle(
-                        color:
-                            _isDarkTheme ? Colors.white54 : Color(0xFF36414C),
+                        color: _isDarkMode ? Colors.white54 : Color(0xFF36414C),
                         fontSize: 14,
                         fontFamily: 'Epilogue',
                         fontWeight: FontWeight.w400,
@@ -214,90 +214,86 @@ class _ListItemState extends State<ListItem>
                     sizeFactor: _heightFactorAnimation,
                     child: SizeTransition(
                       sizeFactor: _heightFactorAnimation,
-                      child: Card(
-                        surfaceTintColor: Colors.white,
-                        elevation: 1,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: widget.items.length,
-                              itemBuilder: (context, index) {
-                                final item = widget.items[index];
-                                return ListTile(
-                                  dense: true,
-                                  visualDensity: const VisualDensity(
-                                      horizontal: 0, vertical: -4),
-                                  title: Text(
-                                    '${item.name} (${item.quantity} ${item.quantity == 1 ? 'item' : 'items'})',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: widget.items.length,
+                            itemBuilder: (context, index) {
+                              final item = widget.items[index];
+                              return ListTile(
+                                dense: true,
+                                visualDensity: const VisualDensity(
+                                    horizontal: 0, vertical: -4),
+                                title: Text(
+                                  '${item.name} (${item.quantity} ${item.quantity == 1 ? 'item' : 'items'})',
+                                  style: TextStyle(
+                                    color: appColors.text2,
+                                    fontSize: 14,
                                   ),
-                                  trailing: Text(
-                                    '₹${(item.price * item.quantity).toStringAsFixed(2)}',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                );
-                              },
+                                ),
+                                trailing: Text(
+                                  '₹${(item.price * item.quantity).toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                      fontSize: 14, color: appColors.text2),
+                                ),
+                              );
+                            },
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Divider(
+                              thickness: 1,
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Divider(
-                                thickness: 1,
-                              ),
+                          ),
+                          ListTile(
+                            visualDensity: VisualDensity.compact,
+                            dense: true,
+                            title: const Text(
+                              'Total',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14),
                             ),
-                            ListTile(
-                              visualDensity: VisualDensity.compact,
-                              dense: true,
-                              title: const Text(
-                                'Total',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 14),
-                              ),
-                              trailing: Text(
-                                '₹${totalAmount.toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 14),
-                              ),
-                            )
-                            // Text(
-                            //   widget.items,
-                            //   style: const TextStyle(
-                            //     color: Color(0xFF36414C),
-                            //     fontSize: 14,
-                            //     fontFamily: 'Epilogue',
-                            //     fontWeight: FontWeight.w400,
-                            //     height: 1.2,
-                            //   ),
-                            // ),
-                            // const SizedBox(height: 8),
-                            // const Text(
-                            //   'Total Amount:',
-                            //   style: TextStyle(
-                            //     color: Color(0xFF282828),
-                            //     fontSize: 14,
-                            //     fontFamily: 'Epilogue',
-                            //     fontWeight: FontWeight.w700,
-                            //     height: 0.7,
-                            //   ),
-                            // ),
-                            // Text(
-                            //   '₹${widget.totalAmount.toStringAsFixed(2)}',
-                            //   style: const TextStyle(
-                            //     color: Color(0xFF36414C),
-                            //     fontSize: 14,
-                            //     fontFamily: 'Epilogue',
-                            //     fontWeight: FontWeight.w400,
-                            //     height: 1.2,
-                            //   ),
-                            // ),
-                          ],
-                        ),
+                            trailing: Text(
+                              '₹${totalAmount.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                          )
+                          // Text(
+                          //   widget.items,
+                          //   style: const TextStyle(
+                          //     color: Color(0xFF36414C),
+                          //     fontSize: 14,
+                          //     fontFamily: 'Epilogue',
+                          //     fontWeight: FontWeight.w400,
+                          //     height: 1.2,
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 8),
+                          // const Text(
+                          //   'Total Amount:',
+                          //   style: TextStyle(
+                          //     color: Color(0xFF282828),
+                          //     fontSize: 14,
+                          //     fontFamily: 'Epilogue',
+                          //     fontWeight: FontWeight.w700,
+                          //     height: 0.7,
+                          //   ),
+                          // ),
+                          // Text(
+                          //   '₹${widget.totalAmount.toStringAsFixed(2)}',
+                          //   style: const TextStyle(
+                          //     color: Color(0xFF36414C),
+                          //     fontSize: 14,
+                          //     fontFamily: 'Epilogue',
+                          //     fontWeight: FontWeight.w400,
+                          //     height: 1.2,
+                          //   ),
+                          // ),
+                        ],
                       ),
                     ),
                   ),

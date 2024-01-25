@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
 
 class AppColors2 extends ThemeExtension<AppColors2> {
-  AppColors2({
-    required this.text1,
-    required this.text2,
-    required this.text3,
-    required this.text4,
-  });
+  AppColors2(
+      {required this.text1,
+      required this.text2,
+      required this.scaffoldBackgroundColor,
+      required this.cardColor,
+      required this.whiteText,
+      required this.borderColor});
 
   final Color text1;
-  final Color text4;
   final Color text2;
-  final Color text3;
+  final Color borderColor;
+  final Color cardColor;
+  final Color whiteText;
+  final Color scaffoldBackgroundColor;
 
   @override
   AppColors2 copyWith() {
     return AppColors2(
       text1: text1,
       text2: text2,
-      text3: text3,
-      text4: text4,
+      cardColor: cardColor,
+      whiteText: whiteText,
+      scaffoldBackgroundColor: scaffoldBackgroundColor,
+      borderColor: borderColor,
     );
   }
 
@@ -31,8 +36,11 @@ class AppColors2 extends ThemeExtension<AppColors2> {
     return AppColors2(
       text1: Color.lerp(text1, other.text1, t)!,
       text2: Color.lerp(text2, other.text2, t)!,
-      text3: Color.lerp(text3, other.text3, t)!,
-      text4: Color.lerp(text4, other.text4, t)!,
+      whiteText: Color.lerp(whiteText, other.whiteText, t)!,
+      cardColor: Color.lerp(cardColor, other.cardColor, t)!,
+      borderColor: Color.lerp(borderColor, other.borderColor, t)!,
+      scaffoldBackgroundColor: Color.lerp(
+          scaffoldBackgroundColor, other.scaffoldBackgroundColor, t)!,
     );
   }
 }

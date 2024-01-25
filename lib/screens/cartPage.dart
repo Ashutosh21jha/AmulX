@@ -20,7 +20,8 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  late final bool _isDarkTheme =
+  late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
       AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   @override
@@ -49,31 +50,29 @@ class _CartPageState extends State<CartPage> {
             appBar: widget.fromFoodPage
                 ? AppBar(
                     elevation: 0,
-                    backgroundColor: Colors.grey.shade200,
+                    backgroundColor: appColors.scaffoldBackgroundColor,
                     toolbarHeight: 70,
                     automaticallyImplyLeading: false,
                     leading: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back_ios_new_sharp,
-                        color: Colors.black,
+                        color: appColors.text2,
                       ),
                       onPressed: () {
                         Navigator.pop(context);
                       },
                     ),
                     centerTitle: true,
-                    title: const Text(
+                    title: Text(
                       'Cart',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
-                          color: Colors.black),
+                          color: appColors.text2),
                     ),
                   )
                 : null,
-            backgroundColor: _isDarkTheme
-                ? Theme.of(context).scaffoldBackgroundColor
-                : Colors.grey.shade200,
+            backgroundColor: appColors.scaffoldBackgroundColor,
             body: CartController.to.cartItems.isEmpty
                 ? Container(
                     padding: const EdgeInsets.only(left: 10),
@@ -273,10 +272,7 @@ class _CartPageState extends State<CartPage> {
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                      color: _isDarkTheme
-                                          ? Colors.white38
-                                          : Colors.grey,
-                                      width: 1),
+                                      color: appColors.borderColor, width: 1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
@@ -286,9 +282,7 @@ class _CartPageState extends State<CartPage> {
                                     Text(
                                       'Summary',
                                       style: TextStyle(
-                                          color: _isDarkTheme
-                                              ? Colors.white70
-                                              : Colors.white,
+                                          color: appColors.text2,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -305,17 +299,15 @@ class _CartPageState extends State<CartPage> {
                                                     Text(
                                                       '${item.quantity} ${item.name}',
                                                       style: TextStyle(
-                                                          color: _isDarkTheme
-                                                              ? Colors.white70
-                                                              : Colors.white,
+                                                          color:
+                                                              appColors.text2,
                                                           fontSize: 14),
                                                     ),
                                                     Text(
                                                       '\₹${(item.price * item.quantity).toStringAsFixed(2)}',
                                                       style: TextStyle(
-                                                          color: _isDarkTheme
-                                                              ? Colors.white70
-                                                              : Colors.white,
+                                                          color:
+                                                              appColors.text2,
                                                           fontSize: 14),
                                                     ), // Item price
                                                   ],
@@ -328,7 +320,7 @@ class _CartPageState extends State<CartPage> {
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  color: _isDarkTheme
+                                  color: _isDarkMode
                                       ? Theme.of(context)
                                           .scaffoldBackgroundColor
                                       : Colors.white,
@@ -362,9 +354,7 @@ class _CartPageState extends State<CartPage> {
                                             '\₹ ${cartController.totalAmount.toStringAsFixed(2)}',
                                             style: TextStyle(
                                               fontSize: 20,
-                                              color: _isDarkTheme
-                                                  ? Colors.white70
-                                                  : Colors.white,
+                                              color: appColors.text2,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           );
@@ -419,9 +409,7 @@ class _CartPageState extends State<CartPage> {
                                           child: Text(
                                             'Order Now',
                                             style: TextStyle(
-                                                color: _isDarkTheme
-                                                    ? Colors.white70
-                                                    : Colors.white,
+                                                color: Colors.white,
                                                 fontSize: 16),
                                           ),
                                         ),
