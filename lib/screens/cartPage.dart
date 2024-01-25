@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
@@ -19,6 +20,9 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  late final bool _isDarkTheme =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
+
   @override
   void initState() {
     super.initState();
@@ -67,7 +71,9 @@ class _CartPageState extends State<CartPage> {
                     ),
                   )
                 : null,
-            backgroundColor: Colors.grey.shade200,
+            backgroundColor: _isDarkTheme
+                ? Theme.of(context).scaffoldBackgroundColor
+                : Colors.grey.shade200,
             body: CartController.to.cartItems.isEmpty
                 ? Container(
                     padding: const EdgeInsets.only(left: 10),
@@ -266,17 +272,23 @@ class _CartPageState extends State<CartPage> {
                                 margin: const EdgeInsets.all(16),
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.grey, width: 1),
+                                  border: Border.all(
+                                      color: _isDarkTheme
+                                          ? Colors.white38
+                                          : Colors.grey,
+                                      width: 1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
                                   children: [
-                                    const Text(
+                                    Text(
                                       'Summary',
                                       style: TextStyle(
+                                          color: _isDarkTheme
+                                              ? Colors.white70
+                                              : Colors.white,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -292,12 +304,18 @@ class _CartPageState extends State<CartPage> {
                                                   children: [
                                                     Text(
                                                       '${item.quantity} ${item.name}',
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
+                                                          color: _isDarkTheme
+                                                              ? Colors.white70
+                                                              : Colors.white,
                                                           fontSize: 14),
                                                     ),
                                                     Text(
                                                       '\₹${(item.price * item.quantity).toStringAsFixed(2)}',
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
+                                                          color: _isDarkTheme
+                                                              ? Colors.white70
+                                                              : Colors.white,
                                                           fontSize: 14),
                                                     ), // Item price
                                                   ],
@@ -309,8 +327,11 @@ class _CartPageState extends State<CartPage> {
                                 ),
                               ),
                               Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
+                                decoration: BoxDecoration(
+                                  color: _isDarkTheme
+                                      ? Theme.of(context)
+                                          .scaffoldBackgroundColor
+                                      : Colors.white,
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(15),
                                       topRight: Radius.circular(15)),
@@ -339,8 +360,11 @@ class _CartPageState extends State<CartPage> {
                                               CartController.to;
                                           return Text(
                                             '\₹ ${cartController.totalAmount.toStringAsFixed(2)}',
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontSize: 20,
+                                              color: _isDarkTheme
+                                                  ? Colors.white70
+                                                  : Colors.white,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           );
@@ -392,10 +416,12 @@ class _CartPageState extends State<CartPage> {
                                                   BorderRadius.circular(48),
                                             ),
                                           ),
-                                          child: const Text(
+                                          child: Text(
                                             'Order Now',
                                             style: TextStyle(
-                                                color: Colors.white,
+                                                color: _isDarkTheme
+                                                    ? Colors.white70
+                                                    : Colors.white,
                                                 fontSize: 16),
                                           ),
                                         ),

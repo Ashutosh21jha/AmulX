@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:flutter/material.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
@@ -5,28 +6,30 @@ import 'package:amul/screens/cart_components/cart_controller.dart';
 import '../../Utils/AppColors.dart';
 
 class CartItemCard extends StatefulWidget {
-  CartItemCard({super.key,required this.item});
+  CartItemCard({super.key, required this.item});
   final CartItem item;
   @override
   State<CartItemCard> createState() => _CartItemCardState();
 }
 
 class _CartItemCardState extends State<CartItemCard> {
-  bool tap=false;
+  late final bool _isDarkTheme =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
+
+  bool tap = false;
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 90,
       width: 100,
-      margin: const EdgeInsets.symmetric(
-          vertical: 10, horizontal: 15),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey, width: 1),
+        border: Border.all(
+            color: _isDarkTheme ? Colors.white38 : Colors.grey, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        contentPadding:
-        const EdgeInsets.symmetric(horizontal: 16),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -36,7 +39,8 @@ class _CartItemCardState extends State<CartItemCard> {
                 child: Text(
                   widget.item.name,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
+                    color: _isDarkTheme ? Colors.white60 : Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -67,60 +71,79 @@ class _CartItemCardState extends State<CartItemCard> {
                   padding: const EdgeInsets.all(0),
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: Colors.grey, width: 1),
+                        color: _isDarkTheme ? Colors.white38 : Colors.grey,
+                        width: 1),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Row(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.remove,color:tap==false? Colors.black:Colors.grey,),
-                        iconSize: 18,
-                        onPressed:tap==false?() async{
-                          setState(() {
-                            tap=true;
-                          });
-                          await CartController.to.removeItem(widget.item);
-                          await CartController.to.fetchCart().then((value){
-                            setState(() {
-                              tap=false;
-                            });
-                          });
-                          // await CartController.to.reloadCart().then((value){
-                          //   setState(() {
-                          //     tap=false;
-                          //   });
-                          // });
-                          /* updateItemCount();*/
-                        }:(){}
-                      ),
+                          icon: Icon(
+                            Icons.remove,
+                            color: tap == false
+                                ? (_isDarkTheme ? Colors.white70 : Colors.black)
+                                : Colors.grey,
+                          ),
+                          iconSize: 18,
+                          onPressed: tap == false
+                              ? () async {
+                                  setState(() {
+                                    tap = true;
+                                  });
+                                  await CartController.to
+                                      .removeItem(widget.item);
+                                  await CartController.to
+                                      .fetchCart()
+                                      .then((value) {
+                                    setState(() {
+                                      tap = false;
+                                    });
+                                  });
+                                  // await CartController.to.reloadCart().then((value){
+                                  //   setState(() {
+                                  //     tap=false;
+                                  //   });
+                                  // });
+                                  /* updateItemCount();*/
+                                }
+                              : () {}),
                       Text(
                         widget.item.quantity.toString(),
-                        style: const TextStyle(
+                        style: TextStyle(
+                          color: _isDarkTheme ? Colors.white60 : Colors.grey,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.add,color:tap==false? Colors.black:Colors.grey,),
+                        icon: Icon(
+                          Icons.add,
+                          color: tap == false
+                              ? (_isDarkTheme ? Colors.white70 : Colors.black)
+                              : Colors.grey,
+                        ),
                         iconSize: 18,
-                        onPressed:tap==false? () async {
-                          setState(() {
-                            tap=true;
-                          });
-                          await CartController.to.addItem(widget.item);
-                          await CartController.to.fetchCart().then((value){
-                            setState(() {
-                              tap=false;
-                            });
-                          });
-                          // await CartController.to.reloadCart().then((value) {
-                          //   setState(() {
-                          //     tap=false;
-                          //   });
-                          // });
-                          /*updateItemCount();*/
-                        }:(){},
+                        onPressed: tap == false
+                            ? () async {
+                                setState(() {
+                                  tap = true;
+                                });
+                                await CartController.to.addItem(widget.item);
+                                await CartController.to
+                                    .fetchCart()
+                                    .then((value) {
+                                  setState(() {
+                                    tap = false;
+                                  });
+                                });
+                                // await CartController.to.reloadCart().then((value) {
+                                //   setState(() {
+                                //     tap=false;
+                                //   });
+                                // });
+                                /*updateItemCount();*/
+                              }
+                            : () {},
                       ),
                     ],
                   ),

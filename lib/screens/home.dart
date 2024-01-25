@@ -119,7 +119,7 @@ class _HomeState extends State<HomePage> {
           Text(
             "Answer your\nappetite!",
             style: TextStyle(
-              color: AppColors.blue.withAlpha(220),
+              color: _isDarkTheme ? Colors.white60 : Color(0xFF414042),
               fontSize: 26,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.02 * 16,
