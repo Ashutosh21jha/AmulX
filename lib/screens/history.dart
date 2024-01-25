@@ -60,14 +60,14 @@ class _HistoryState extends State<History> {
         children: [
           Container(
             height: MediaQuery.of(context).size.height * 0.18,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
                   Color(0xFF00084B),
-                  Color(0xFF2E55C0),
-                  Color(0xFF148BFA),
+                  Color.fromARGB(255, 15, 44, 124),
+                  Color.fromARGB(255, 0, 83, 160),
                 ],
               ),
             ),
