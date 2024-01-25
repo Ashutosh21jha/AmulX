@@ -4,6 +4,7 @@ import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'cart_components/cart_controller.dart';
@@ -35,12 +36,20 @@ String generateRandomOrderID() {
 class _OrderReviewPageState extends State<OrderReviewPage> {
   late int count;
   bool isLoading = false;
+  final messaging = FirebaseMessaging.instance;
+  late String fcm_token;
+
+  Future<void> getToken() async {
+    fcm_token = (await messaging.getToken())!;
+    print('Token is : $fcm_token');
+  }
 
   @override
   void initState() {
     super.initState();
     priceFetch();
     fetch();
+    getToken();
   }
 
   Future<void> fetch() async {
@@ -94,7 +103,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           }
         }
       });
-      CartController.to.deleteCart();
     } catch (error) {
       print('Error adding back stock: $error');
       // Handle the error as needed
@@ -173,6 +181,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         'orderStatus': 'Preparing',
         'name': await getUserName(userId),
         'time': DateTime.now(),
+        'token': '$fcm_token',
       };
 
       final docSnapshot = await historyCollection.doc(formattedDate).get();
@@ -216,8 +225,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           .collection('User')
           .doc(userId)
           .update({'currentOrder': true});
-
-      CartController.to.deleteCart();
 
       Get.snackbar(
         'Payment Successful',
@@ -274,7 +281,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       ),
     );
     Get.offAll(() => const Mainscreen());
-    CartController.to.deleteCart();
     setState(() {
       isLoading = false;
     });
@@ -384,6 +390,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        backgroundColor: AppColors.blue,
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);

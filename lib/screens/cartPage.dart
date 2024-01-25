@@ -105,7 +105,7 @@ class _CartPageState extends State<CartPage> {
                             },
                             style: ElevatedButton.styleFrom(
                               textStyle: const TextStyle(fontSize: 24),
-                              backgroundColor: const Color(0xFF2546A9),
+                              backgroundColor: AppColors.blue,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 40,
                                 vertical: 16,
@@ -247,7 +247,7 @@ class _CartPageState extends State<CartPage> {
                               },
                               style: ElevatedButton.styleFrom(
                                 textStyle: const TextStyle(fontSize: 24),
-                                backgroundColor: const Color(0xFF2546A9),
+                                backgroundColor: AppColors.blue,
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 40,
                                   vertical: 16,
@@ -341,7 +341,7 @@ class _CartPageState extends State<CartPage> {
                                           child: Text(
                                             'Total Amount',
                                             style: TextStyle(
-                                              color: Colors.indigo,
+                                              color: AppColors.blue,
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -395,8 +395,7 @@ class _CartPageState extends State<CartPage> {
                                           style: ElevatedButton.styleFrom(
                                             textStyle:
                                                 const TextStyle(fontSize: 22),
-                                            backgroundColor:
-                                                const Color(0xFF2546A9),
+                                            backgroundColor: AppColors.blue,
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 24,
                                               vertical: 10,
