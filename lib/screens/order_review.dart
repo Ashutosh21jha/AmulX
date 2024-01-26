@@ -386,7 +386,8 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       appBar: AppBar(
         title: const Text(
           'Summary',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: true,
         backgroundColor: AppColors.blue,
@@ -394,7 +395,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back_ios)),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
       ),
       body: SingleChildScrollView(
         child: Column(
