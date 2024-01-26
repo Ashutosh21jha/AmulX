@@ -51,16 +51,16 @@ class _FaqPageState extends State<Faq> {
                 ),*/
               ),
               child: Center(
-                    child: const Text(
-                      'FAQs',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontFamily: 'Epilogue',
-                        fontWeight: FontWeight.w700,
-                        height: 0.06,
-                      ),
-                    ),
+                child: const Text(
+                  'FAQs',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontFamily: 'Epilogue',
+                    fontWeight: FontWeight.w700,
+                    height: 0.06,
+                  ),
+                ),
               ),
             ),
             Stack(
@@ -78,7 +78,7 @@ class _FaqPageState extends State<Faq> {
                       ],
                     ),
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.elliptical(40,20),
+                      bottomLeft: Radius.elliptical(40, 20),
                       bottomRight: Radius.elliptical(40, 20),
                     ),
                   ),
@@ -89,7 +89,8 @@ class _FaqPageState extends State<Faq> {
                       children: [
                         FAQItem(
                           question: 'What is Amulx?',
-                          answer: 'Amulx is an online order app for the students of NSUT',
+                          answer:
+                              'Amulx is an online order app for the students of NSUT',
                           isExpanded: _isExpanded1,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -102,7 +103,8 @@ class _FaqPageState extends State<Faq> {
                         ),
                         FAQItem(
                           question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          answer:
+                              'Amulx is available on play store for android users and IOS store for iphone users',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -115,7 +117,8 @@ class _FaqPageState extends State<Faq> {
                         ),
                         FAQItem(
                           question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          answer:
+                              'Amulx is available on play store for android users and IOS store for iphone users',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -128,7 +131,8 @@ class _FaqPageState extends State<Faq> {
                         ),
                         FAQItem(
                           question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          answer:
+                              'Amulx is available on play store for android users and IOS store for iphone users',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -141,7 +145,8 @@ class _FaqPageState extends State<Faq> {
                         ),
                         FAQItem(
                           question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          answer:
+                              'Amulx is available on play store for android users and IOS store for iphone users',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -154,7 +159,8 @@ class _FaqPageState extends State<Faq> {
                         ),
                         FAQItem(
                           question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          answer:
+                              'Amulx is available on play store for android users and IOS store for iphone users',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -167,7 +173,8 @@ class _FaqPageState extends State<Faq> {
                         ),
                         FAQItem(
                           question: 'How can I download Amulx?',
-                          answer: 'Amulx is available on play store for android users and IOS store for iphone users',
+                          answer:
+                              'Amulx is available on play store for android users and IOS store for iphone users',
                           isExpanded: _isExpanded2,
                           onExpansionChanged: (value) {
                             setState(() {
@@ -208,28 +215,25 @@ class FAQItem extends StatefulWidget {
 class _FAQItemState extends State<FAQItem> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ExpansionTile(
-              title: Text(widget.question),
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-                  child: Text(widget.answer),
-                ),
-              ],
-            ),
-          ),
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Card(
+        elevation: 8,
+        clipBehavior: Clip.hardEdge,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
-      ],
+        child: ExpansionTile(
+          shape: BeveledRectangleBorder(),
+          title: Text(widget.question),
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+              child: Text(widget.answer),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:amul/Utils/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class About extends StatelessWidget {
@@ -6,12 +8,27 @@ class About extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late final appColors = Theme.of(context).extension<AppColors2>()!;
+    late final bool _isDarkMode =
+        AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        flexibleSpace: Container(
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            Color(0xFF00084B),
+            Color(0xFF2E55C0),
+            Color(0xFF148BFA),
+          ],
+        ))),
+        title: Text(
           'About Us',
           style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 0),
+            color: appColors.whiteText,
             fontSize: 18,
             fontFamily: 'Epilogue',
             fontWeight: FontWeight.w700,
@@ -21,7 +38,7 @@ class About extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          color: const Color.fromARGB(255, 0, 0, 0),
+          color: appColors.whiteText,
           onPressed: () {
             Navigator.pop(context);
           },
@@ -37,7 +54,7 @@ class About extends StatelessWidget {
               Text(
                 'About DevComm',
                 style: TextStyle(
-                  color: Color(0xFF282828),
+                  color: appColors.text2,
                   fontSize: 18,
                   fontFamily: 'Epilogue',
                   fontWeight: FontWeight.w700,
@@ -48,7 +65,7 @@ class About extends StatelessWidget {
               Text(
                 'Welcome to DevComm, where innovation meets community spirit at NSUT. We\'re the driving force behind apps like NSUT X, AmulX , connecting developers and fostering creativity in the digital realm. Join us in shaping the future together.',
                 style: TextStyle(
-                  color: Color(0xFF282828),
+                  color: appColors.text2,
                   fontSize: 14,
                   fontFamily: 'Epilogue',
                   fontWeight: FontWeight.w400,

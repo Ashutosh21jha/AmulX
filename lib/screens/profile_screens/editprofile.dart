@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,9 @@ class _EditProfileState extends State<EditProfile> {
   final auth = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
   final overlayPortalController = OverlayPortalController();
+  late final appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   String get userId => auth.currentUser?.email ?? '';
   String? imageUrl;
@@ -228,7 +232,7 @@ class _EditProfileState extends State<EditProfile> {
                           decoration: InputDecoration(
                             labelText: 'Name',
                             labelStyle: TextStyle(
-                              color: Color(0xFF141414),
+                              color: appColors.text2,
                               fontSize: 16,
                               fontFamily: 'Epilogue',
                               fontWeight: FontWeight.w500,
@@ -258,7 +262,7 @@ class _EditProfileState extends State<EditProfile> {
                               ),
                             ),
                             filled: true,
-                            fillColor: Colors.white,
+                            fillColor: appColors.cardColor,
                           ),
                         ),
                         const SizedBox(height: 20),

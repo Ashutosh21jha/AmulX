@@ -105,9 +105,10 @@ class _HomeState extends State<HomePage> {
                     ),
                     GestureDetector(
                       onTap: () => Get.to(History()),
-                      child: const Icon(
+                      child: Icon(
                         Icons.history,
                         size: 30,
+                        color: appColors.text2,
                       ),
                     ),
                   ],

@@ -1,3 +1,5 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/emailverification.dart';
 import 'package:amul/screens/forgetpassword.dart';
 import 'package:amul/screens/mainscreen.dart';
@@ -23,6 +25,9 @@ class _signupPageState extends State<signupPage> {
   final _emailController = TextEditingController();
   final _password = TextEditingController();
   final _name = TextEditingController();
+  late final appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   // student id pattern
   RegExp pattern = RegExp(r'^\d{4}[A-Za-z]{3}\d{4}$');
@@ -82,8 +87,11 @@ class _signupPageState extends State<signupPage> {
         Map<String, dynamic>? userData =
             existingDocument.data() as Map<String, dynamic>?;
         if (userData != null &&
-                userData['name'].toString().toLowerCase() == name.toLowerCase() &&
-                userData['student id'].toString().toLowerCase() == rollno.toLowerCase() /*&&
+                userData['name'].toString().toLowerCase() ==
+                    name.toLowerCase() &&
+                userData['student id'].toString().toLowerCase() ==
+                    rollno
+                        .toLowerCase() /*&&
           userData['password'] == password*/
             ) {
           signIn(
@@ -99,7 +107,8 @@ class _signupPageState extends State<signupPage> {
           );
         }
       } else {
-        await auth.createUserWithEmailAndPassword(email: email, password: password);
+        await auth.createUserWithEmailAndPassword(
+            email: email, password: password);
         sendEmailVerification();
         isLoading = false;
         Navigator.push(
@@ -171,7 +180,7 @@ class _signupPageState extends State<signupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: appColors.scaffoldBackgroundColor,
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Container(
@@ -183,11 +192,11 @@ class _signupPageState extends State<signupPage> {
               const SizedBox(
                 height: 30,
               ),
-              const Center(
+              Center(
                 child: Text(
                   "Welcome to",
                   style: TextStyle(
-                    color: Color(0xFF929497),
+                    color: _isDarkMode ? Colors.white70 : Color(0xFF929497),
                     fontSize: 16,
                   ),
                 ),
@@ -195,12 +204,12 @@ class _signupPageState extends State<signupPage> {
               const SizedBox(height: 10),
               Center(child: SvgPicture.asset("assets/images/logo.svg")),
               const SizedBox(height: 10),
-              const Center(
+              Center(
                 child: Text(
                   "   Before ordering, please login with your \n account",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Color(0xFF414042),
+                    color: _isDarkMode ? Colors.white60 : Color(0xFF414042),
                     fontSize: 14,
                   ),
                 ),
@@ -212,11 +221,11 @@ class _signupPageState extends State<signupPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Name",
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        color: Color(0xFF141414),
+                        color: appColors.text2,
                         fontSize: 16,
                       ),
                     ),
@@ -235,7 +244,7 @@ class _signupPageState extends State<signupPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          fillColor: Colors.white,
+                          fillColor: appColors.cardColor,
                           hintText: "e.g. userName",
                           alignLabelWithHint: false,
                           filled: true,
@@ -243,11 +252,11 @@ class _signupPageState extends State<signupPage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
+                    Text(
                       "Student ID",
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        color: Color(0xFF141414),
+                        color: appColors.text2,
                         fontSize: 16,
                       ),
                     ),
@@ -270,7 +279,7 @@ class _signupPageState extends State<signupPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          fillColor: Colors.white,
+                          fillColor: appColors.cardColor,
                           hintText: "e.g. 2022UME2022",
                           alignLabelWithHint: false,
                           filled: true,
@@ -278,11 +287,11 @@ class _signupPageState extends State<signupPage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
+                    Text(
                       "Nsut e-mail",
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        color: Color(0xFF141414),
+                        color: appColors.text2,
                         fontSize: 16,
                       ),
                     ),
@@ -299,18 +308,18 @@ class _signupPageState extends State<signupPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          fillColor: Colors.white,
+                          fillColor: appColors.cardColor,
                           alignLabelWithHint: false,
                           filled: true,
                         ),
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
+                    Text(
                       "Password",
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        color: Color(0xFF141414),
+                        color: appColors.text2,
                         fontSize: 16,
                       ),
                     ),
@@ -333,7 +342,7 @@ class _signupPageState extends State<signupPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          fillColor: Colors.white,
+                          fillColor: appColors.cardColor,
                           hintText: "create new one or use exiting",
                           suffixIconColor: const Color(0xFF2546A9),
                           suffixIcon: InkWell(
@@ -361,8 +370,7 @@ class _signupPageState extends State<signupPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2546A9),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              48),
+                          borderRadius: BorderRadius.circular(48),
                         ),
                       ),
                       child: Padding(
@@ -392,11 +400,11 @@ class _signupPageState extends State<signupPage> {
                     ),
                     InkWell(
                       onTap: () => Get.to(forgetPassword()),
-                      child: const Center(
+                      child: Center(
                         child: Text(
                           "Forget Password?",
                           style: TextStyle(
-                            color: Colors.black,
+                            color: appColors.text2,
                             fontSize: 14,
                           ),
                         ),

@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,9 @@ class _forgetPasswordState extends State<forgetPassword> {
   final auth = FirebaseAuth.instance;
   final _emailController = TextEditingController();
   bool isLoading = false;
+  late final appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   final emailPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@nsut\.ac\.in$');
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -150,11 +154,11 @@ class _forgetPasswordState extends State<forgetPassword> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Nsut e-mail",
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        color: Color(0xFF141414),
+                        color: appColors.text2,
                         fontSize: 16,
                       ),
                     ),
@@ -171,7 +175,7 @@ class _forgetPasswordState extends State<forgetPassword> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          fillColor: Colors.white,
+                          fillColor: appColors.cardColor,
                           alignLabelWithHint: false,
                           filled: true,
                         ),
@@ -213,20 +217,19 @@ class _forgetPasswordState extends State<forgetPassword> {
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 60),
-                // Add padding to the bottom
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Text(
-                    "From DEVCOMM NSUT",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/devcommlogo_noBG.png',
+                    height: 50,
+                    width: 50,
                   ),
-                ),
+                  Text(
+                    "Powered by\nDevComm",
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ],
               ),
             ],
           ),

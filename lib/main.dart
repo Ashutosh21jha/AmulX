@@ -26,11 +26,12 @@ class MyApp extends StatelessWidget {
     return AdaptiveTheme(
       light: lightThemeData(),
       dark: darkThemeData(),
-      initial: AdaptiveThemeMode.system,
+      initial: AdaptiveThemeMode.dark,
       builder: (lightTheme, darkTheme) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
         darkTheme: darkTheme,
+        themeMode: ThemeMode.dark,
         home: SplashScreen(),
       ),
     );
