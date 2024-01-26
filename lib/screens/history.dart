@@ -17,6 +17,7 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
   final auth = FirebaseAuth.instance;
+  late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
 
   String get userId => auth.currentUser?.email ?? '';
 
@@ -50,19 +51,19 @@ class _HistoryState extends State<History> {
     );
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: appColors.scaffoldBackgroundColor,
       body: Stack(
         children: [
           Container(
             height: MediaQuery.of(context).size.height * 0.18,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
                   Color(0xFF00084B),
-                  Color(0xFF2E55C0),
-                  Color(0xFF148BFA),
+                  Color.fromARGB(255, 15, 44, 124),
+                  Color.fromARGB(255, 0, 83, 160),
                 ],
               ),
             ),

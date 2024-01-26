@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/models/items_model.dart';
@@ -29,6 +30,9 @@ class FoodPageState extends State<FoodPage> {
   final RxList<ItemsModel> unavailableItems = <ItemsModel>[].obs;
   final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
   late final Timer _timer;
+  late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
   RxList<ItemsModel> defaultOrder = <ItemsModel>[].obs;
   RxList<ItemsModel> searchResults = <ItemsModel>[].obs;
 
@@ -96,16 +100,16 @@ class FoodPageState extends State<FoodPage> {
     int index2 = 1;
     int index3 = 2;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: appColors.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: appColors.scaffoldBackgroundColor,
         toolbarHeight: 70,
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new_sharp,
-            color: Colors.black,
+            color: _isDarkMode ? Colors.white : Colors.black,
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -114,8 +118,10 @@ class FoodPageState extends State<FoodPage> {
         centerTitle: true,
         title: Text(
           widget.cat,
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 30,
+              color: _isDarkMode ? Colors.white : Colors.black),
         ),
       ),
       body: SafeArea(
@@ -165,58 +171,57 @@ class FoodPageState extends State<FoodPage> {
               height: 10,
             ),
             SizedBox(
-              height: 50,
-              child: Obx(() {
-                return ListView(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        selected.value = index1;
-                        print(selected.value);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          width: 160,
-                          decoration: BoxDecoration(
-                            color: selected.value == index1
-                                ? AppColors.blue
-                                : Colors.white,
-                            border: Border.all(
-                              color: const Color(0xFF2546A9),
-                              width: 1, // Border width
+                height: 50,
+                child: Obx(() {
+                  return ListView(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            selected.value = index1;
+                            print(selected.value);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              width: 160,
+                              decoration: BoxDecoration(
+                                color: selected.value == index1
+                                    ? AppColors.blue
+                                    : Colors.white,
+                                border: Border.all(
+                                  color: const Color(0xFF2546A9),
+                                  width: 1, // Border width
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    32.0), // Border radius
+                              ),
+                              child: Center(
+                                  child: Text(
+                                "Most Popular",
+                                style: TextStyle(
+                                  color: selected.value == index1
+                                      ? Colors.white
+                                      : AppColors.blue,
+                                ),
+                                //style: TextStyle(color: Colors.white),
+                              )),
                             ),
-                            borderRadius:
-                                BorderRadius.circular(32.0), // Border radius
-                          ),
-                          child: Center(
-                              child: Text(
-                            "Most Popular",
-                            style: TextStyle(
-                              color: selected.value == index1
-                                  ? Colors.white
-                                  : AppColors.blue,
-                            ),
-                            //style: TextStyle(color: Colors.white),
                           )),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        selected.value = index2;
-                        print(selected.value);
-                        availableItems.sort(
-                          (a, b) =>
-                              int.parse(a.price).compareTo(int.parse(b.price)),
-                        );
-                        mergedList.clear();
-                        mergedList.addAll(availableItems);
-                        mergedList.addAll(unavailableItems);
-                      },
-                      /* onTap: () {
+                      GestureDetector(
+                          onTap: () {
+                            selected.value = index2;
+                            print(selected.value);
+                            availableItems.sort(
+                              (a, b) => int.parse(a.price)
+                                  .compareTo(int.parse(b.price)),
+                            );
+                            mergedList.clear();
+                            mergedList.addAll(availableItems);
+                            mergedList.addAll(unavailableItems);
+                          },
+                          /* onTap: () {
                         setState(() {
                           selected = index2;
                           _isSortedByPriceLowestToHighest =
@@ -229,47 +234,49 @@ class FoodPageState extends State<FoodPage> {
                           }
                         });
                       },*/
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          width: 240,
-                          decoration: BoxDecoration(
-                            color: selected.value == index2
-                                ? AppColors.blue
-                                : Colors.white,
-                            border: Border.all(
-                              color: const Color(0xFF2546A9), // Border color
-                              width: 1, // Border width
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              width: 240,
+                              decoration: BoxDecoration(
+                                color: selected.value == index2
+                                    ? AppColors.blue
+                                    : (_isDarkMode
+                                        ? Color(0xFFE6E6E6)
+                                        : Colors.white),
+                                border: Border.all(
+                                  color:
+                                      const Color(0xFF2546A9), // Border color
+                                  width: 1, // Border width
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    32.0), // Border radius
+                              ),
+                              child: Center(
+                                  child: Text(
+                                "Price: Lowest - Highest",
+                                style: TextStyle(
+                                  color: selected.value == index2
+                                      ? Colors.white
+                                      : AppColors.blue,
+                                ),
+                                // style: TextStyle(color: Colors.white),
+                              )),
                             ),
-                            borderRadius:
-                                BorderRadius.circular(32.0), // Border radius
-                          ),
-                          child: Center(
-                              child: Text(
-                            "Price: Lowest - Highest",
-                            style: TextStyle(
-                              color: selected.value == index2
-                                  ? Colors.white
-                                  : AppColors.blue,
-                            ),
-                            // style: TextStyle(color: Colors.white),
                           )),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        selected.value = index3;
+                      GestureDetector(
+                        onTap: () {
+                          selected.value = index3;
 
-                        availableItems.sort(
-                          (a, b) =>
-                              int.parse(b.price).compareTo(int.parse(a.price)),
-                        );
-                        mergedList.clear();
-                        mergedList.addAll(availableItems);
-                        mergedList.addAll(unavailableItems);
-                      },
-                      /*onTap: () {
+                          availableItems.sort(
+                            (a, b) => int.parse(b.price)
+                                .compareTo(int.parse(a.price)),
+                          );
+                          mergedList.clear();
+                          mergedList.addAll(availableItems);
+                          mergedList.addAll(unavailableItems);
+                        },
+                        /*onTap: () {
                         setState(() {
                           selected = index3;
                           if (_isSortedByPriceHighestToLowest) {
@@ -281,37 +288,38 @@ class FoodPageState extends State<FoodPage> {
                               !_isSortedByPriceLowestToHighest;
                         });
                       },*/
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          width: 240,
-                          decoration: BoxDecoration(
-                            color: selected.value == index3
-                                ? AppColors.blue
-                                : Colors.white,
-                            border: Border.all(
-                              color: const Color(0xFF2546A9), // Border color
-                              width: 1, // Border width
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(32.0), // Border radius
-                          ),
-                          child: Center(
-                              child: Text(
-                            "Price: Highest - Lowest",
-                            style: TextStyle(
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            width: 240,
+                            decoration: BoxDecoration(
                               color: selected.value == index3
-                                  ? Colors.white
-                                  : AppColors.blue,
+                                  ? AppColors.blue
+                                  : (_isDarkMode
+                                      ? Color(0xFFE6E6E6)
+                                      : Colors.white),
+                              border: Border.all(
+                                color: const Color(0xFF2546A9), // Border color
+                                width: 1, // Border width
+                              ),
+                              borderRadius:
+                                  BorderRadius.circular(32.0), // Border radius
                             ),
-                          )),
+                            child: Center(
+                                child: Text(
+                              "Price: Highest - Lowest",
+                              style: TextStyle(
+                                color: selected.value == index3
+                                    ? Colors.white
+                                    : AppColors.blue,
+                              ),
+                            )),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              }),
-            ),
+                    ],
+                  );
+                })),
             const SizedBox(
               height: 10,
             ),

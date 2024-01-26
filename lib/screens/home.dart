@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
@@ -19,6 +20,9 @@ class HomePage extends StatefulWidget {
 class _HomeState extends State<HomePage> {
   final db = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
+  late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   @override
   void initState() {
@@ -37,7 +41,7 @@ class _HomeState extends State<HomePage> {
         ),
         Padding(
           padding:
-          const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
+              const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
           child: SizedBox(
             height: 92,
             child: Center(
@@ -87,7 +91,7 @@ class _HomeState extends State<HomePage> {
           ),
           Padding(
             padding:
-            const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
+                const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
             child: SizedBox(
               height: 92,
               child: Center(
@@ -101,9 +105,10 @@ class _HomeState extends State<HomePage> {
                     ),
                     GestureDetector(
                       onTap: () => Get.to(History()),
-                      child: const Icon(
+                      child: Icon(
                         Icons.history,
                         size: 30,
+                        color: appColors.text2,
                       ),
                     ),
                   ],
@@ -111,13 +116,11 @@ class _HomeState extends State<HomePage> {
               ),
             ),
           ),
-
           const SizedBox(height: 45),
-
-          const Text(
+          Text(
             "Answer your\nappetite!",
             style: TextStyle(
-              color: Color(0xFF414042),
+              color: _isDarkMode ? Colors.white60 : Color(0xFF414042),
               fontSize: 26,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.02 * 16,
@@ -125,7 +128,6 @@ class _HomeState extends State<HomePage> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 30),
-
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
@@ -146,7 +148,8 @@ class _HomeState extends State<HomePage> {
                         height: 134.5,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
+                          color:
+                              _isDarkMode ? AppColors.blackbase : Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),
@@ -169,10 +172,10 @@ class _HomeState extends State<HomePage> {
                   const SizedBox(
                     height: 6.5,
                   ),
-                  const Text(
+                  Text(
                     "Food",
                     style: TextStyle(
-                      color: Color(0xFF57585B),
+                      color: appColors.text1,
                       fontSize: 14,
                     ),
                   )
@@ -195,7 +198,8 @@ class _HomeState extends State<HomePage> {
                         height: 134.5,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
+                          color:
+                              _isDarkMode ? AppColors.blackbase : Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),
@@ -218,10 +222,10 @@ class _HomeState extends State<HomePage> {
                   const SizedBox(
                     height: 6.5,
                   ),
-                  const Text(
+                  Text(
                     "Drinks",
                     style: TextStyle(
-                      color: Color(0xFF57585B),
+                      color: appColors.text1,
                       fontSize: 14,
                     ),
                   )
@@ -244,7 +248,8 @@ class _HomeState extends State<HomePage> {
                         height: 134.5,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
+                          color:
+                              _isDarkMode ? AppColors.blackbase : Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),
@@ -267,10 +272,11 @@ class _HomeState extends State<HomePage> {
                   const SizedBox(
                     height: 6.5,
                   ),
-                  const Text(
+                  Text(
                     "Munchies",
                     style: TextStyle(
-                      color: Color(0xFF57585B),
+                      // color: Color(0xFF57585B),
+                      color: appColors.text1,
                       fontSize: 14,
                     ),
                   )
@@ -293,7 +299,8 @@ class _HomeState extends State<HomePage> {
                         height: 134.5,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
+                          color:
+                              _isDarkMode ? AppColors.blackbase : Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),
@@ -316,10 +323,10 @@ class _HomeState extends State<HomePage> {
                   const SizedBox(
                     height: 6.5,
                   ),
-                  const Text(
+                  Text(
                     "Dairy",
                     style: TextStyle(
-                      color: Color(0xFF57585B),
+                      color: appColors.text1,
                       fontSize: 14,
                     ),
                   )

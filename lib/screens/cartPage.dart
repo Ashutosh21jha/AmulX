@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
@@ -19,6 +20,10 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
+
   @override
   void initState() {
     super.initState();
@@ -45,29 +50,29 @@ class _CartPageState extends State<CartPage> {
             appBar: widget.fromFoodPage
                 ? AppBar(
                     elevation: 0,
-                    backgroundColor: Colors.grey.shade200,
+                    backgroundColor: appColors.scaffoldBackgroundColor,
                     toolbarHeight: 70,
                     automaticallyImplyLeading: false,
                     leading: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back_ios_new_sharp,
-                        color: Colors.black,
+                        color: appColors.text2,
                       ),
                       onPressed: () {
                         Navigator.pop(context);
                       },
                     ),
                     centerTitle: true,
-                    title: const Text(
+                    title: Text(
                       'Cart',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
-                          color: Colors.black),
+                          color: appColors.text2),
                     ),
                   )
                 : null,
-            backgroundColor: Colors.grey.shade200,
+            backgroundColor: appColors.scaffoldBackgroundColor,
             body: CartController.to.cartItems.isEmpty
                 ? Container(
                     padding: const EdgeInsets.only(left: 10),
@@ -266,17 +271,18 @@ class _CartPageState extends State<CartPage> {
                                 margin: const EdgeInsets.all(16),
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.grey, width: 1),
+                                  border: Border.all(
+                                      color: appColors.borderColor, width: 1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
                                   children: [
-                                    const Text(
+                                    Text(
                                       'Summary',
                                       style: TextStyle(
+                                          color: appColors.text2,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -292,12 +298,16 @@ class _CartPageState extends State<CartPage> {
                                                   children: [
                                                     Text(
                                                       '${item.quantity} ${item.name}',
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
+                                                          color:
+                                                              appColors.text2,
                                                           fontSize: 14),
                                                     ),
                                                     Text(
                                                       '\₹${(item.price * item.quantity).toStringAsFixed(2)}',
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
+                                                          color:
+                                                              appColors.text2,
                                                           fontSize: 14),
                                                     ), // Item price
                                                   ],
@@ -309,8 +319,11 @@ class _CartPageState extends State<CartPage> {
                                 ),
                               ),
                               Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
+                                decoration: BoxDecoration(
+                                  color: _isDarkMode
+                                      ? Theme.of(context)
+                                          .scaffoldBackgroundColor
+                                      : Colors.white,
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(15),
                                       topRight: Radius.circular(15)),
@@ -339,8 +352,9 @@ class _CartPageState extends State<CartPage> {
                                               CartController.to;
                                           return Text(
                                             '\₹ ${cartController.totalAmount.toStringAsFixed(2)}',
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontSize: 20,
+                                              color: appColors.text2,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           );
@@ -391,7 +405,7 @@ class _CartPageState extends State<CartPage> {
                                                   BorderRadius.circular(48),
                                             ),
                                           ),
-                                          child: const Text(
+                                          child: Text(
                                             'Order Now',
                                             style: TextStyle(
                                                 color: Colors.white,

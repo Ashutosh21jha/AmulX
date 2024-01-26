@@ -1,3 +1,6 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:amul/Utils/darkTheme.dart';
+import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/screens/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,9 +24,17 @@ class MyApp extends StatelessWidget {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+    return AdaptiveTheme(
+      light: lightThemeData(),
+      dark: darkThemeData(),
+      initial: AdaptiveThemeMode.dark,
+      builder: (lightTheme, darkTheme) => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: ThemeMode.dark,
+        home: SplashScreen(),
+      ),
     );
   }
 }
