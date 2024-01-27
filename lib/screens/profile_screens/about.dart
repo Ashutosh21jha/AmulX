@@ -54,7 +54,7 @@ class About extends StatelessWidget {
           child: Text(
             'About Us',
             style: TextStyle(
-              color: appColors.whiteText,
+              color: Colors.white,
               fontSize: 20,
               fontFamily: 'Epilogue',
               fontWeight: FontWeight.w700,
@@ -82,28 +82,26 @@ class About extends StatelessWidget {
             ),
           ),
         ),
-        Align(
-          child: SingleChildScrollView(
+        SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
                 SizedBox(
                   height: 80,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    'Amulx is an app made by the largest tech society of NSUT, Devcomm.',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: appColors.text2,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Epilogue'),
-                  ),
-                )
+                Text(
+                  'Amulx is an app made by the largest tech society of NSUT, Devcomm.',
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: appColors.text2,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Epilogue'),
+                ),
               ],
             ),
           ),
-        )
+        ),
       ])
     ])));
   }

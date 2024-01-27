@@ -217,11 +217,13 @@ class _ProfileState extends State<Profile> {
                         Container(
                           // width: MediaQuery.of(context).size.width * .6,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 36, vertical: 8),
+                              horizontal: 32, vertical: 8),
                           decoration: ShapeDecoration(
-                            color: Colors.white,
+                            color: _isDarkMode
+                                ? Colors.grey.shade200
+                                : Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             shadows: _shadows,
                           ),
@@ -344,13 +346,15 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         TextButton.icon(
-                          onPressed: () {
+                          onPressed: () async {
                             AdaptiveTheme.of(context)
                                 .toggleThemeMode(useSystem: false);
+                            print(AdaptiveTheme.of(context).brightness);
                             setState(() {
                               _isDarkMode = !_isDarkMode;
-                              appColors =
-                                  Theme.of(context).extension<AppColors2>()!;
+                              appColors = AdaptiveTheme.of(context)
+                                  .theme
+                                  .extension<AppColors2>()!;
                             });
                           },
                           label: Text(
