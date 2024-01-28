@@ -50,17 +50,28 @@ class Terms extends StatelessWidget {
                   bottomRight: Radius.circular(80),
                 ),*/
         ),
-        child: Center(
-          child: Text(
-            'Terms & Conditions',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontFamily: 'Epilogue',
-              fontWeight: FontWeight.w700,
-              height: 0.06,
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
             ),
-          ),
+            Center(
+              child: const Text(
+                'Terms & Conditions',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontFamily: 'Epilogue',
+                  fontWeight: FontWeight.w700,
+                  height: 0.06,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       Stack(children: [
