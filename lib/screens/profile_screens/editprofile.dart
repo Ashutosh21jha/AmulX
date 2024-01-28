@@ -110,7 +110,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
       duration: const Duration(seconds: 1),
       icon: Image.asset(
-        'assets/images/devcommlogo.png',
+        'assets/images/icon.png',
         width: 24,
         height: 24,
       ),
@@ -290,7 +290,7 @@ class _EditProfileState extends State<EditProfile> {
                                     ),
                                     duration: const Duration(seconds: 1),
                                     icon: Image.asset(
-                                      'assets/images/devcommlogo.png',
+                                      'assets/images/icon.png',
                                       width: 24,
                                       height: 24,
                                     ),

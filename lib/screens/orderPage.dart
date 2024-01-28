@@ -67,7 +67,7 @@ class _OrderPageState extends State<OrderPage> {
               duration: const Duration(seconds: 1),
               barBlur: 10,
               icon: Image.asset(
-                'assets/images/devcommlogo.png',
+                'assets/images/icon.png',
                 width: 24,
                 height: 24,
               ),
@@ -150,7 +150,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         elevation: 0,
         toolbarHeight: 70,
         automaticallyImplyLeading: false,
@@ -170,12 +170,67 @@ class _OrderPageState extends State<OrderPage> {
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            Card(
+      ),*/
+      body: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  Color(0xFF00084B),
+                  Color(0xFF2E55C0),
+                  Color(0xFF148BFA),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  Color(0xFF00084B),
+                  Color(0xFF2E55C0),
+                  Color(0xFF148BFA),
+                ],
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      )),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.27),
+                  const Text(
+                    "Orders",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontFamily: 'Epilogue',
+                      fontWeight: FontWeight.w700,
+                      height: 0.06,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
               elevation: 2,
               color: Colors.white,
               child: Column(
@@ -486,8 +541,8 @@ class _OrderPageState extends State<OrderPage> {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

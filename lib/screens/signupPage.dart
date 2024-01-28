@@ -202,7 +202,7 @@ class _signupPageState extends State<signupPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              Center(child: SvgPicture.asset("assets/images/logo.svg")),
+              Center(child: SvgPicture.asset("assets/images/logo.svg",height: 40,width: 40)),
               const SizedBox(height: 10),
               Center(
                 child: Text(

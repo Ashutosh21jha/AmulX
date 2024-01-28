@@ -25,9 +25,7 @@ class OrderReviewPage extends StatefulWidget {
 }
 
 String generateRandomOrderID() {
-  // Generate a random number between 1000 and 9999
   int randomOrderNumber = Random().nextInt(9000) + 1000;
-  // Combine it with a prefix, if needed
   return 'ORD-$randomOrderNumber';
 }
 
@@ -195,29 +193,9 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
       await prepListCollection.doc('ORD-$count').set(prepListOrderData);
 
-      // Listen for changes in prepList document
       prepListCollection.doc('ORD-$count').snapshots().listen((event) async {
-        // Check if the orderStatus field has changed
+
         final newOrderStatus = event['orderStatus'];
-        // if (newOrderStatus != 'Placed') {
-        //   await historyCollection.doc(formattedDate).update({
-        //     'orders': FieldValue.arrayUnion([
-        //       {
-        //         'items': cartController.cartItems.fold<Map<String, dynamic>>({},
-        //             (map, item) {
-        //           map[item.name] = {
-        //             'count': item.quantity,
-        //             'price': item.price,
-        //           };
-        //           return map;
-        //         }),
-        //         'orderID': 'ORD-$count',
-        //         'time': DateTime.now(),
-        //         'orderStatus': newOrderStatus,
-        //       }
-        //     ]),
-        //   });
-        // }
       });
 
       await FirebaseFirestore.instance
@@ -240,7 +218,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         duration: const Duration(seconds: 1),
         barBlur: 10,
         icon: Image.asset(
-          'assets/images/devcommlogo.png',
+          'assets/images/icon.png',
           width: 24,
           height: 24,
         ),
@@ -274,7 +252,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       ),
       duration: const Duration(seconds: 1),
       icon: Image.asset(
-        'assets/images/devcommlogo.png',
+        'assets/images/icon.png',
         width: 24,
         height: 24,
       ),
@@ -383,24 +361,64 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Summary',
-          style: TextStyle(
-              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        centerTitle: true,
-        backgroundColor: AppColors.blue,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
-      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
+            Container(
+              height: MediaQuery.of(context).size.height * 0.10,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Color(0xFF00084B),
+                    Color(0xFF2E55C0),
+                    Color(0xFF148BFA),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.08,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Color(0xFF00084B),
+                    Color(0xFF2E55C0),
+                    Color(0xFF148BFA),
+                  ],
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      )),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.27),
+                  const Text(
+                    "Summary",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontFamily: 'Epilogue',
+                      fontWeight: FontWeight.w700,
+                      height: 0.06,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20,),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Container(
@@ -487,7 +505,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                   borderRadius: BorderRadius.circular(40),
                 ),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 120, vertical: 16),
                 textStyle: const TextStyle(fontSize: 20),
               ),
               child: Padding(

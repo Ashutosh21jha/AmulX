@@ -60,7 +60,7 @@ class _forgetPasswordState extends State<forgetPassword> {
           duration: const Duration(seconds: 2),
           barBlur: 10,
           icon: Image.asset(
-            'assets/images/devcommlogo.png',
+            'assets/images/icon.png',
             width: 24,
             height: 24,
           ),
@@ -81,7 +81,7 @@ class _forgetPasswordState extends State<forgetPassword> {
           duration: const Duration(seconds: 2),
           barBlur: 10,
           icon: Image.asset(
-            'assets/images/devcommlogo.png',
+            'assets/images/icon.png',
             width: 24,
             height: 24,
           ),

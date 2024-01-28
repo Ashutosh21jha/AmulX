@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:amul/controllers/items_controller.dart';
-import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/signupPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -78,8 +77,8 @@ class _Splashscreenstate extends State<SplashScreen> {
               Color(0xFF2E55C0),
               Color(0xFF148BFA),
             ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
           ),
         ),
         child: Column(
@@ -90,7 +89,7 @@ class _Splashscreenstate extends State<SplashScreen> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: AnimatedContainer(
-                  // Translate the image upward
+
                   duration: const Duration(milliseconds: 200),
                   transform: Matrix4.translationValues(0, _imageOffset, 0),
                   child: SvgPicture.asset(
@@ -104,7 +103,6 @@ class _Splashscreenstate extends State<SplashScreen> {
             const Expanded(
               child: Padding(
                 padding: EdgeInsets.only(bottom: 60),
-                // Add padding to the bottom
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Text(
