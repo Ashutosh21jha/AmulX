@@ -7,7 +7,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'foodPage.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,12 +26,98 @@ class _HomeState extends State<HomePage> {
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
   late final bool _isDarkMode =
       AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
+  final remoteConfig = FirebaseRemoteConfig.instance;
+  late String currentVersion = "" ;
+  late String latestVersion = "";
+
+  Future<void> fetchVersion() async {
+    try {
+      await remoteConfig.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(seconds: 30),
+        minimumFetchInterval: const Duration(seconds: 60),
+      ));
+
+      await remoteConfig.setDefaults({
+        "AmulX_version": currentVersion,
+      });
+
+      await remoteConfig.fetchAndActivate();
+
+      setState(() {
+        latestVersion = remoteConfig.getString('AmulX_version');
+      });
+
+      print("Latest version: $latestVersion");
+      checkForUpdate();
+    } catch (e) {
+      print('Error fetching remote config: $e');
+    }
+  }
+
+  Future<void> getPackageInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      currentVersion = packageInfo.version ;
+    });
+    print("current version :${currentVersion}");
+  }
+
+  void checkForUpdate() {
+    if (currentVersion != latestVersion) {
+      showUpdateDialog();
+    } else {
+      print("No update available");
+    }
+  }
+  void launchPlayStore() async {
+final String packageName = "com.example.amul";
+
+    final String url = "https://play.google.com/store/apps/details?id=com.devcomm.nsutx&pcampaignid=web_share";
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      final String webUrl = "https://play.google.com/store/apps/details?id=com.devcomm.nsutx&pcampaignid=web_share";
+      if (await canLaunch(webUrl)) {
+        await launch(webUrl);
+      }
+    }
+  }
+
+  void showUpdateDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Update Available"),
+          content: const Text("A new version of the AmulX is available. Update now?"),
+          actions: <Widget>[
+            ElevatedButton(
+              child: const Text("Later"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: const Text("Update"),
+              onPressed: () {
+                launchPlayStore();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     CartController.to.fetchCart();
     CartController.to.fetchCurrentOrder();
+    getPackageInfo();
+    fetchVersion();
   }
 
   Widget closedStoreMessage() {
@@ -65,9 +154,9 @@ class _HomeState extends State<HomePage> {
             ),
           ),
         ),
-        Expanded(
+        const Expanded(
           child: Center(
-            child: const Text(
+            child: Text(
               'Store is Closed',
               style: TextStyle(
                 fontSize: 24,
@@ -120,7 +209,7 @@ class _HomeState extends State<HomePage> {
           Text(
             "Answer your\nappetite!",
             style: TextStyle(
-              color: _isDarkMode ? Colors.white60 : Color(0xFF414042),
+              color: _isDarkMode ? Colors.white60 : const Color(0xFF414042),
               fontSize: 26,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.02 * 16,
@@ -353,7 +442,7 @@ class _HomeState extends State<HomePage> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
             ),
