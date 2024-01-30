@@ -1,5 +1,9 @@
 import 'package:amul/Utils/AppColors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 
 const EdgeInsets _paddingButtons =
     EdgeInsets.symmetric(horizontal: 12, vertical: 8);
@@ -19,10 +23,23 @@ const List<BoxShadow> _shadows = [
   )
 ];
 
+final auth = FirebaseAuth.instance;
+final db = FirebaseFirestore.instance;
+
+Future<void> signOut() async {
+  try {
+    print(auth.currentUser?.email);
+    await auth.signOut();
+  } catch (e) {
+    throw Exception(e);
+  }
+}
+
 class ProfileCard extends StatelessWidget {
   final String text;
   final IconData icon;
   final Widget screen;
+  final bool  implement;
   final Color iconColor;
   final Color textColor;
   final bool top;
@@ -33,6 +50,7 @@ class ProfileCard extends StatelessWidget {
     required this.text,
     required this.icon,
     required this.screen,
+    required this.implement,
     required this.iconColor,
     this.textColor = Colors.white,
     this.top = false,
@@ -54,11 +72,23 @@ class ProfileCard extends StatelessWidget {
     }
 
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => screen),
-        );
+      onTap: () async{
+        if(implement==true){
+         await signOut();
+         Get.offAll(() => screen,
+             predicate: (route) => route.isFirst,
+             duration: const Duration(
+               milliseconds: 800,
+             ),
+             transition: Transition.rightToLeft
+         );
+        } else {
+          Get.to(() => screen,
+              duration: const Duration(
+                milliseconds: 800,
+              ),
+              transition: Transition.rightToLeft);
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),

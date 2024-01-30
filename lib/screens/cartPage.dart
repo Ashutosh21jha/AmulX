@@ -324,7 +324,7 @@ class _CartPageState extends State<CartPage> {
                                       ? Theme.of(context)
                                           .scaffoldBackgroundColor
                                       : Colors.white,
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(15),
                                       topRight: Radius.circular(15)),
                                 ),
@@ -376,14 +376,30 @@ class _CartPageState extends State<CartPage> {
                                                   false) {
                                                 print(
                                                     "Navigating to review Screen");
-                                                Get.to(OrderReviewPage(
+                                               Get.to(() => OrderReviewPage(
+                                                  cartItems:
+                                                  cartController.cartItems,
+                                                ),
+                                                    duration: const Duration(
+                                                      milliseconds: 800,
+                                                    ),
+                                                    transition: Transition.rightToLeft);
+                                                /*Get.to(OrderReviewPage(
                                                   cartItems:
                                                       cartController.cartItems,
-                                                ));
+                                                ));*/
                                               } else {
+
                                                 Get.to(() => OrderPage(
+                                                  userId: userId,
+                                                ),
+                                                    duration: const Duration(
+                                                      milliseconds: 800,
+                                                    ),
+                                                    transition: Transition.rightToLeft);
+                                             /* await  Get.to(() => OrderPage(
                                                       userId: userId,
-                                                    ));
+                                                    ));*/
                                               }
                                             } else {
                                               Get.snackbar(
@@ -405,7 +421,7 @@ class _CartPageState extends State<CartPage> {
                                                   BorderRadius.circular(48),
                                             ),
                                           ),
-                                          child: Text(
+                                          child: const Text(
                                             'Order Now',
                                             style: TextStyle(
                                                 color: Colors.white,

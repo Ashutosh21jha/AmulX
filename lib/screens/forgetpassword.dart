@@ -135,7 +135,7 @@ class _forgetPasswordState extends State<forgetPassword> {
                 ),
               ),
               const SizedBox(height: 10),
-              Center(child: SvgPicture.asset("assets/images/logo.svg")),
+              Center(child: SvgPicture.asset("assets/images/logo.svg",height: 40, width: 40)),
               const SizedBox(height: 10),
               const Center(
                 child: Text(

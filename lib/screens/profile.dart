@@ -23,7 +23,7 @@ String get userId => auth.currentUser?.email ?? '';
 
 Future<void> signOut() async {
   try {
-    print(auth.currentUser?.uid);
+    print(auth.currentUser?.email);
     await auth.signOut();
   } catch (e) {
     throw Exception(e);
@@ -176,7 +176,7 @@ class _ProfileState extends State<Profile> {
                 bottomRight: Radius.circular(80),
               ),*/
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 'My Profile',
                 style: TextStyle(
@@ -374,6 +374,7 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.person,
                             text: "Profile",
+                            implement: false,
                             textColor: appColors.whiteText,
                             top: true,
                             screen: EditProfile(
@@ -385,6 +386,7 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.info_outline,
                             text: "About Us",
+                            implement: false,
                             textColor: appColors.whiteText,
                             screen: const About(),
                             iconColor: const Color(0xFF02B9F0)),
@@ -393,6 +395,7 @@ class _ProfileState extends State<Profile> {
                         ProfileCard(
                             icon: Icons.question_answer_outlined,
                             text: "FAQ",
+                            implement: false,
                             textColor: appColors.whiteText,
                             screen: Faq(),
                             iconColor: const Color(0xFFFC6DBB)),
@@ -400,6 +403,7 @@ class _ProfileState extends State<Profile> {
                         // TERMS AND CONDITION
                         ProfileCard(
                             icon: Icons.file_copy,
+                            implement: false,
                             text: "Terms and Conditions",
                             textColor: appColors.whiteText,
                             screen: const Terms(),
@@ -416,11 +420,12 @@ class _ProfileState extends State<Profile> {
                         // LOGOUT
                         ProfileCard(
                           icon: Icons.logout,
+                          implement: true,
                           text: "Logout",
                           bottom: true,
-                          screen: signupPage(),
+                          screen: const signupPage(),
                           iconColor: const Color(0xFFF57878),
-                          textColor: Color(0xFFF46363),
+                          textColor: const Color(0xFFF46363),
                         ),
                         // InkWell(
                         //   onTap: () => signOut().then((value) {
@@ -512,7 +517,7 @@ class _ProfileState extends State<Profile> {
                               height: 50,
                               width: 50,
                             ),
-                            Text(
+                            const Text(
                               "Powered by\nDevComm",
                               style: TextStyle(fontSize: 10),
                             ),

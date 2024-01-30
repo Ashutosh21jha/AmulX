@@ -6,6 +6,7 @@ import 'package:amul/screens/history.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -27,7 +28,8 @@ class _HomeState extends State<HomePage> {
   late final bool _isDarkMode =
       AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
   final remoteConfig = FirebaseRemoteConfig.instance;
-  late String currentVersion = "" ;
+  late String currentVersion = "";
+
   late String latestVersion = "";
 
   Future<void> fetchVersion() async {
@@ -57,9 +59,10 @@ class _HomeState extends State<HomePage> {
   Future<void> getPackageInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
-      currentVersion = packageInfo.version ;
+      currentVersion = packageInfo.version;
     });
     print("current version :${currentVersion}");
+    fetchVersion();
   }
 
   void checkForUpdate() {
@@ -69,15 +72,18 @@ class _HomeState extends State<HomePage> {
       print("No update available");
     }
   }
-  void launchPlayStore() async {
-final String packageName = "com.example.amul";
 
-    final String url = "https://play.google.com/store/apps/details?id=com.devcomm.nsutx&pcampaignid=web_share";
+  void launchPlayStore() async {
+    final String packageName = "com.example.amul";
+
+    final String url =
+        "https://play.google.com/store/apps/details?id=com.devcomm.nsutx&pcampaignid=web_share";
 
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      final String webUrl = "https://play.google.com/store/apps/details?id=com.devcomm.nsutx&pcampaignid=web_share";
+      final String webUrl =
+          "https://play.google.com/store/apps/details?id=com.devcomm.nsutx&pcampaignid=web_share";
       if (await canLaunch(webUrl)) {
         await launch(webUrl);
       }
@@ -90,7 +96,8 @@ final String packageName = "com.example.amul";
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Update Available"),
-          content: const Text("A new version of the AmulX is available. Update now?"),
+          content: const Text(
+              "A new version of the AmulX is available. Update now?"),
           actions: <Widget>[
             ElevatedButton(
               child: const Text("Later"),
@@ -116,8 +123,6 @@ final String packageName = "com.example.amul";
     super.initState();
     CartController.to.fetchCart();
     CartController.to.fetchCurrentOrder();
-    getPackageInfo();
-    fetchVersion();
   }
 
   Widget closedStoreMessage() {
@@ -143,7 +148,11 @@ final String packageName = "com.example.amul";
                     height: 30,
                   ),
                   GestureDetector(
-                    onTap: () => Get.to(History()),
+                    onTap: () => Get.to(() => History(),
+                        duration: const Duration(
+                          milliseconds: 800,
+                        ),
+                        transition: Transition.fade),
                     child: const Icon(
                       Icons.history,
                       size: 30,
@@ -193,7 +202,13 @@ final String packageName = "com.example.amul";
                       height: 30,
                     ),
                     GestureDetector(
-                      onTap: () => Get.to(History()),
+                      onTap: () {
+                        Get.to(() => History(),
+                            duration: const Duration(
+                              milliseconds: 800,
+                            ),
+                            transition: Transition.rightToLeft);
+                      },
                       child: Icon(
                         Icons.history,
                         size: 30,
@@ -225,12 +240,17 @@ final String packageName = "com.example.amul";
               Column(
                 children: [
                   Center(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
-                        Get.to(FoodPage(
-                          cat: "Food",
-                          itemList: ItemController.to.food,
-                        ));
+                        Get.to(
+                            () => FoodPage(
+                                  cat: "Food",
+                                  itemList: ItemController.to.food,
+                                ),
+                            duration: const Duration(
+                              milliseconds: 800,
+                            ),
+                            transition: Transition.fade);
                       },
                       child: Container(
                         width: 134.5,
@@ -275,12 +295,17 @@ final String packageName = "com.example.amul";
               Column(
                 children: [
                   Center(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
-                        Get.to(FoodPage(
-                          cat: "Drinks",
-                          itemList: ItemController.to.drink,
-                        ));
+                        Get.to(
+                            () => FoodPage(
+                                  cat: "Drinks",
+                                  itemList: ItemController.to.drink,
+                                ),
+                            duration: const Duration(
+                              milliseconds: 800,
+                            ),
+                            transition: Transition.fade);
                       },
                       child: Container(
                         width: 134.5,
@@ -325,12 +350,17 @@ final String packageName = "com.example.amul";
               Column(
                 children: [
                   Center(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
-                        Get.to(FoodPage(
-                          cat: "Munchies",
-                          itemList: ItemController.to.munchies,
-                        ));
+                        Get.to(
+                            () => FoodPage(
+                                  cat: "Munchies",
+                                  itemList: ItemController.to.munchies,
+                                ),
+                            duration: const Duration(
+                              milliseconds: 800,
+                            ),
+                            transition: Transition.fade);
                       },
                       child: Container(
                         width: 134.5,
@@ -376,12 +406,17 @@ final String packageName = "com.example.amul";
               Column(
                 children: [
                   Center(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
-                        Get.to(FoodPage(
-                          cat: "Dairy",
-                          itemList: ItemController.to.dairy,
-                        ));
+                        Get.to(
+                            () => FoodPage(
+                                  cat: "Dairy",
+                                  itemList: ItemController.to.dairy,
+                                ),
+                            duration: const Duration(
+                              milliseconds: 800,
+                            ),
+                            transition: Transition.fade);
                       },
                       child: Container(
                         width: 134.5,
@@ -430,6 +465,12 @@ final String packageName = "com.example.amul";
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     return StreamBuilder<DocumentSnapshot>(
       stream: db.collection('menu').doc('today menu').snapshots(),
       builder: (context, snapshot) {

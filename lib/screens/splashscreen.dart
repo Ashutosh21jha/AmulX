@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 
 final auth = FirebaseAuth.instance;
 
@@ -50,15 +52,9 @@ class _Splashscreenstate extends State<SplashScreen> {
   void _navigateToNextScreen() {
     if (auth.currentUser != null) {
       print(auth.currentUser?.uid);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Mainscreen()),
-      );
+      Get.off(() => Mainscreen());
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const signupPage()),
-      );
+      Get.off(() => signupPage());
     }
   }
 
@@ -89,7 +85,6 @@ class _Splashscreenstate extends State<SplashScreen> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: AnimatedContainer(
-
                   duration: const Duration(milliseconds: 200),
                   transform: Matrix4.translationValues(0, _imageOffset, 0),
                   child: SvgPicture.asset(

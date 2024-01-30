@@ -337,13 +337,21 @@ class FoodPageState extends State<FoodPage> {
       ),
       floatingActionButton: InkWell(
         onTap: () async {
-          await Navigator.push(context,
+
+          await Get.to(()=>CartPage(true),
+              duration: const Duration(
+                milliseconds: 800,
+              ),
+              transition: Transition.rightToLeft,
+          );
+
+         /* await Navigator.push(context,
                   MaterialPageRoute(builder: (context) => CartPage(true)))
               .then((value) {
             if (value == true) {
               setState(() {});
             }
-          });
+          });*/
         },
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),

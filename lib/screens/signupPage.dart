@@ -6,6 +6,7 @@ import 'package:amul/screens/mainscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -179,6 +180,12 @@ class _signupPageState extends State<signupPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     return Scaffold(
       backgroundColor: appColors.scaffoldBackgroundColor,
       body: SingleChildScrollView(
@@ -196,20 +203,24 @@ class _signupPageState extends State<signupPage> {
                 child: Text(
                   "Welcome to",
                   style: TextStyle(
-                    color: _isDarkMode ? Colors.white70 : Color(0xFF929497),
+                    color:
+                        _isDarkMode ? Colors.white70 : const Color(0xFF929497),
                     fontSize: 16,
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-              Center(child: SvgPicture.asset("assets/images/logo.svg",height: 40,width: 40)),
+              Center(
+                  child: SvgPicture.asset("assets/images/logo.svg",
+                      height: 40, width: 40)),
               const SizedBox(height: 10),
               Center(
                 child: Text(
                   "   Before ordering, please login with your \n account",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: _isDarkMode ? Colors.white60 : Color(0xFF414042),
+                    color:
+                        _isDarkMode ? Colors.white60 : const Color(0xFF414042),
                     fontSize: 14,
                   ),
                 ),
@@ -399,7 +410,13 @@ class _signupPageState extends State<signupPage> {
                       height: 8,
                     ),
                     InkWell(
-                      onTap: () => Get.to(forgetPassword()),
+                      onTap: () {
+                        Get.to(() => forgetPassword(),
+                            duration: const Duration(
+                              milliseconds: 800,
+                            ),
+                            transition: Transition.rightToLeft);
+                      },
                       child: Center(
                         child: Text(
                           "Forget Password?",
