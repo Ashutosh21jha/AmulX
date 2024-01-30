@@ -132,6 +132,9 @@ class FoodPageState extends State<FoodPage> {
               child: Padding(
                 padding: const EdgeInsets.only(right: 15, left: 15),
                 child: TextFormField(
+                  cursorColor: Colors.black,
+                  style: const TextStyle(
+                      color: Colors.black, decorationColor: Colors.black),
                   controller: _searchController,
                   textAlign: TextAlign.justify,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -205,7 +208,6 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index2;
-                        print(selected.value);
                         availableItems.sort(
                           (a, b) =>
                               int.parse(a.price).compareTo(int.parse(b.price)),
@@ -222,7 +224,7 @@ class FoodPageState extends State<FoodPage> {
                             color: selected.value == index2
                                 ? AppColors.blue
                                 : (_isDarkMode
-                                    ? Color(0xFFE6E6E6)
+                                    ? const Color(0xFFE6E6E6)
                                     : Colors.white),
                             border: Border.all(
                               color: const Color(0xFF2546A9), // Border color
@@ -264,7 +266,7 @@ class FoodPageState extends State<FoodPage> {
                             color: selected.value == index3
                                 ? AppColors.blue
                                 : (_isDarkMode
-                                    ? Color(0xFFE6E6E6)
+                                    ? const Color(0xFFE6E6E6)
                                     : Colors.white),
                             border: Border.all(
                               color: const Color(0xFF2546A9), // Border color

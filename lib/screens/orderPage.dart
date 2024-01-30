@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,10 @@ class _OrderPageState extends State<OrderPage> {
   late double totalAmount = 0;
   bool isDeclined = false;
   bool isRefunded = true;
+
+  late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
+      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   @override
   void initState() {
@@ -51,7 +56,7 @@ class _OrderPageState extends State<OrderPage> {
           print('Snapshot data: ${snapshot.data()}');
           if (snapshot['isRefunded'] == true) {
             print('Refund initiated. Navigating to Mainscreen...');
-            Get.to(Mainscreen());
+            Get.to(const Mainscreen());
             Get.snackbar(
               'Refund Initiated',
               'Check your account.',
@@ -232,7 +237,7 @@ class _OrderPageState extends State<OrderPage> {
             padding: const EdgeInsets.all(8.0),
             child: Card(
               elevation: 2,
-              color: Colors.white,
+              color: appColors.cardColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -293,9 +298,9 @@ class _OrderPageState extends State<OrderPage> {
                                                 text: snapshot.data?['orderID']
                                                         .toString() ??
                                                     '',
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
+                                                  color: appColors.text2,
                                                   fontSize: 16,
                                                 ),
                                               ),
@@ -462,10 +467,10 @@ class _OrderPageState extends State<OrderPage> {
                                             height: 40,
                                             child: Column(
                                               children: [
-                                                Text(
+                                                const Text(
                                                   'Order Declined',
-                                                  style: const TextStyle(
-                                                      fontSize: 16),
+                                                  style:
+                                                      TextStyle(fontSize: 16),
                                                 ),
                                                 Text(
                                                   'Your Code is ${snapshot.data?['code']}',
@@ -478,9 +483,11 @@ class _OrderPageState extends State<OrderPage> {
                                     Container(
                                       margin: const EdgeInsets.symmetric(
                                           vertical: 16),
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
+                                      decoration: BoxDecoration(
+                                        color: _isDarkMode
+                                            ? Colors.black12
+                                            : Colors.white,
+                                        borderRadius: const BorderRadius.all(
                                             Radius.circular(10)),
                                       ),
                                       child: ListView.builder(
@@ -495,9 +502,9 @@ class _OrderPageState extends State<OrderPage> {
 
                                           return ListTile(
                                             leading: Text(
-                                              ' ${map.keys.elementAt(index)} (x ${value['count']})',
-                                              style: const TextStyle(
-                                                  color: Colors.black,
+                                              ' ${map.keys.elementAt(index)} (x${value['count']})',
+                                              style: TextStyle(
+                                                  color: appColors.text2,
                                                   fontSize: 16),
                                             ),
                                             trailing: RichText(
@@ -518,10 +525,10 @@ class _OrderPageState extends State<OrderPage> {
                                                       fontSize: 16,
                                                     ),
                                                   ),
-                                                  const TextSpan(
+                                                  TextSpan(
                                                     text: '  each',
                                                     style: TextStyle(
-                                                      color: Colors.black,
+                                                      color: appColors.text2,
                                                       fontSize: 16,
                                                     ),
                                                   ),
@@ -554,7 +561,7 @@ class _OrderPageState extends State<OrderPage> {
     } else if (getActiveStep(orderStatus) >= stepIndex) {
       return AppColors.green;
     } else {
-      return Colors.grey;
+      return _isDarkMode ? Colors.white : Colors.grey;
     }
   }
 
