@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 import '../../Utils/AppColors.dart';
@@ -35,7 +37,6 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
-    fetchImage();
     receivedata();
     nameController = TextEditingController(text: name);
   }
@@ -45,7 +46,7 @@ class _EditProfileState extends State<EditProfile> {
       height: MediaQuery.sizeOf(context).height,
       width: MediaQuery.sizeOf(context).width,
       color: Colors.blueGrey.shade300.withAlpha(120),
-      child: Center(
+      child: const Center(
         child: CircularProgressIndicator(
           color: AppColors.blue,
         ),
@@ -70,6 +71,16 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
+  Future<void> saveUrlLocally(String urlOfImage) async {
+    Directory appDir = await getApplicationDocumentsDirectory();
+
+    final urlFilePath = Uri.parse(appDir.path).resolve('urlFile.txt');
+
+    final file = File(urlFilePath.toFilePath());
+
+    file.writeAsString(urlOfImage);
+  }
+
   Future<void> uploadImageToFirebase(XFile image) async {
     overlayPortalController.show();
     File imageFile = File(image.path);
@@ -82,7 +93,11 @@ class _EditProfileState extends State<EditProfile> {
     if (metadata != null) {
       await storage.ref('user/pp_$userId.jpg').putFile(imageFile);
       setState(() {});
-      widget.parentImageUrl.value = await ref.getDownloadURL();
+      final downloadUrl = await ref.getDownloadURL();
+      setState(() {
+        widget.parentImageUrl.value = downloadUrl;
+      });
+      saveUrlLocally(downloadUrl);
     } else {
       print("Image not found");
     }
@@ -118,8 +133,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
         source: ImageSource.gallery, maxWidth: 500, maxHeight: 500);
 
     if (image != null) {
@@ -127,27 +142,27 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  Future<ImageProvider> fetchImage() async {
-    String filePath = 'user/pp_$userId.jpg';
-    var ref = FirebaseStorage.instance.ref().child(filePath);
-    FirebaseStorage storage = FirebaseStorage.instance;
-    var refL = storage.ref('user/pp_$userId.jpg');
-    var metadata = await refL.getData().onError((error, stackTrace) {
-      return null;
-    });
-    if (metadata != null) {
-      return ref.getDownloadURL().then((url) {
-        return NetworkImage(url);
-      });
-    } else {
-      return const AssetImage('assets/images/avatar.png');
-    }
-    // return ref.getDownloadURL().then((url) {
-    //   return NetworkImage(url);
-    // }, onError: (error) {
-    //   return const AssetImage('assets/images/avatar.png');
-    // });
-  }
+  // Future<ImageProvider> fetchImage() async {
+  //   String filePath = 'user/pp_$userId.jpg';
+  //   var ref = FirebaseStorage.instance.ref().child(filePath);
+  //   FirebaseStorage storage = FirebaseStorage.instance;
+  //   var refL = storage.ref('user/pp_$userId.jpg');
+  //   var metadata = await refL.getData().onError((error, stackTrace) {
+  //     return null;
+  //   });
+  //   if (metadata != null) {
+  //     return ref.getDownloadURL().then((url) {
+  //       return NetworkImage(url);
+  //     });
+  //   } else {
+  //     return const AssetImage('assets/images/avatar.png');
+  //   }
+  //   // return ref.getDownloadURL().then((url) {
+  //   //   return NetworkImage(url);
+  //   // }, onError: (error) {
+  //   //   return const AssetImage('assets/images/avatar.png');
+  //   // });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +174,7 @@ class _EditProfileState extends State<EditProfile> {
     );
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: Container(
             decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -171,7 +186,7 @@ class _EditProfileState extends State<EditProfile> {
             Color(0xFF148BFA),
           ],
         ))),
-        title: Text(
+        title: const Text(
           "Edit profile",
           style: TextStyle(
             color: Colors.white,
@@ -333,59 +348,39 @@ class _EditProfileState extends State<EditProfile> {
             Positioned(
               top: 50,
               left: MediaQuery.of(context).size.width / 2 - 50,
-              child: FutureBuilder<ImageProvider>(
-                future: fetchImage(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<ImageProvider> snapshot) {
-                  if (snapshot.hasData) {
-                    return Stack(alignment: Alignment.bottomRight, children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: snapshot.data!,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.yellow,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            pickImage();
-                          },
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                            size: 12,
-                          ),
-                        ),
-                      ),
-                    ]);
-                  } else {
-                    return Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/avatar.png'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
+              child: Stack(alignment: Alignment.bottomRight, children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                          widget.parentImageUrl.value),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.yellow,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      pickImage();
+                    },
+                    child: const Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                  ),
+                ),
+              ]),
             ),
             Positioned(
               bottom: 10,
@@ -397,7 +392,7 @@ class _EditProfileState extends State<EditProfile> {
                     height: 50,
                     width: 50,
                   ),
-                  Text(
+                  const Text(
                     "Powered by\nDevComm",
                     style: TextStyle(fontSize: 10),
                   ),

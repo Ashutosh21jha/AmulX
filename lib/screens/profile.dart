@@ -1,12 +1,14 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/signupPage.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'profile_screens/about.dart';
 import 'profile_screens/terms.dart';
 import 'profile_screens/privacy.dart';
@@ -84,8 +86,8 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
         source: ImageSource.gallery, maxWidth: 500, maxHeight: 500);
 
     if (image != null) {
@@ -95,7 +97,7 @@ class _ProfileState extends State<Profile> {
 
   Future<void> receivedata() async {
     final docRef = await db.collection("User").doc(userId).get();
-    Map<String, dynamic>? userData = docRef.data() as Map<String, dynamic>?;
+    Map<String, dynamic>? userData = docRef.data();
     if (userData != null) {
       if (mounted) {
         setState(() {
@@ -109,6 +111,15 @@ class _ProfileState extends State<Profile> {
   Future<void> getProfilePicture() async {
     FirebaseStorage storage = FirebaseStorage.instance;
 
+    Directory appDir = await getApplicationDocumentsDirectory();
+
+    final cacheFileDir = Uri.parse(appDir.path).resolve('urlFile.txt');
+    File imageFile = File(cacheFileDir.toFilePath());
+
+    if (await imageFile.exists()) {
+      imageUrl!.value = await imageFile.readAsString();
+    }
+
     var ref = storage.ref('user/pp_$userId.jpg');
     // var metadata = await ref.getMetadata().onError((error, stackTrace) {
     //   return Future.value(null);
@@ -118,6 +129,7 @@ class _ProfileState extends State<Profile> {
     });
 
     String downloadURL = await ref.getDownloadURL();
+    saveUrlLocally(downloadURL);
     imageUrl!.value = downloadURL;
 
     // if (metadata != null) {
@@ -128,6 +140,16 @@ class _ProfileState extends State<Profile> {
     // }
 
     // await Future.delayed(const Duration(seconds: 2));
+  }
+
+  Future<void> saveUrlLocally(String urlOfImage) async {
+    Directory appDir = await getApplicationDocumentsDirectory();
+
+    final urlFilePath = Uri.parse(appDir.path).resolve('urlFile.txt');
+    print(urlFilePath.toString());
+    final file = File(urlFilePath.toFilePath());
+
+    file.writeAsString(urlOfImage);
   }
 
   @override
@@ -251,8 +273,10 @@ class _ProfileState extends State<Profile> {
                                                     decoration: BoxDecoration(
                                                       shape: BoxShape.circle,
                                                       image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            imageUrl!.value),
+                                                        image:
+                                                            CachedNetworkImageProvider(
+                                                                imageUrl!
+                                                                    .value),
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
