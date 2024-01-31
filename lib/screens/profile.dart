@@ -120,15 +120,26 @@ class _ProfileState extends State<Profile> {
       imageUrl!.value = await imageFile.readAsString();
     }
 
-    var ref = storage.ref('user/pp_$userId.jpg');
+    String downloadURL;
+    Reference? ref;
+    try {
+      ref = storage.ref('user/pp_$userId.jpg');
+
+      downloadURL = await ref.getDownloadURL();
+    } catch (_) {
+      ref = storage.ref('user/default_user.jpg');
+      downloadURL = await ref.getDownloadURL();
+    }
     // var metadata = await ref.getMetadata().onError((error, stackTrace) {
     //   return Future.value(null);
     // });
-    var metadata = await ref.getData().onError((error, stackTrace) {
-      return null;
-    });
 
-    String downloadURL = await ref.getDownloadURL();
+    // try {
+    //   var metadata = await ref.getData().onError((error, stackTrace) => null);
+    // } catch (_) {
+    //   print('object');
+    // }
+
     saveUrlLocally(downloadURL);
     imageUrl!.value = downloadURL;
 
@@ -442,14 +453,14 @@ class _ProfileState extends State<Profile> {
                         //     iconColor: const Color(0xFFFBBC04)),
                         // const SizedBox(height: 4),
                         // LOGOUT
-                        ProfileCard(
+                        const ProfileCard(
                           icon: Icons.logout,
                           implement: true,
                           text: "Logout",
                           bottom: true,
-                          screen: const signupPage(),
-                          iconColor: const Color(0xFFF57878),
-                          textColor: const Color(0xFFF46363),
+                          screen: signupPage(),
+                          iconColor: Color(0xFFF57878),
+                          textColor: Color(0xFFF46363),
                         ),
                         // InkWell(
                         //   onTap: () => signOut().then((value) {

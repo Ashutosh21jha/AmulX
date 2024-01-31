@@ -86,21 +86,14 @@ class _EditProfileState extends State<EditProfile> {
     File imageFile = File(image.path);
     FirebaseStorage storage = FirebaseStorage.instance;
     var ref = storage.ref('user/pp_$userId.jpg');
-    var metadata = await ref.getData().onError((error, stackTrace) {
-      overlayPortalController.hide();
-      return null;
+
+    await ref.putFile(imageFile);
+    final downloadUrl = await ref.getDownloadURL();
+    setState(() {
+      widget.parentImageUrl.value = downloadUrl;
     });
-    if (metadata != null) {
-      await storage.ref('user/pp_$userId.jpg').putFile(imageFile);
-      setState(() {});
-      final downloadUrl = await ref.getDownloadURL();
-      setState(() {
-        widget.parentImageUrl.value = downloadUrl;
-      });
-      saveUrlLocally(downloadUrl);
-    } else {
-      print("Image not found");
-    }
+    saveUrlLocally(downloadUrl);
+
     // try {
     //   await FirebaseStorage.instance
     //       .ref('user/pp_$userId.jpg')

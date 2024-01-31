@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:amul/Utils/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:path_provider/path_provider.dart';
 
 const EdgeInsets _paddingButtons =
     EdgeInsets.symmetric(horizontal: 12, vertical: 8);
@@ -29,6 +32,11 @@ final db = FirebaseFirestore.instance;
 Future<void> signOut() async {
   try {
     print(auth.currentUser?.email);
+    Directory appDir = await getApplicationDocumentsDirectory();
+
+    final cacheFileDir = Uri.parse(appDir.path).resolve('urlFile.txt');
+    File imageFile = File(cacheFileDir.toFilePath());
+    await imageFile.delete();
     await auth.signOut();
   } catch (e) {
     throw Exception(e);
@@ -39,13 +47,13 @@ class ProfileCard extends StatelessWidget {
   final String text;
   final IconData icon;
   final Widget screen;
-  final bool  implement;
+  final bool implement;
   final Color iconColor;
   final Color textColor;
   final bool top;
   final bool bottom;
 
-  ProfileCard({
+  const ProfileCard({
     Key? key,
     required this.text,
     required this.icon,
@@ -62,26 +70,25 @@ class ProfileCard extends StatelessWidget {
     late final BorderRadius borderRadius;
 
     if (top) {
-      borderRadius = BorderRadius.only(
+      borderRadius = const BorderRadius.only(
           topRight: Radius.circular(12), topLeft: Radius.circular(12));
     } else if (bottom) {
-      borderRadius = BorderRadius.only(
+      borderRadius = const BorderRadius.only(
           bottomLeft: Radius.circular(12), bottomRight: Radius.circular(12));
     } else {
       borderRadius = BorderRadius.circular(0);
     }
 
     return InkWell(
-      onTap: () async{
-        if(implement==true){
-         await signOut();
-         Get.offAll(() => screen,
-             predicate: (route) => route.isFirst,
-             duration: const Duration(
-               milliseconds: 800,
-             ),
-             transition: Transition.rightToLeft
-         );
+      onTap: () async {
+        if (implement == true) {
+          await signOut();
+          Get.offAll(() => screen,
+              predicate: (route) => route.isFirst,
+              duration: const Duration(
+                milliseconds: 800,
+              ),
+              transition: Transition.rightToLeft);
         } else {
           Get.to(() => screen,
               duration: const Duration(
@@ -94,7 +101,7 @@ class ProfileCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
         child: Card(
           clipBehavior: Clip.hardEdge,
-          margin: EdgeInsets.symmetric(vertical: 1),
+          margin: const EdgeInsets.symmetric(vertical: 1),
           shape: RoundedRectangleBorder(borderRadius: borderRadius),
           elevation: 0.5,
           // color: Colors.blueGrey.shade100,
@@ -104,9 +111,9 @@ class ProfileCard extends StatelessWidget {
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [
-                Color(0xFF00084B).withAlpha(240),
-                Color(0xFF2E55C0).withAlpha(240),
-                Color(0xFF148BFA).withAlpha(240),
+                const Color(0xFF00084B).withAlpha(240),
+                const Color(0xFF2E55C0).withAlpha(240),
+                const Color(0xFF148BFA).withAlpha(240),
               ],
             )),
             child: ListTile(
@@ -139,9 +146,9 @@ class ProfileCard extends StatelessWidget {
                   height: 0.08,
                 ),
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios_sharp,
-                color: const Color.fromARGB(255, 0, 0, 0),
+                color: Color.fromARGB(255, 0, 0, 0),
                 size: 16,
               ),
             ),
