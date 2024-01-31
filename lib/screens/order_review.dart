@@ -178,7 +178,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         'orderStatus': 'Preparing',
         'name': await getUserName(userId),
         'time': DateTime.now(),
-        'token': '$fcm_token',
+        'token': fcm_token,
       };
 
       final docSnapshot = await historyCollection.doc(formattedDate).get();
@@ -194,7 +194,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       await prepListCollection.doc('ORD-$count').set(prepListOrderData);
 
       prepListCollection.doc('ORD-$count').snapshots().listen((event) async {
-
         final newOrderStatus = event['orderStatus'];
       });
 
@@ -274,10 +273,31 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     Get.snackbar(
       'Stock Exceeded',
       'Reduce quantity for ${item.join(', ')}',
-      colorText: Colors.indigo,
-      backgroundColor: Colors.transparent,
-      snackPosition: SnackPosition.TOP,
+      barBlur: 10,
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFF98181),
+          AppColors.red,
+          Color(0xFF850000),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 1),
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
     );
+
+    // Get.snackbar(
+    //   'Stock Exceeded',
+    //   'Reduce quantity for ${item.join(', ')}',
+    //   colorText: Colors.indigo,
+    //   backgroundColor: Colors.transparent,
+    //   snackPosition: SnackPosition.TOP,
+    // );
   }
 
   Future<void> navigateToPayment() async {
@@ -365,7 +385,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
             Container(
               height: MediaQuery.of(context).size.height * 0.10,
               decoration: const BoxDecoration(
@@ -418,7 +437,9 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                 ],
               ),
             ),
-            SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Container(
