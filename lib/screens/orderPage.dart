@@ -36,6 +36,9 @@ class _OrderPageState extends State<OrderPage> {
         .forEach((snapshot) {
       for (var element in snapshot.docs) {
         if (element.id == orderId) {
+          if (element.data()['isRefunded'] == true) {
+            refundFunction();
+          }
           print("$orderId is declined.");
           setState(() {
             isDeclined = true;
@@ -45,54 +48,35 @@ class _OrderPageState extends State<OrderPage> {
     });
   }
 
-  void listenForRefundStatus() async {
-    if (orderId.isNotEmpty) {
-      print("on refund");
-      FirebaseFirestore.instance
-          .collection('Declined')
-          .doc(orderId)
-          .snapshots()
-          .listen((snapshot) {
-        if (snapshot.exists) {
-          print('Snapshot data: ${snapshot.data()}');
-          if (snapshot['isRefunded'] == true) {
-            print('Refund initiated. Navigating to Mainscreen...');
+  void refundFunction() async {
+    print('Refund initiated. Navigating to Mainscreen...');
 
-            print('Navigating to Mainscreen...');
+    print('Navigating to Mainscreen...');
 
-            Get.to(const Mainscreen());
-            Get.snackbar(
-              'Refund Initiated',
-              'Check your account.',
-              backgroundGradient: const LinearGradient(
-                colors: [
-                  Color(0xFFA2E8D8),
-                  AppColors.green,
-                  Color(0xFF007A52),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-              duration: const Duration(seconds: 1),
-              barBlur: 10,
-              icon: Image.asset(
-                'assets/images/icon.png',
-                width: 24,
-                height: 24,
-              ),
-            );
-            setState(() {
-              isRefunded = true;
-            });
-          }
-        } else {
-          print('Document does not exist.');
-          // Handle the case when the document does not exist
-        }
-      });
-    } else {
-      print('OrderId is empty. Cannot listen for changes.');
-    }
+    Get.to(const Mainscreen());
+    Get.snackbar(
+      'Refund Initiated',
+      'Check your account.',
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFA2E8D8),
+          AppColors.green,
+          Color(0xFF007A52),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 1),
+      barBlur: 10,
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+    setState(() {
+      isRefunded = true;
+    });
   }
 
   void fetchId() async {
@@ -141,7 +125,7 @@ class _OrderPageState extends State<OrderPage> {
           print("isDeclined becomes true");
           isDeclined = true;
         });
-        listenForRefundStatus();
+        // listenForRefundStatus();
       } else {
         print('No matching documents found in Declined collection');
       }
