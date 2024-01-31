@@ -20,7 +20,7 @@ class _OrderPageState extends State<OrderPage> {
   String orderId = '';
   late double totalAmount = 0;
   bool isDeclined = false;
-  bool isRefunded = true;
+  bool isRefunded = false;
 
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
   late final bool _isDarkMode =
@@ -33,8 +33,8 @@ class _OrderPageState extends State<OrderPage> {
     FirebaseFirestore.instance
         .collection('Declined')
         .snapshots()
-        .forEach((element) {
-      for (var element in element.docs) {
+        .forEach((snapshot) {
+      for (var element in snapshot.docs) {
         if (element.id == orderId) {
           print("$orderId is declined.");
           setState(() {
@@ -45,8 +45,9 @@ class _OrderPageState extends State<OrderPage> {
     });
   }
 
-  void listenForRefundStatus() {
+  void listenForRefundStatus() async {
     if (orderId.isNotEmpty) {
+      print("on refund");
       FirebaseFirestore.instance
           .collection('Declined')
           .doc(orderId)
@@ -56,6 +57,9 @@ class _OrderPageState extends State<OrderPage> {
           print('Snapshot data: ${snapshot.data()}');
           if (snapshot['isRefunded'] == true) {
             print('Refund initiated. Navigating to Mainscreen...');
+
+            print('Navigating to Mainscreen...');
+
             Get.to(const Mainscreen());
             Get.snackbar(
               'Refund Initiated',
@@ -134,6 +138,7 @@ class _OrderPageState extends State<OrderPage> {
         setState(() {
           orderId = filteredDocs.toList().elementAt(0).get('orderID');
           calculateTotalAmount(filteredDocs.toList().elementAt(0).get('items'));
+          print("isDeclined becomes true");
           isDeclined = true;
         });
         listenForRefundStatus();
@@ -464,8 +469,10 @@ class _OrderPageState extends State<OrderPage> {
                                             ),
                                           )
                                         : SizedBox(
-                                            height: 40,
+                                            height: 50,
                                             child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
                                                   'Order Declined',
