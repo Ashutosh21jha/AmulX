@@ -34,6 +34,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
   bool isLoading = false;
   final messaging = FirebaseMessaging.instance;
   late String fcm_token;
+  bool isPaymentInProgress = false;
 
   Future<void> getToken() async {
     fcm_token = (await messaging.getToken())!;
@@ -257,16 +258,20 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       ),
     );
     Get.offAll(() => const Mainscreen());
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
     addBackStock(CartController.to.cartItems);
   }
 
   void handleExternalWalletSelected(ExternalWalletResponse response) {
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void showsnackBar(List item) {
@@ -369,7 +374,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     }
   }
 
-  // final cartItems = widget.cartItems;
   double totalAmount = 0.0;
 
   void priceFetch() {
@@ -398,10 +402,11 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                   ],
                 ),
               ),
+              child: SizedBox.expand(),
             ),
             Container(
               height: MediaQuery.of(context).size.height * 0.08,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
@@ -411,6 +416,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                     Color(0xFF148BFA),
                   ],
                 ),
+                borderRadius: BorderRadius.circular(0.01),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -512,14 +518,21 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
             ),
             const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () async {
-                setState(() {
-                  isLoading = true;
-                });
-                navigateToPayment();
-                await CartController.to
-                    .updateStockOnPay(CartController.to.cartItems);
-              },
+              onPressed: isPaymentInProgress
+                  ? null
+                  : () async {
+                      setState(() {
+                        isLoading = true;
+                        isPaymentInProgress = true;
+                      });
+
+                      navigateToPayment();
+                      await CartController.to
+                          .updateStockOnPay(CartController.to.cartItems);
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.blue,
                 shape: RoundedRectangleBorder(

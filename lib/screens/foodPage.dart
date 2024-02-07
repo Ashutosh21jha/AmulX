@@ -249,7 +249,6 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index3;
-
                         availableItems.sort(
                           (a, b) =>
                               int.parse(b.price).compareTo(int.parse(a.price)),
@@ -339,15 +338,15 @@ class FoodPageState extends State<FoodPage> {
       ),
       floatingActionButton: InkWell(
         onTap: () async {
-
-          await Get.to(()=>CartPage(true),
-              duration: const Duration(
-                milliseconds: 800,
-              ),
-              transition: Transition.rightToLeft,
+          await Get.to(
+            () => CartPage(true),
+            duration: const Duration(
+              milliseconds: 800,
+            ),
+            transition: Transition.rightToLeft,
           );
 
-         /* await Navigator.push(context,
+          /* await Navigator.push(context,
                   MaterialPageRoute(builder: (context) => CartPage(true)))
               .then((value) {
             if (value == true) {
@@ -411,6 +410,7 @@ class FoodPageState extends State<FoodPage> {
     CartController.to.tappedList = List.filled(mergedList.length, false);
     CartController.to.countList = List.filled(mergedList.length, 0);
     selected.value = 0;
+    defaultOrder();
   }
 
   @override

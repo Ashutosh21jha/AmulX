@@ -2,16 +2,18 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/darkTheme.dart';
 import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/screens/splashscreen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessaging.instance.requestPermission();
+
   runApp(const MyApp());
 }
 

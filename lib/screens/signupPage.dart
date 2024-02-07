@@ -377,7 +377,17 @@ class _signupPageState extends State<signupPage> {
                     ),
                     const SizedBox(height: 30),
                     ElevatedButton(
-                      onPressed: () => isLoading ? null : _submitform(),
+                      onPressed: isLoading
+                          ? null
+                          : () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              await _submitform();
+                              setState(() {
+                                isLoading = false;
+                              });
+                            },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2546A9),
                         shape: RoundedRectangleBorder(
