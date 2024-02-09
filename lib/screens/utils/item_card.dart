@@ -58,10 +58,12 @@ class _ItemCardState extends State<ItemCard> {
           if (value.get('count') != null) {
             setState(() {
               added = true;
+              print("fetched from cart collection");
             });
             setState(() {
               count = value.get('count');
               // localcount=value.get('count');
+              print("updated count from from cart collection");
             });
           }
         } catch (e) {

@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return AdaptiveTheme(
       light: lightThemeData(),
       dark: darkThemeData(),
-      initial: AdaptiveThemeMode.dark,
+      initial: AdaptiveThemeMode.light,
       builder: (lightTheme, darkTheme) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,

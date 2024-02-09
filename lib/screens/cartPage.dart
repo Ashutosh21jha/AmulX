@@ -59,7 +59,7 @@ class _CartPageState extends State<CartPage> {
                         color: appColors.text2,
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Get.to(Mainscreen());
                       },
                     ),
                     centerTitle: true,
@@ -376,28 +376,32 @@ class _CartPageState extends State<CartPage> {
                                                   false) {
                                                 print(
                                                     "Navigating to review Screen");
-                                               Get.to(() => OrderReviewPage(
-                                                  cartItems:
-                                                  cartController.cartItems,
-                                                ),
+                                                Get.to(
+                                                    () => OrderReviewPage(
+                                                          cartItems:
+                                                              cartController
+                                                                  .cartItems,
+                                                        ),
                                                     duration: const Duration(
                                                       milliseconds: 800,
                                                     ),
-                                                    transition: Transition.rightToLeft);
+                                                    transition:
+                                                        Transition.rightToLeft);
                                                 /*Get.to(OrderReviewPage(
                                                   cartItems:
                                                       cartController.cartItems,
                                                 ));*/
                                               } else {
-
-                                                Get.to(() => OrderPage(
-                                                  userId: userId,
-                                                ),
+                                                Get.to(
+                                                    () => OrderPage(
+                                                          userId: userId,
+                                                        ),
                                                     duration: const Duration(
                                                       milliseconds: 800,
                                                     ),
-                                                    transition: Transition.rightToLeft);
-                                             /* await  Get.to(() => OrderPage(
+                                                    transition:
+                                                        Transition.rightToLeft);
+                                                /* await  Get.to(() => OrderPage(
                                                       userId: userId,
                                                     ));*/
                                               }
