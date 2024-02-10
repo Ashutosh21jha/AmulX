@@ -243,14 +243,11 @@ class _HomeState extends State<HomePage> {
                     child: GestureDetector(
                       onTap: () {
                         Get.to(
-                            () => FoodPage(
-                                  cat: "Food",
-                                  itemList: ItemController.to.food,
-                                ),
-                            duration: const Duration(
-                              milliseconds: 800,
-                            ),
-                            transition: Transition.fade);
+                          () => FoodPage(
+                            cat: "Food",
+                            itemList: ItemController.to.food,
+                          ),
+                        );
                       },
                       child: Container(
                         width: 134.5,
@@ -298,14 +295,11 @@ class _HomeState extends State<HomePage> {
                     child: GestureDetector(
                       onTap: () {
                         Get.to(
-                            () => FoodPage(
-                                  cat: "Drinks",
-                                  itemList: ItemController.to.drink,
-                                ),
-                            duration: const Duration(
-                              milliseconds: 800,
-                            ),
-                            transition: Transition.fade);
+                          () => FoodPage(
+                            cat: "Drinks",
+                            itemList: ItemController.to.drink,
+                          ),
+                        );
                       },
                       child: Container(
                         width: 134.5,
@@ -353,14 +347,11 @@ class _HomeState extends State<HomePage> {
                     child: GestureDetector(
                       onTap: () {
                         Get.to(
-                            () => FoodPage(
-                                  cat: "Munchies",
-                                  itemList: ItemController.to.munchies,
-                                ),
-                            duration: const Duration(
-                              milliseconds: 800,
-                            ),
-                            transition: Transition.fade);
+                          () => FoodPage(
+                            cat: "Munchies",
+                            itemList: ItemController.to.munchies,
+                          ),
+                        );
                       },
                       child: Container(
                         width: 134.5,
@@ -409,14 +400,11 @@ class _HomeState extends State<HomePage> {
                     child: GestureDetector(
                       onTap: () {
                         Get.to(
-                            () => FoodPage(
-                                  cat: "Dairy",
-                                  itemList: ItemController.to.dairy,
-                                ),
-                            duration: const Duration(
-                              milliseconds: 800,
-                            ),
-                            transition: Transition.fade);
+                          () => FoodPage(
+                            cat: "Dairy",
+                            itemList: ItemController.to.dairy,
+                          ),
+                        );
                       },
                       child: Container(
                         width: 134.5,

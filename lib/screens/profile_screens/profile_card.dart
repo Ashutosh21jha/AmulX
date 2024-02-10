@@ -90,11 +90,9 @@ class ProfileCard extends StatelessWidget {
               ),
               transition: Transition.rightToLeft);
         } else {
-          Get.to(() => screen,
-              duration: const Duration(
-                milliseconds: 800,
-              ),
-              transition: Transition.rightToLeft);
+          Get.to(
+            () => screen,
+          );
         }
       },
       child: Padding(

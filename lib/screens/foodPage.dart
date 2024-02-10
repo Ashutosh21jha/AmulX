@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/utils/item_card.dart';
+import 'package:shimmer/shimmer.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
@@ -72,6 +73,22 @@ class FoodPageState extends State<FoodPage> {
     mergedList.clear();
     mergedList.addAll(defaultOrder);
     print(mergedList);
+  }
+
+  Widget loadingShimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        height: 120,
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
   }
 
   Widget closedStoreMessage() {
@@ -340,10 +357,6 @@ class FoodPageState extends State<FoodPage> {
         onTap: () async {
           await Get.to(
             () => CartPage(true),
-            duration: const Duration(
-              milliseconds: 800,
-            ),
-            transition: Transition.rightToLeft,
           );
 
           /* await Navigator.push(context,
@@ -427,9 +440,28 @@ class FoodPageState extends State<FoodPage> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
+          return Scaffold(
+            body: FutureBuilder(
+              future: Future.delayed(
+                  Duration(seconds: 2)), // Add your desired delay duration
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return ListView.builder(
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return loadingShimmer();
+                    },
+                  );
+                } else {
+                  // Once the delay is over, continue with the actual content
+                  final sessionData = snapshot.data;
+                  final bool isStoreOpen = sessionData?['session'] ?? false;
+
+                  return isStoreOpen
+                      ? openStoreContent()
+                      : closedStoreMessage();
+                }
+              },
             ),
           );
         }

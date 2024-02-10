@@ -377,30 +377,21 @@ class _CartPageState extends State<CartPage> {
                                                 print(
                                                     "Navigating to review Screen");
                                                 Get.to(
-                                                    () => OrderReviewPage(
-                                                          cartItems:
-                                                              cartController
-                                                                  .cartItems,
-                                                        ),
-                                                    duration: const Duration(
-                                                      milliseconds: 800,
-                                                    ),
-                                                    transition:
-                                                        Transition.rightToLeft);
+                                                  () => OrderReviewPage(
+                                                    cartItems: cartController
+                                                        .cartItems,
+                                                  ),
+                                                );
                                                 /*Get.to(OrderReviewPage(
                                                   cartItems:
                                                       cartController.cartItems,
                                                 ));*/
                                               } else {
                                                 Get.to(
-                                                    () => OrderPage(
-                                                          userId: userId,
-                                                        ),
-                                                    duration: const Duration(
-                                                      milliseconds: 800,
-                                                    ),
-                                                    transition:
-                                                        Transition.rightToLeft);
+                                                  () => OrderPage(
+                                                    userId: userId,
+                                                  ),
+                                                );
                                                 /* await  Get.to(() => OrderPage(
                                                       userId: userId,
                                                     ));*/
