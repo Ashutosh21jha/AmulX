@@ -117,7 +117,6 @@ class _SignUpPageState extends State<SignUpPage> {
         "student id": id,
         "userUid": uid,
         "currentOrder": null,
-        "verified": false
       });
     } on FirebaseException catch (e) {
       return false;
