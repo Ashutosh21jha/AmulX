@@ -1,23 +1,22 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:amul/Utils/AppColors.dart';
-import 'package:amul/screens/emailverification.dart';
-import 'package:amul/screens/forgetpassword.dart';
-import 'package:amul/screens/mainscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
+import '../Utils/AppColors.dart';
+import 'emailverification.dart';
+import 'mainscreen.dart';
 
-class signupPage extends StatefulWidget {
-  const signupPage({super.key});
+class SignUpPage extends StatefulWidget {
+  final VoidCallback showSigninPage;
+  const SignUpPage({super.key,required this.showSigninPage});
 
   @override
-  State<signupPage> createState() => _signupPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _signupPageState extends State<signupPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final db = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   bool isLoading = false;
@@ -28,7 +27,7 @@ class _signupPageState extends State<signupPage> {
   final _name = TextEditingController();
   late final appColors = Theme.of(context).extension<AppColors2>()!;
   late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
+  AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   // student id pattern
   RegExp pattern = RegExp(r'^\d{4}[A-Za-z]{3}\d{4}$');
@@ -72,11 +71,11 @@ class _signupPageState extends State<signupPage> {
 
   Future<void> signUp(
       {required String email,
-      required String password,
-      required String rollno,
-      required String name,
-      required BuildContext context,
-      required bool isLoading}) async {
+        required String password,
+        required String rollno,
+        required String name,
+        required BuildContext context,
+        required bool isLoading}) async {
     try {
       CollectionReference collection = db.collection('User');
       String documentId = email;
@@ -86,15 +85,15 @@ class _signupPageState extends State<signupPage> {
 
       if (existingDocument.exists) {
         Map<String, dynamic>? userData =
-            existingDocument.data() as Map<String, dynamic>?;
+        existingDocument.data() as Map<String, dynamic>?;
         if (userData != null &&
-                userData['name'].toString().toLowerCase() ==
-                    name.toLowerCase() &&
-                userData['student id'].toString().toLowerCase() ==
-                    rollno
-                        .toLowerCase() /*&&
+            userData['name'].toString().toLowerCase() ==
+                name.toLowerCase() &&
+            userData['student id'].toString().toLowerCase() ==
+                rollno
+                    .toLowerCase() /*&&
           userData['password'] == password*/
-            ) {
+        ) {
           signIn(
               context: context,
               email: email,
@@ -132,9 +131,9 @@ class _signupPageState extends State<signupPage> {
 
   Future<void> signIn(
       {required BuildContext context,
-      required String email,
-      required String password,
-      required bool isLoading}) async {
+        required String email,
+        required String password,
+        required bool isLoading}) async {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: password);
       print(auth.currentUser?.email);
@@ -142,7 +141,7 @@ class _signupPageState extends State<signupPage> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const Mainscreen()),
-        (route) => false,
+            (route) => false,
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -177,274 +176,232 @@ class _signupPageState extends State<signupPage> {
     super.initState();
     passwordVisible = true;
   }
-
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
     return Scaffold(
-      backgroundColor: appColors.scaffoldBackgroundColor,
+      backgroundColor: Colors.white12,
       body: SingleChildScrollView(
-        physics: const ScrollPhysics(),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 30,
+        child: Column(
+          children: [
+            Stack(children: [
+              SvgPicture.asset(
+                'assets/images/shape.svg',
+                color: const Color(0xff2846A8),
               ),
-              Center(
-                child: Text(
-                  "Welcome to",
-                  style: TextStyle(
-                    color:
-                        _isDarkMode ? Colors.white70 : const Color(0xFF929497),
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Center(
-                  child: SvgPicture.asset("assets/images/logo.svg",
-                      height: 40, width: 40)),
-              const SizedBox(height: 10),
-              Center(
-                child: Text(
-                  "   Before ordering, please login with your \n account",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color:
-                        _isDarkMode ? Colors.white60 : const Color(0xFF414042),
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Name",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: appColors.text2,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2, left: 2),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "can't be empty";
-                          }
-                          return null;
-                        },
-                        controller: _name,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          fillColor: appColors.cardColor,
-                          hintText: "e.g. userName",
-                          alignLabelWithHint: false,
-                          filled: true,
+              Positioned(
+                  top: 100,
+                  left: 20,
+                  child: SvgPicture.asset(
+                    'assets/images/logo.svg',
+                    width: 48,
+                    height: 48,
+                    color: Colors.white.withOpacity(0.75),
+                  )),
+            ]),
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Name",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Student ID",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: appColors.text2,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2, left: 2),
-                      child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "can't be empty";
-                          }
-                          if (!pattern.hasMatch(value)) {
-                            return "Please enter a valid Id";
-                          }
-                          return null;
-                        },
-                        controller: _id,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          fillColor: appColors.cardColor,
-                          hintText: "e.g. 2022UME2022",
-                          alignLabelWithHint: false,
-                          filled: true,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Nsut e-mail",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: appColors.text2,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2, left: 2),
-                      child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: _emailController,
-                        validator: _validteEmail,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          hintText: 'e.g. Student@nsut.ac.in',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          fillColor: appColors.cardColor,
-                          alignLabelWithHint: false,
-                          filled: true,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Password",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: appColors.text2,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2, left: 2),
-                      child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: _password,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "can't be empty";
-                          } else if (value.length < 6) {
-                            return "Password should be at least 6 characters";
-                          }
-                          return null;
-                        },
-                        obscureText: passwordVisible,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          fillColor: appColors.cardColor,
-                          hintText: "create new one or use exiting",
-                          suffixIconColor: const Color(0xFF2546A9),
-                          suffixIcon: InkWell(
-                            onTap: () {
-                              setState(
-                                () {
-                                  passwordVisible = !passwordVisible;
-                                },
-                              );
-                            },
-                            child: Icon(passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                          ),
-                          alignLabelWithHint: false,
-                          filled: true,
-                        ),
-                        keyboardType: TextInputType.visiblePassword,
-                        textInputAction: TextInputAction.done,
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: isLoading
-                          ? null
-                          : () async {
-                              setState(() {
-                                isLoading = true;
-                              });
-                              await _submitform();
-                              setState(() {
-                                isLoading = false;
-                              });
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2546A9),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(48),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        child: Center(
-                          child: isLoading
-                              ? const SizedBox(
-                                  height: 15,
-                                  width: 15,
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
-                                  ),
-                                )
-                              : const Text(
-                                  "Sign In",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Get.to(() => forgetPassword(),
-                            duration: const Duration(
-                              milliseconds: 800,
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 2, left: 2),
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "can't be empty";
+                            }
+                            return null;
+                          },
+                          controller: _name,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            transition: Transition.rightToLeft);
-                      },
-                      child: Center(
-                        child: Text(
-                          "Forget Password?",
-                          style: TextStyle(
-                            color: appColors.text2,
-                            fontSize: 14,
+                            fillColor: appColors.cardColor,
+                            hintText: "e.g. userName",
+                            alignLabelWithHint: false,
+                            filled: true,
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+                      const SizedBox(height: 10),
+                      Text(
+                        "Student ID",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 2, left: 2),
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "can't be empty";
+                            }
+                            if (!pattern.hasMatch(value)) {
+                              return "Please enter a valid Id";
+                            }
+                            return null;
+                          },
+                          controller: _id,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            fillColor: appColors.cardColor,
+                            hintText: "e.g. 2022UME2022",
+                            alignLabelWithHint: false,
+                            filled: true,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        "Nsut E-mail",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 2, left: 2),
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: _emailController,
+                          validator: _validteEmail,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                            hintText: 'e.g. Student@nsut.ac.in',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            fillColor: appColors.cardColor,
+                            alignLabelWithHint: false,
+                            filled: true,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        "Password",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 2, left: 2),
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: _password,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "can't be empty";
+                            } else if (value.length < 6) {
+                              return "Password should be at least 6 characters";
+                            }
+                            return null;
+                          },
+                          obscureText: passwordVisible,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            fillColor: appColors.cardColor,
+                            hintText: "Password",
+                            suffixIconColor: const Color(0xFF2546A9),
+                            suffixIcon: InkWell(
+                              onTap: () {
+                                setState(
+                                      () {
+                                    passwordVisible = !passwordVisible;
+                                  },
+                                );
+                              },
+                              child: Icon(passwordVisible
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,color: Colors.blue,),
+                            ),
+                            alignLabelWithHint: false,
+                            filled: true,
+                          ),
+                          keyboardType: TextInputType.visiblePassword,
+                          textInputAction: TextInputAction.done,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: isLoading
+                            ? null
+                            : () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await _submitform();
+                          setState(() {
+                            isLoading = false;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2546A9),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(48),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: Center(
+                            child: isLoading
+                                ? const SizedBox(
+                              height: 15,
+                              width: 15,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white),
+                              ),
+                            )
+                                : const Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Already have an account?',style: TextStyle(color: Colors.white),),
+                          TextButton(onPressed: widget.showSigninPage, child: Text('Sign In',style: TextStyle(color: Colors.blue),))
+                        ],
+                      )
+                    ],
+                  ),
+                )),
+          ],
         ),
       ),
     );

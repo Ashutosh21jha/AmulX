@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:amul/controllers/items_controller.dart';
+import 'package:amul/screens/login_or_register.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/signupPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -54,7 +55,7 @@ class _Splashscreenstate extends State<SplashScreen> {
       print(auth.currentUser?.uid);
       Get.off(() => Mainscreen());
     } else {
-      Get.off(() => signupPage());
+      Get.off(() => LoginOrRegister());
     }
   }
 

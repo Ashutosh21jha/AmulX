@@ -1,0 +1,361 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import '../Utils/AppColors.dart';
+import 'emailverification.dart';
+import 'forgetpassword.dart';
+import 'mainscreen.dart';
+
+class SignInPage extends StatefulWidget {
+  final VoidCallback showSignupPage;
+  const SignInPage({super.key,required this.showSignupPage});
+
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  final db = FirebaseFirestore.instance;
+  final auth = FirebaseAuth.instance;
+  bool isLoading = false;
+  bool passwordVisible = false;
+  final _id = TextEditingController();
+  final _emailController = TextEditingController();
+  final _password = TextEditingController();
+  final _name = TextEditingController();
+  late final appColors = Theme.of(context).extension<AppColors2>()!;
+  late final bool _isDarkMode =
+  AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
+
+  // student id pattern
+  RegExp pattern = RegExp(r'^\d{4}[A-Za-z]{3}\d{4}$');
+
+// email pattern
+  final emailPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@nsut\.ac\.in$');
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Future<void> _submitform() async {
+    if (_formKey.currentState!.validate()) {
+      String email = _emailController.text.toString();
+      String name = _name.text.toString();
+      String rollno = _id.text.toString();
+      String password = _password.text.toString();
+
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        await signUp(
+          email: email.toLowerCase(),
+          context: context,
+          name: name,
+          password: password,
+          rollno: rollno,
+          isLoading: isLoading,
+        );
+        setState(() {
+          isLoading = false;
+        });
+      } catch (e) {
+        print("Error during sign up: $e");
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> signUp(
+      {required String email,
+        required String password,
+        required String rollno,
+        required String name,
+        required BuildContext context,
+        required bool isLoading}) async {
+    try {
+      CollectionReference collection = db.collection('User');
+      String documentId = email;
+
+// Check if the document with the specified ID already exists
+      var existingDocument = await collection.doc(documentId).get();
+
+      if (existingDocument.exists) {
+        Map<String, dynamic>? userData =
+        existingDocument.data() as Map<String, dynamic>?;
+        if (userData != null &&
+            userData['name'].toString().toLowerCase() ==
+                name.toLowerCase() &&
+            userData['student id'].toString().toLowerCase() ==
+                rollno
+                    .toLowerCase() /*&&
+          userData['password'] == password*/
+        ) {
+          signIn(
+              context: context,
+              email: email,
+              password: password,
+              isLoading: isLoading);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Invalid info"),
+            ),
+          );
+        }
+      } else {
+        await auth.createUserWithEmailAndPassword(
+            email: email, password: password);
+        sendEmailVerification();
+        isLoading = false;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  Emailverification(email, name, rollno, password),
+            ));
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        throw Exception('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        throw Exception('The account already exists for that email.');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> signIn(
+      {required BuildContext context,
+        required String email,
+        required String password,
+        required bool isLoading}) async {
+    try {
+      await auth.signInWithEmailAndPassword(email: email, password: password);
+      print(auth.currentUser?.email);
+      isLoading = false;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Mainscreen()),
+            (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw Exception('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Wrong password"),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> sendEmailVerification() async {
+    await auth.currentUser?.sendEmailVerification();
+    print("Verification email sent successfully");
+  }
+
+  String? _validteEmail(value) {
+    if (value!.isEmpty) {
+      return "can't be empty";
+    }
+    if (!emailPattern.hasMatch(value)) {
+      return "Please enter a valid email";
+    }
+    return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    passwordVisible = true;
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white12,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Stack(children: [
+                SvgPicture.asset(
+                  'assets/images/shape.svg',
+                  color: const Color(0xff2846A8),
+                ),
+                Positioned(
+                    top: 100,
+                    left: 20,
+                    child: SvgPicture.asset(
+                      'assets/images/logo.svg',
+                      width: 48,
+                      height: 48,
+                      color: Colors.white.withOpacity(0.75),
+                    )),
+              ]),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Nsut E-mail",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 2, left: 2),
+                          child: TextFormField(
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            controller: _emailController,
+                            validator: _validteEmail,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              hintText: 'e.g. Student@nsut.ac.in',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              fillColor: appColors.cardColor,
+                              alignLabelWithHint: false,
+                              filled: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "Password",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 2, left: 2),
+                          child: TextFormField(
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            controller: _password,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "can't be empty";
+                              } else if (value.length < 6) {
+                                return "Password should be at least 6 characters";
+                              }
+                              return null;
+                            },
+                            obscureText: passwordVisible,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              fillColor: appColors.cardColor,
+                              hintText: "Password",
+                              suffixIconColor: const Color(0xFF2546A9),
+                              suffixIcon: InkWell(
+                                onTap: () {
+                                  setState(
+                                        () {
+                                      passwordVisible = !passwordVisible;
+                                    },
+                                  );
+                                },
+                                child: Icon(passwordVisible
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,color: Colors.blue,),
+
+                              ),
+                              alignLabelWithHint: false,
+                              filled: true,
+                            ),
+                            keyboardType: TextInputType.visiblePassword,
+                            textInputAction: TextInputAction.done,
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: GestureDetector(
+                            onTap: (){
+                              Get.to(() => forgetPassword(),
+                                  duration: const Duration(
+                                    milliseconds: 800,
+                                  ),
+                                  transition: Transition.rightToLeft);
+                            },
+                              child: Text("Forgot Password?",style: TextStyle(color: Colors.blue,),)),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: isLoading
+                              ? null
+                              : () async {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            await _submitform();
+                            setState(() {
+                              isLoading = false;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2546A9),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(48),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child: Center(
+                              child: isLoading
+                                  ? const SizedBox(
+                                height: 15,
+                                width: 15,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              )
+                                  : const Text(
+                                "Sign In",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Create an account',style: TextStyle(color: Colors.white),),
+                            TextButton(onPressed: widget.showSignupPage, child: Text('Sign Up',style: TextStyle(color: Colors.blue),))
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+              ),
+            ],
+              ),
+                  )),
+    );
+  }
+}
