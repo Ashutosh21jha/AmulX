@@ -1,19 +1,23 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/screens/auth/auth_input_widget.dart';
+import 'package:amul/screens/auth/devcomm_logo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-class forgetPassword extends StatefulWidget {
-  const forgetPassword({super.key});
+class ForgetPasswordPage extends StatefulWidget {
+  const ForgetPasswordPage({super.key});
 
   @override
-  State<forgetPassword> createState() => _forgetPasswordState();
+  State<ForgetPasswordPage> createState() => _forgetPasswordState();
 }
 
-class _forgetPasswordState extends State<forgetPassword> {
+class _forgetPasswordState extends State<ForgetPasswordPage> {
   final db = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   final _emailController = TextEditingController();
@@ -114,125 +118,108 @@ class _forgetPasswordState extends State<forgetPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.blue,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: appColors.scaffoldBackgroundColor,
+          ),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 30,
-              ),
-              const Center(
-                child: Text(
-                  "Welcome to",
-                  style: TextStyle(
-                    color: Color(0xFF929497),
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Center(child: SvgPicture.asset("assets/images/logo.svg",height: 40, width: 40)),
-              const SizedBox(height: 10),
-              const Center(
-                child: Text(
-                  "   Before ordering, please login with your \n account",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF414042),
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Nsut e-mail",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: appColors.text2,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2, left: 2),
-                      child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: _emailController,
-                        validator: _validteEmail,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          hintText: 'e.g. Student@nsut.ac.in',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          fillColor: appColors.cardColor,
-                          alignLabelWithHint: false,
-                          filled: true,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2546A9),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              48), // Set the border radius
-                        ),
-                      ),
-                      onPressed: () => isLoading ? null : _submitform(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        child: Center(
-                          child: isLoading
-                              ? const SizedBox(
-                                  height: 15,
-                                  width: 15,
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
-                                  ),
-                                )
-                              : const Text(
-                                  "Reset Password",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 350),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Image.asset(
-                    'assets/images/devcommlogo_noBG.png',
-                    height: 50,
-                    width: 50,
-                  ),
-                  Text(
-                    "Powered by\nDevComm",
-                    style: TextStyle(fontSize: 10),
+                  Stack(children: [
+                    SvgPicture.asset('assets/images/shape.svg',
+                        color: AppColors.blue),
+                    Container(
+                      height: 10,
+                      width: double.infinity,
+                      color: AppColors.blue,
+                    ),
+                    Positioned(
+                        top: 100,
+                        left: 20,
+                        child: SvgPicture.asset(
+                          'assets/images/logo.svg',
+                          width: 48,
+                          height: 48,
+                          color: appColors.scaffoldBackgroundColor,
+                        )),
+                  ]),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          AuthInputWidget(
+                            hintText: "e.g, student@nsut.ac.in",
+                            label: "Email",
+                            icon: const Icon(
+                              Icons.email,
+                              color: AppColors.blue,
+                            ),
+                            controller: _emailController,
+                            validator: _validteEmail,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    48), // Set the border radius
+                              ),
+                            ),
+                            onPressed: () => isLoading ? null : _submitform(),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: Center(
+                                child: isLoading
+                                    ? const SizedBox(
+                                        height: 15,
+                                        width: 15,
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
+                                        ),
+                                      )
+                                    : const Text(
+                                        "Reset Password",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+            const DevcommLogo()
+          ],
         ),
       ),
     );

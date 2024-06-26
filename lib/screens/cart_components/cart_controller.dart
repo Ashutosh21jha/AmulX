@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:amul/screens/cart_components/cartItem_model.dart';
-import 'package:amul/screens/emailverification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+
+final _auth = FirebaseAuth.instance;
+final _db = FirebaseFirestore.instance;
 
 class CartController extends GetxController {
   static CartController get to => Get.put(CartController());
@@ -13,10 +16,9 @@ class CartController extends GetxController {
   bool isCartEmpty = false;
   bool currentOrder = false;
 
-  final db = FirebaseFirestore.instance;
   late Timer _timer;
 
-  String get userId => auth.currentUser?.email ?? '';
+  String get userId => _auth.currentUser?.email ?? '';
 
   int calculateItemCount(List<CartItem> cartItems) {
     return cartItems
@@ -40,7 +42,7 @@ class CartController extends GetxController {
   Future<void> addItem(CartItem item) async {
     try {
       final userCartCollection =
-          db.collection('User').doc(userId).collection('cart').doc(item.name);
+          _db.collection('User').doc(userId).collection('cart').doc(item.name);
 
       // Check if the item already exists
       // final cartItemDoc = await userCartCollection
@@ -82,9 +84,9 @@ class CartController extends GetxController {
   Future<void> updateStockInMenu(String itemName, int changeAmount) async {
     try {
       final availableCollection =
-          db.collection('menu').doc('today menu').collection('available');
+          _db.collection('menu').doc('today menu').collection('available');
 
-      await db.runTransaction((transaction) async {
+      await _db.runTransaction((transaction) async {
         final itemDoc = await availableCollection.doc(itemName).get();
 
         if (itemDoc.exists) {
@@ -112,7 +114,7 @@ class CartController extends GetxController {
   Future<void> removeItem(CartItem item) async {
     try {
       final userCartCollection =
-          db.collection('User').doc(userId).collection('cart');
+          _db.collection('User').doc(userId).collection('cart');
 
       // Check if the item exists
       final cartItemDoc = await userCartCollection
@@ -154,7 +156,7 @@ class CartController extends GetxController {
   Future<void> updateItemQuantity(CartItem item) async {
     try {
       final userCartCollection =
-          db.collection('User').doc(userId).collection('cart');
+          _db.collection('User').doc(userId).collection('cart');
 
       // Check if the item exists
       final cartItemDoc = await userCartCollection
@@ -185,11 +187,11 @@ class CartController extends GetxController {
   Future<void> fetchCart() async {
     try {
       DocumentSnapshot<Map<String, dynamic>> cartref =
-          await db.collection('User').doc(userId).get();
+          await _db.collection('User').doc(userId).get();
 
       if (cartref.exists) {
         QuerySnapshot<Map<String, dynamic>> cartdoc =
-            await db.collection('User').doc(userId).collection('cart').get();
+            await _db.collection('User').doc(userId).collection('cart').get();
 
         /*final cartRef = user.collection('cart');
           final cart = await cartRef.get();
@@ -229,15 +231,15 @@ class CartController extends GetxController {
 
   Future<void> deleteCart() async {
     try {
-      await db
+      await _db
           .collection('User')
           .doc(userId)
           .collection('cart')
           .get()
           .then((querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
+        for (var doc in querySnapshot.docs) {
           doc.reference.delete();
-        });
+        }
       });
       print("Cart deleted successfully!");
     } catch (e) {
@@ -247,9 +249,9 @@ class CartController extends GetxController {
 
   Future<void> updateStockOnPay(List<CartItem> cartItems) async {
     try {
-      await db.runTransaction((transaction) async {
+      await _db.runTransaction((transaction) async {
         final availableCollection =
-            db.collection('menu').doc('today menu').collection('available');
+            _db.collection('menu').doc('today menu').collection('available');
 
         for (final cartItem in cartItems) {
           final itemDoc = await availableCollection.doc(cartItem.name).get();
@@ -286,9 +288,9 @@ class CartController extends GetxController {
 
 Future<void> addBackStock(List<CartItem> cartItems) async {
   try {
-    await db.runTransaction((transaction) async {
+    await _db.runTransaction((transaction) async {
       final availableCollection =
-          db.collection('menu').doc('today menu').collection('available');
+          _db.collection('menu').doc('today menu').collection('available');
 
       for (final cartItem in cartItems) {
         final itemDoc = await availableCollection.doc(cartItem.name).get();
@@ -313,9 +315,9 @@ Future<void> addBackStock(List<CartItem> cartItems) async {
 
 Future<void> updateStockOnPay(List<CartItem> cartItems) async {
   try {
-    await db.runTransaction((transaction) async {
+    await _db.runTransaction((transaction) async {
       final availableCollection =
-          db.collection('menu').doc('today menu').collection('available');
+          _db.collection('menu').doc('today menu').collection('available');
 
       for (final cartItem in cartItems) {
         final itemDoc = await availableCollection.doc(cartItem.name).get();

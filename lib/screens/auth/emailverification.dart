@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:amul/screens/auth/auth_snackbar.dart';
+import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,84 +8,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
-final auth = FirebaseAuth.instance;
-final db = FirebaseFirestore.instance;
-late Timer _timer;
-
-Future<void> resendlink() async {
-  await auth.currentUser?.sendEmailVerification();
-  print("re-Verification email sent successfully");
-}
-
-Future<void> signIn(BuildContext context, String email, String name,
-    String s_id, String password) async {
-  if (auth.currentUser?.emailVerified ?? false) {
-    auth.createUserWithEmailAndPassword(email: email, password: password);
-    String? userUid = auth.currentUser?.uid;
-    print(auth.currentUser?.email);
-
-    await db.collection('User').doc(email).set({
-      "name": name,
-      "student id": s_id,
-      "userUid": userUid,
-      "currentOrder": null,
-    }).catchError((error) {
-      print("Error adding data: $error");
-    });
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const Mainscreen()),
-        (route) => false);
-  }
-}
-
-Future<void> deleteUserAfterDelay() async {
-  await Future.delayed(Duration(seconds: 180));
-
-  try {
-    if (auth.currentUser?.emailVerified == false ||
-        auth.currentUser?.emailVerified == null) {
-      // Delete the user
-      await auth.currentUser?.delete();
-      print("User deleted successfully.");
-      await auth.signOut();
-    } else {
-      print("User is verified. No deletion needed.");
-    }
-  } catch (e) {
-    print("Error deleting user: $e");
-  }
-}
-
-Future<void> autoredirect(BuildContext context, String loginMail, String name,
-    String s_id, String password) async {
-  _timer = Timer.periodic(Duration(seconds: 3), (timer) {
-    auth.currentUser?.reload();
-    if (auth.currentUser?.emailVerified ?? false) {
-      timer.cancel();
-      signIn(context, loginMail, name, s_id, password);
-    } else {
-      print("email is not verified yet!");
-    }
-  });
-}
-
 class Emailverification extends StatefulWidget {
-  final String loginMail, name, s_id, password;
+  final String email;
+  final bool returnToLastScreen;
 
-  Emailverification(this.loginMail, this.name, this.s_id, this.password);
+  const Emailverification(this.email,
+      {this.returnToLastScreen = true, super.key});
 
   @override
   State<Emailverification> createState() => _EmailverificationState();
 }
 
 class _EmailverificationState extends State<Emailverification> {
+  final auth = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
+
   @override
   void initState() {
     super.initState();
-    autoredirect(
-        context, widget.loginMail, widget.name, widget.s_id, widget.password);
-    deleteUserAfterDelay();
+    autoredirect();
+  }
+
+  Future<void> resendlink() async {
+    await auth.currentUser?.sendEmailVerification();
+    showAuthSuccessSnackBar("", "Email sent successfully!");
+  }
+
+  Future<void> autoredirect() async {
+    Timer.periodic(const Duration(seconds: 3), (timer) async {
+      await auth.currentUser?.reload();
+      if (auth.currentUser?.emailVerified ?? false) {
+        timer.cancel();
+        signIn();
+      }
+    });
+  }
+
+  Future<void> signIn() async {
+    if (auth.currentUser?.emailVerified ?? false) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const Mainscreen()),
+          (route) => false);
+    }
   }
 
   @override
@@ -129,7 +96,7 @@ class _EmailverificationState extends State<Emailverification> {
           ),
           Center(
             child: Text(
-              widget.loginMail,
+              widget.email,
               style: const TextStyle(
                 fontSize: 12,
                 color: Color(0xFF2546A9),
@@ -167,7 +134,14 @@ class _EmailverificationState extends State<Emailverification> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pop(context);
+              if (widget.returnToLastScreen) {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignInPage()),
+                    (route) => false);
+              }
             },
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -244,9 +218,12 @@ class _EmailverificationState extends State<Emailverification> {
                 ),
               ),
             ),
-            *//*InkWell(
+            */ /*InkWell(
               onTap: () {
-                signIn(context, widget.loginMail, widget.name, widget.s_id,
+                signIn(context, widget.email, widget.name, widget.id,
+
+
+
                     widget.password);
               },
               child: Container(
@@ -273,7 +250,7 @@ class _EmailverificationState extends State<Emailverification> {
                   ),
                 ),
               ),
-            ),*//*
+            ),*/ /*
           ],
         ),
       ),*/

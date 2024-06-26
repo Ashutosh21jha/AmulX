@@ -1,7 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
-import 'package:amul/screens/login_or_register.dart';
-import 'package:amul/screens/signupPage.dart';
+import 'package:amul/screens/auth/login_page.dart';
+import 'package:amul/screens/auth/signup_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -459,7 +459,7 @@ class _ProfileState extends State<Profile> {
                           implement: true,
                           text: "Logout",
                           bottom: true,
-                          screen: LoginOrRegister(),
+                          screen: SignInPage(),
                           iconColor: Color(0xFFF57878),
                           textColor: Color(0xFFF46363),
                         ),

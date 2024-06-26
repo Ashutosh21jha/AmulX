@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:amul/controllers/items_controller.dart';
-import 'package:amul/screens/login_or_register.dart';
+import 'package:amul/screens/auth/emailverification.dart';
+import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/mainscreen.dart';
-import 'package:amul/screens/signupPage.dart';
+import 'package:amul/screens/auth/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +14,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 final auth = FirebaseAuth.instance;
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key});
+  const SplashScreen({super.key});
 
   @override
   _Splashscreenstate createState() => _Splashscreenstate();
@@ -52,10 +53,16 @@ class _Splashscreenstate extends State<SplashScreen> {
 
   void _navigateToNextScreen() {
     if (auth.currentUser != null) {
-      print(auth.currentUser?.uid);
-      Get.off(() => Mainscreen());
+      if (auth.currentUser?.emailVerified ?? false) {
+        Get.off(() => const Mainscreen());
+      }
+
+      Get.off(() => Emailverification(
+            auth.currentUser?.email ?? "",
+            returnToLastScreen: false,
+          ));
     } else {
-      Get.off(() => LoginOrRegister());
+      Get.off(() => const SignInPage());
     }
   }
 
