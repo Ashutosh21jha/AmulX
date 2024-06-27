@@ -27,7 +27,7 @@ class UserController extends GetxController {
     Map<String, dynamic>? userData = doc.data();
 
     if (userData != null) {
-      userName.value = userData['name'] ?? '';
+      userName.value = (userData['name'] as String).capitalizeFirst ?? '';
       studentId.value = userData['student id'] ?? '';
       email.value = userData['email'] ?? '';
       imageUrl.value = userData['imageUrl'] ?? '';

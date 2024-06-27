@@ -72,66 +72,29 @@ class _ProfileCard2State extends State<ProfileCard2> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 60,
-            height: 60,
-            child: Stack(
-              children: [
-                Positioned(
-                    left: 0,
-                    top: 0,
-                    child: Obx(
-                      () {
-                        if (userController.imageUrl.value.isNotEmpty) {
-                          return Stack(
-                            children: [
-                              ClipOval(
-                                child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    height: 64,
-                                    width: 64,
-                                    imageUrl: userController.imageUrl.value,
-                                    cacheKey: userController.imageUrl.value),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  width: 22,
-                                  height: 22,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.yellow,
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      // pickImage();
-                                    },
-                                    child: const Icon(
-                                      Icons.edit,
-                                      color: Colors.white,
-                                      size: 12,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return const SizedBox(
-                            height: 60,
-                            width: 60,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.blue,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    )),
-              ],
-            ),
+          Obx(
+            () {
+              if (userController.imageUrl.value.isNotEmpty) {
+                return ClipOval(
+                  child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      height: 64,
+                      width: 64,
+                      imageUrl: userController.imageUrl.value,
+                      cacheKey: userController.imageUrl.value),
+                );
+              } else {
+                return const SizedBox(
+                  height: 60,
+                  width: 60,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.blue,
+                    ),
+                  ),
+                );
+              }
+            },
           ),
           const SizedBox(width: 16),
           Column(
