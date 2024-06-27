@@ -1,7 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/screens/auth/auth_input_widget.dart';
 import 'package:amul/screens/auth/auth_snackbar.dart';
-import 'package:amul/screens/auth/devcomm_logo.dart';
+import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/auth/signup_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

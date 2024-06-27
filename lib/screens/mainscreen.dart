@@ -1,9 +1,10 @@
+import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/cartPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'home.dart';
-
 
 class Mainscreen extends StatefulWidget {
   const Mainscreen({super.key});
@@ -13,9 +14,17 @@ class Mainscreen extends StatefulWidget {
 }
 
 class _MainscreenState extends State<Mainscreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final userController = Get.find<UserController>();
+    userController.getUserData();
+  }
+
   int myindex = 0;
   final PageController _pageController = PageController(initialPage: 0);
-  List<Widget> widgetList =  [
+  List<Widget> widgetList = [
     const HomePage(),
     CartPage(false),
     const Profile(),

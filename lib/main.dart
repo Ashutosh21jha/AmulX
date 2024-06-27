@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/darkTheme.dart';
 import 'package:amul/Utils/lightTheme.dart';
+import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/splashscreen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseMessaging.instance.requestPermission();
+
+  final UserController userController = Get.put(UserController());
 
   runApp(const MyApp());
 }

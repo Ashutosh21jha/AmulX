@@ -1,23 +1,20 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/auth/login_page.dart';
-import 'package:amul/screens/auth/signup_page.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:amul/screens/components/devcomm_logo.dart';
+import 'package:amul/screens/profile_screens/profile_card2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'profile_screens/about.dart';
 import 'profile_screens/terms.dart';
-import 'profile_screens/privacy.dart';
 import 'profile_screens/editprofile.dart';
 import 'profile_screens/faq.dart';
-import 'dart:io';
 import 'profile_screens/profile_card.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 final auth = FirebaseAuth.instance;
 final db = FirebaseFirestore.instance;
@@ -61,107 +58,12 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String name = "";
   String s_id = "";
-  RxString? imageUrl = ''.obs;
+
   late AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  late bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   @override
   void initState() {
     super.initState();
-    receivedata();
-    getProfilePicture();
-  }
-
-  Future<void> uploadImageToFirebase(XFile image) async {
-    File imageFile = File(image.path);
-
-    try {
-      await FirebaseStorage.instance
-          .ref('user/pp_$userId.jpg')
-          .putFile(imageFile);
-      setState(() {});
-    } on FirebaseException catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
-        source: ImageSource.gallery, maxWidth: 500, maxHeight: 500);
-
-    if (image != null) {
-      uploadImageToFirebase(image);
-    }
-  }
-
-  Future<void> receivedata() async {
-    final docRef = await db.collection("User").doc(userId).get();
-    Map<String, dynamic>? userData = docRef.data();
-    if (userData != null) {
-      if (mounted) {
-        setState(() {
-          name = userData['name'] ?? '';
-          s_id = userData['student id'] ?? '';
-        });
-      }
-    }
-  }
-
-  Future<void> getProfilePicture() async {
-    FirebaseStorage storage = FirebaseStorage.instance;
-
-    Directory appDir = await getApplicationDocumentsDirectory();
-
-    final cacheFileDir = Uri.parse(appDir.path).resolve('urlFile.txt');
-    File imageFile = File(cacheFileDir.toFilePath());
-
-    if (await imageFile.exists()) {
-      imageUrl!.value = await imageFile.readAsString();
-    }
-
-    String downloadURL;
-    Reference? ref;
-    try {
-      ref = storage.ref('user/pp_$userId.jpg');
-
-      downloadURL = await ref.getDownloadURL();
-    } catch (_) {
-      ref = storage.ref('user/default_user.jpg');
-      downloadURL = await ref.getDownloadURL();
-    }
-    // var metadata = await ref.getMetadata().onError((error, stackTrace) {
-    //   return Future.value(null);
-    // });
-
-    // try {
-    //   var metadata = await ref.getData().onError((error, stackTrace) => null);
-    // } catch (_) {
-    //   print('object');
-    // }
-
-    saveUrlLocally(downloadURL);
-    imageUrl!.value = downloadURL;
-
-    // if (metadata != null) {
-    //   String downloadURL = await ref.getDownloadURL();
-    //   yield NetworkImage(downloadURL);
-    // } else {
-    //   yield const AssetImage('assets/images/avatar.png');
-    // }
-
-    // await Future.delayed(const Duration(seconds: 2));
-  }
-
-  Future<void> saveUrlLocally(String urlOfImage) async {
-    Directory appDir = await getApplicationDocumentsDirectory();
-
-    final urlFilePath = Uri.parse(appDir.path).resolve('urlFile.txt');
-    print(urlFilePath.toString());
-    final file = File(urlFilePath.toFilePath());
-
-    file.writeAsString(urlOfImage);
   }
 
   @override
@@ -173,61 +75,20 @@ class _ProfileState extends State<Profile> {
       ),
     );
     return Scaffold(
-      body: Column(
+      body: Stack(
+        alignment: Alignment.center,
         children: [
-          Container(
-            height: 60,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Color(0xFF00084B),
-                  Color(0xFF2E55C0),
-                  Color(0xFF148BFA),
-                ],
-              ),
-              /* borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(80),
-                bottomRight: Radius.circular(80),
-              ),*/
-            ),
-          ),
-          Container(
-            height: 75,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Color(0xFF00084B),
-                  Color(0xFF2E55C0),
-                  Color(0xFF148BFA),
-                ],
-              ),
-              /* borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(80),
-                bottomRight: Radius.circular(80),
-              ),*/
-            ),
-            child: const Center(
-              child: Text(
-                'My Profile',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontFamily: 'Epilogue',
-                  fontWeight: FontWeight.w700,
-                  height: 0.06,
-                ),
-              ),
-            ),
-          ),
-          Stack(
+          Column(
             children: [
               Container(
-                height: 45,
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.center,
+                height: 140,
                 decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
@@ -237,333 +98,78 @@ class _ProfileState extends State<Profile> {
                       Color(0xFF148BFA),
                     ],
                   ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.elliptical(40, 20),
-                    bottomRight: Radius.elliptical(40, 20),
+                ),
+                child: const Text('My Profile',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontFamily: 'Epilogue',
+                      fontWeight: FontWeight.w700,
+                      height: 0.06,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 48, 0, 16),
+                child: TextButton.icon(
+                  onPressed: () async {
+                    Get.changeTheme(
+                        Get.isDarkMode ? ThemeData.light() : ThemeData.dark());
+                  },
+                  label: Text(
+                    Get.isDarkMode ? "Light Mode" : "Dark Mode",
+                    style: TextStyle(
+                        color: Get.isDarkMode ? Colors.white70 : Colors.black),
+                  ),
+                  icon: Icon(
+                    Get.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                    color: Get.isDarkMode ? Colors.white70 : Colors.black,
                   ),
                 ),
               ),
-              Align(
-                child: SingleChildScrollView(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          // width: MediaQuery.of(context).size.width * .6,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 8),
-                          decoration: ShapeDecoration(
-                            color: _isDarkMode
-                                ? Colors.grey.shade200
-                                : Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            shadows: _shadows,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 60,
-                                height: 60,
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                        left: 0,
-                                        top: 0,
-                                        child: Obx(
-                                          () {
-                                            if (imageUrl!.value.isNotEmpty) {
-                                              return Stack(
-                                                children: [
-                                                  Container(
-                                                    width: 60,
-                                                    height: 60,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      image: DecorationImage(
-                                                        image:
-                                                            CachedNetworkImageProvider(
-                                                                imageUrl!
-                                                                    .value),
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    bottom: 0,
-                                                    right: 0,
-                                                    child: Container(
-                                                      width: 22,
-                                                      height: 22,
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: AppColors.yellow,
-                                                      ),
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          pickImage();
-                                                        },
-                                                        child: const Icon(
-                                                          Icons.edit,
-                                                          color: Colors.white,
-                                                          size: 12,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            } else {
-                                              return const SizedBox(
-                                                height: 60,
-                                                width: 60,
-                                                child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: AppColors.blue,
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          },
-                                        )),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              StreamBuilder(
-                                  stream: db
-                                      .collection("User")
-                                      .doc(userId)
-                                      .snapshots(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    if (snapshot.data == null) {
-                                      return const Center(
-                                          child: CircularProgressIndicator());
-                                    } else {
-                                      return Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            snapshot.data['name'],
-                                            style: const TextStyle(
-                                              color: Color(0xFF414042),
-                                              fontSize: 18,
-                                              fontFamily: 'Epilogue',
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            snapshot.data['student id'],
-                                            style: const TextStyle(
-                                              color: Color(0xFF57585B),
-                                              fontSize: 14,
-                                              fontFamily: 'Epilogue',
-                                              fontWeight: FontWeight.w400,
-                                              height: 0.07,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  }),
-                            ],
-                          ),
-                        ),
-                        TextButton.icon(
-                          onPressed: () async {
-                            AdaptiveTheme.of(context)
-                                .toggleThemeMode(useSystem: false);
-                            print(AdaptiveTheme.of(context).brightness);
-                            setState(() {
-                              _isDarkMode = !_isDarkMode;
-                              appColors = AdaptiveTheme.of(context)
-                                  .theme
-                                  .extension<AppColors2>()!;
-                            });
-                          },
-                          label: Text(
-                            _isDarkMode ? "Dark Mode" : "Light Mode",
-                            style: TextStyle(
-                                color: _isDarkMode
-                                    ? Colors.white70
-                                    : Colors.black),
-                          ),
-                          icon: Icon(
-                            _isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                            color: _isDarkMode ? Colors.white70 : Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        // PROFILE
-                        ProfileCard(
-                            icon: Icons.person,
-                            text: "Profile",
-                            implement: false,
-                            textColor: appColors.whiteText,
-                            top: true,
-                            screen: EditProfile(
-                              parentImageUrl: imageUrl!,
-                            ),
-                            iconColor: const Color(0xFFA287F8)),
-                        // const SizedBox(height: 4),
-                        // ABOUT US
-                        ProfileCard(
-                            icon: Icons.info_outline,
-                            text: "About Us",
-                            implement: false,
-                            textColor: appColors.whiteText,
-                            screen: const About(),
-                            iconColor: const Color(0xFF02B9F0)),
-                        // const SizedBox(height: 4),
-                        // FAQ
-                        ProfileCard(
-                            icon: Icons.question_answer_outlined,
-                            text: "FAQ",
-                            implement: false,
-                            textColor: appColors.whiteText,
-                            screen: Faq(),
-                            iconColor: const Color(0xFFFC6DBB)),
-                        // const SizedBox(height: 4),
-                        // TERMS AND CONDITION
-                        ProfileCard(
-                            icon: Icons.file_copy,
-                            implement: false,
-                            text: "Terms and Conditions",
-                            textColor: appColors.whiteText,
-                            screen: const Terms(),
-                            iconColor: const Color(0xFF3BA889)),
-                        // const SizedBox(height: 4),
-                        // PRIVACY POLICY
-                        // ProfileCard(
-                        //     icon: Icons.shield_outlined,
-                        //     text: "Privacy Policy",
-                        //     textColor: appColors.whiteText,
-                        //     screen: const Privacy(),
-                        //     iconColor: const Color(0xFFFBBC04)),
-                        // const SizedBox(height: 4),
-                        // LOGOUT
-                        const ProfileCard(
-                          icon: Icons.logout,
-                          implement: true,
-                          text: "Logout",
-                          bottom: true,
-                          screen: SignInPage(),
-                          iconColor: Color(0xFFF57878),
-                          textColor: Color(0xFFF46363),
-                        ),
-                        // InkWell(
-                        //   onTap: () => signOut().then((value) {
-                        //     Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //           builder: (context) => const signupPage(),
-                        //         ));
-                        //   }),
-                        //   child: Container(
-                        //     width: 327,
-                        //     padding: _paddingButtons,
-                        //     decoration: ShapeDecoration(
-                        //       color: Colors.white,
-                        //       shape: RoundedRectangleBorder(
-                        //         side: const BorderSide(
-                        //             width: 1, color: Color(0xFFF3F3F3)),
-                        //         borderRadius: BorderRadius.circular(12),
-                        //       ),
-                        //       shadows: _shadows,
-                        //     ),
-                        //     child: Row(
-                        //       mainAxisSize: MainAxisSize.min,
-                        //       mainAxisAlignment: MainAxisAlignment.center,
-                        //       crossAxisAlignment: CrossAxisAlignment.center,
-                        //       children: [
-                        //         Container(
-                        //           padding: const EdgeInsets.all(4),
-                        //           decoration: ShapeDecoration(
-                        //             color: const Color(0xFFF57878),
-                        //             shape: RoundedRectangleBorder(
-                        //                 borderRadius: BorderRadius.circular(8)),
-                        //           ),
-                        //           child: Row(
-                        //             mainAxisSize: MainAxisSize.min,
-                        //             mainAxisAlignment: MainAxisAlignment.start,
-                        //             crossAxisAlignment:
-                        //                 CrossAxisAlignment.start,
-                        //             children: [
-                        //               Row(
-                        //                 mainAxisSize: MainAxisSize.min,
-                        //                 mainAxisAlignment:
-                        //                     MainAxisAlignment.center,
-                        //                 crossAxisAlignment:
-                        //                     CrossAxisAlignment.center,
-                        //                 children: [
-                        //                   Container(
-                        //                     width: 24,
-                        //                     height: 24,
-                        //                     clipBehavior: Clip.antiAlias,
-                        //                     decoration: const BoxDecoration(),
-                        //                     child: const Icon(
-                        //                       Icons.logout,
-                        //                       color: Colors.white,
-                        //                       size: 20,
-                        //                     ),
-                        //                   ),
-                        //                 ],
-                        //               ),
-                        //             ],
-                        //           ),
-                        //         ),
-                        //         const SizedBox(width: 16),
-                        //         const Expanded(
-                        //           child: SizedBox(
-                        //             child: Text(
-                        //               'Logout',
-                        //               style: TextStyle(
-                        //                 color: Color(0xFFF46363),
-                        //                 fontSize: 16,
-                        //                 fontFamily: 'Epilogue',
-                        //                 fontWeight: FontWeight.w400,
-                        //                 height: 0.08,
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ),
-
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/images/devcommlogo_noBG.png',
-                              height: 50,
-                              width: 50,
-                            ),
-                            const Text(
-                              "Powered by\nDevComm",
-                              style: TextStyle(fontSize: 10),
-                            ),
-                          ],
-                        ),
-                      ]),
-                ),
+              ProfileCard(
+                  icon: Icons.person,
+                  text: "Profile",
+                  implement: false,
+                  textColor: appColors.whiteText,
+                  top: true,
+                  screen: EditProfile(
+                    parentImageUrl: RxString("initial"),
+                  ),
+                  iconColor: const Color(0xFFA287F8)),
+              ProfileCard(
+                  icon: Icons.info_outline,
+                  text: "About Us",
+                  implement: false,
+                  textColor: appColors.whiteText,
+                  screen: const About(),
+                  iconColor: const Color(0xFF02B9F0)),
+              ProfileCard(
+                  icon: Icons.question_answer_outlined,
+                  text: "FAQ",
+                  implement: false,
+                  textColor: appColors.whiteText,
+                  screen: Faq(),
+                  iconColor: const Color(0xFFFC6DBB)),
+              ProfileCard(
+                  icon: Icons.file_copy,
+                  implement: false,
+                  text: "Terms and Conditions",
+                  textColor: appColors.whiteText,
+                  screen: const Terms(),
+                  iconColor: const Color(0xFF3BA889)),
+              const ProfileCard(
+                icon: Icons.logout,
+                implement: true,
+                text: "Logout",
+                bottom: true,
+                screen: SignInPage(),
+                iconColor: Color(0xFFF57878),
+                textColor: Color(0xFFF46363),
               ),
             ],
-          )
+          ),
+          const Positioned(top: 100, child: ProfileCard2()),
+          const DevcommLogo()
         ],
       ),
     );
