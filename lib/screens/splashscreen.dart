@@ -55,12 +55,12 @@ class _Splashscreenstate extends State<SplashScreen> {
     if (auth.currentUser != null) {
       if (auth.currentUser?.emailVerified ?? false) {
         Get.off(() => const Mainscreen());
+      } else {
+        Get.off(() => Emailverification(
+              auth.currentUser?.email ?? "",
+              returnToLastScreen: false,
+            ));
       }
-
-      Get.off(() => Emailverification(
-            auth.currentUser?.email ?? "",
-            returnToLastScreen: false,
-          ));
     } else {
       Get.off(() => const SignInPage());
     }
