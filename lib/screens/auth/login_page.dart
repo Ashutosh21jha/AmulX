@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/screens/auth/auth_input_widget.dart';
 import 'package:amul/screens/auth/auth_snackbar.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
@@ -10,7 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../Utils/AppColors.dart';
 import 'emailverification.dart';
-import '../forgetpassword.dart';
+import 'forgetpassword.dart';
 import '../mainscreen.dart';
 
 enum SignInState {
@@ -40,8 +39,6 @@ class _SignInPageState extends State<SignInPage> {
   final _emailController = TextEditingController();
 
   late final appColors = Theme.of(context).extension<AppColors2>()!;
-  late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   RegExp idRegex = RegExp(r'^\d{4}[A-Za-z]{3}\d{4}$');
   final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@nsut\.ac\.in$');
@@ -161,7 +158,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appColors.scaffoldBackgroundColor,
+      backgroundColor: appColors.backgroundColor,
       body: SingleChildScrollView(
         child: Stack(
           alignment: Alignment.center,
@@ -172,11 +169,11 @@ class _SignInPageState extends State<SignInPage> {
                 children: [
                   Stack(children: [
                     SvgPicture.asset('assets/images/shape.svg',
-                        color: AppColors.blue),
+                        color: appColors.blue),
                     Container(
                       height: 10,
                       width: double.infinity,
-                      color: AppColors.blue,
+                      color: appColors.blue,
                     ),
                     Positioned(
                         top: 100,
@@ -185,7 +182,7 @@ class _SignInPageState extends State<SignInPage> {
                           'assets/images/logo.svg',
                           width: 48,
                           height: 48,
-                          color: appColors.scaffoldBackgroundColor,
+                          color: appColors.onPrimary,
                         )),
                   ]),
                   Padding(
@@ -199,9 +196,9 @@ class _SignInPageState extends State<SignInPage> {
                           AuthInputWidget(
                             hintText: "e.g, student@nsut.ac.in",
                             label: "Email",
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.email_rounded,
-                              color: AppColors.blue,
+                              color: appColors.blue,
                             ),
                             keyboardType: TextInputType.emailAddress,
                             validator: _validteEmail,
@@ -221,7 +218,7 @@ class _SignInPageState extends State<SignInPage> {
                                     passwordVisible
                                         ? Icons.visibility_off_rounded
                                         : Icons.visibility_rounded,
-                                    color: AppColors.blue,
+                                    color: appColors.blue,
                                   )),
                               obscureText: passwordVisible,
                               keyboardType: TextInputType.visiblePassword,
@@ -230,19 +227,29 @@ class _SignInPageState extends State<SignInPage> {
                           Align(
                             alignment: Alignment.topRight,
                             child: GestureDetector(
-                                onTap: goToForgotPasswordPage,
-                                child: const Text(
-                                  "Forgot Password?",
-                                  style: TextStyle(
-                                    color: AppColors.blue,
-                                  ),
-                                )),
+                              onTap: goToForgotPasswordPage,
+                              child: Text(
+                                "Forgot Password?",
+                                style: TextStyle(
+                                  shadows: [
+                                    Shadow(
+                                        color: appColors.blue,
+                                        offset: const Offset(0, -5))
+                                  ],
+                                  color: Colors.transparent,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: appColors.blue,
+                                  decorationThickness: 2,
+                                  decorationStyle: TextDecorationStyle.solid,
+                                ),
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: isLoading ? null : _submitform,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.blue,
+                              backgroundColor: appColors.blue,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(48),
                               ),
@@ -253,7 +260,7 @@ class _SignInPageState extends State<SignInPage> {
                                 child: Text(
                                   "Sign In",
                                   style: TextStyle(
-                                    color: appColors.whiteText,
+                                    color: appColors.onPrimary,
                                     fontSize: 16,
                                   ),
                                 ),
@@ -265,7 +272,7 @@ class _SignInPageState extends State<SignInPage> {
                             children: [
                               Text(
                                 "Don't have an account?",
-                                style: TextStyle(color: appColors.text2),
+                                style: TextStyle(color: appColors.primaryText),
                               ),
                               TextButton(
                                   style: TextButton.styleFrom(
@@ -276,9 +283,9 @@ class _SignInPageState extends State<SignInPage> {
                                       MaterialPageRoute(
                                           builder: (_) => const SignUpPage()),
                                       (route) => false),
-                                  child: const Text(
+                                  child: Text(
                                     'Sign Up',
-                                    style: TextStyle(color: AppColors.blue),
+                                    style: TextStyle(color: appColors.blue),
                                   ))
                             ],
                           ),

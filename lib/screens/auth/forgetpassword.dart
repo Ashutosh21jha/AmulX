@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/auth/auth_input_widget.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
@@ -23,8 +22,6 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
   final _emailController = TextEditingController();
   bool isLoading = false;
   late final appColors = Theme.of(context).extension<AppColors2>()!;
-  late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   final emailPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@nsut\.ac\.in$');
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -119,11 +116,11 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.blue,
+        backgroundColor: appColors.blue,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: appColors.scaffoldBackgroundColor,
+            color: appColors.onPrimary,
           ),
           onPressed: () {
             Get.back();
@@ -144,11 +141,11 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
                 children: [
                   Stack(children: [
                     SvgPicture.asset('assets/images/shape.svg',
-                        color: AppColors.blue),
+                        color: appColors.blue),
                     Container(
                       height: 10,
                       width: double.infinity,
-                      color: AppColors.blue,
+                      color: appColors.blue,
                     ),
                     Positioned(
                         top: 100,
@@ -157,7 +154,7 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
                           'assets/images/logo.svg',
                           width: 48,
                           height: 48,
-                          color: appColors.scaffoldBackgroundColor,
+                          color: appColors.onPrimary,
                         )),
                   ]),
                   Padding(
@@ -171,9 +168,9 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
                           AuthInputWidget(
                             hintText: "e.g, student@nsut.ac.in",
                             label: "Email",
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.email,
-                              color: AppColors.blue,
+                              color: appColors.blue,
                             ),
                             controller: _emailController,
                             validator: _validteEmail,
@@ -181,7 +178,7 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.blue,
+                              backgroundColor: appColors.blue,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                     48), // Set the border radius

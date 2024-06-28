@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +8,6 @@ class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late final appColors = Theme.of(context).extension<AppColors2>()!;
-    late final bool _isDarkMode =
-        AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
     return Scaffold(
         body: SingleChildScrollView(
@@ -105,7 +102,7 @@ class About extends StatelessWidget {
                   'Amulx is an app made by the largest tech society of NSUT, Devcomm.',
                   style: TextStyle(
                       fontSize: 16,
-                      color: appColors.text2,
+                      color: appColors.secondaryText,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Epilogue'),
                 ),

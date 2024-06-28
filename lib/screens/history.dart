@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import '../widgets/item.dart';
 
 class History extends StatefulWidget {
-  History({Key? key}) : super(key: key);
+  const History({Key? key}) : super(key: key);
 
   @override
   State<History> createState() => _HistoryState();
@@ -18,7 +18,6 @@ class History extends StatefulWidget {
 class _HistoryState extends State<History> {
   final auth = FirebaseAuth.instance;
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-
 
   String get userId => auth.currentUser?.email ?? '';
 
@@ -33,12 +32,8 @@ class _HistoryState extends State<History> {
       return Future.value(null);
     });
 
-    if (metadata != null) {
-      String downloadURL = await ref.getDownloadURL();
-      yield NetworkImage(downloadURL);
-    } else {
-      yield const AssetImage('assets/images/avatar.png');
-    }
+    String downloadURL = await ref.getDownloadURL();
+    yield NetworkImage(downloadURL);
   }
 
   @override
@@ -51,7 +46,7 @@ class _HistoryState extends State<History> {
     );
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: appColors.scaffoldBackgroundColor,
+      backgroundColor: appColors.backgroundColor,
       body: Column(
         children: [
           Container(
@@ -123,7 +118,7 @@ class _HistoryState extends State<History> {
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
-                      child: Container(
+                      child: SizedBox(
                         width: Get.width * 0.5,
                         height: Get.height * 0.3,
                         child: const Center(
@@ -154,11 +149,11 @@ class _HistoryState extends State<History> {
                               Map<String, dynamic>.from(orderItem['items']);
                           double totalAmount = 0.0;
 
-                          items.entries.forEach((entry) {
+                          for (var entry in items.entries) {
                             Map<String, dynamic> item =
                                 Map<String, dynamic>.from(entry.value);
                             totalAmount += (item['price']) * (item['count']);
-                          });
+                          }
 
                           List<CartItem> historyItems = items.entries
                               .map((item) => CartItem(

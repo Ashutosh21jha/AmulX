@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,8 +37,6 @@ class _ListItemState extends State<ListItem>
   final auth = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   String get userId => auth.currentUser?.email ?? '';
 
@@ -93,11 +90,11 @@ class _ListItemState extends State<ListItem>
   }
 
   double get totalAmount {
-    double _totalAmount = 0;
+    double totalAmount = 0;
     for (var item in widget.items) {
-      _totalAmount += item.price * item.quantity;
+      totalAmount += item.price * item.quantity;
     }
-    return _totalAmount;
+    return totalAmount;
   }
 
   @override
@@ -111,7 +108,7 @@ class _ListItemState extends State<ListItem>
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               decoration: ShapeDecoration(
-                color: appColors.cardColor,
+                color: appColors.surfaceColor,
                 // gradient: LinearGradient(
                 //   begin: Alignment.topCenter,
                 //   end: Alignment.bottomCenter,
@@ -179,7 +176,9 @@ class _ListItemState extends State<ListItem>
                     title: Text(
                       widget.orderID,
                       style: TextStyle(
-                        color: _isDarkMode ? Colors.white70 : Color(0xFF282828),
+                        color: Get.isDarkMode
+                            ? Colors.white70
+                            : const Color(0xFF282828),
                         fontSize: 12,
                         fontFamily: 'Epilogue',
                         fontWeight: FontWeight.w700,
@@ -189,7 +188,9 @@ class _ListItemState extends State<ListItem>
                     subtitle: Text(
                       DateFormat('MMM d, y h:mm a').format(widget.timestamp),
                       style: TextStyle(
-                        color: _isDarkMode ? Colors.white54 : Color(0xFF36414C),
+                        color: Get.isDarkMode
+                            ? Colors.white54
+                            : const Color(0xFF36414C),
                         fontSize: 14,
                         fontFamily: 'Epilogue',
                         fontWeight: FontWeight.w400,
@@ -230,14 +231,15 @@ class _ListItemState extends State<ListItem>
                                 title: Text(
                                   '${item.name} (${item.quantity} ${item.quantity == 1 ? 'item' : 'items'})',
                                   style: TextStyle(
-                                    color: appColors.text2,
+                                    color: appColors.secondaryText,
                                     fontSize: 14,
                                   ),
                                 ),
                                 trailing: Text(
                                   '₹${(item.price * item.quantity).toStringAsFixed(2)}',
                                   style: TextStyle(
-                                      fontSize: 14, color: appColors.text2),
+                                      fontSize: 14,
+                                      color: appColors.secondaryText),
                                 ),
                               );
                             },

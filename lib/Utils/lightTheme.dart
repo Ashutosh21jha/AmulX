@@ -5,14 +5,15 @@ ThemeData lightThemeData() {
   return ThemeData.light(useMaterial3: true)
       .copyWith(extensions: <ThemeExtension<AppColors2>>[
     AppColors2(
-      text1: Color(0xFF57585B),
-      // text1: Color(0xFF57585B),
-      text2: Colors.black,
-      // text2: Color(0xFF414042),
-      borderColor: Colors.grey,
-      cardColor: Colors.white,
-      whiteText: Colors.white,
-      scaffoldBackgroundColor: Colors.grey.shade200,
+      onPrimary: Colors.white,
+      onSecondary: Colors.black,
+      primary: const Color(0xFF2546A9),
+      secondary: const Color(0xFF18AE86),
+      surfaceColor: Colors.white,
+      secondaryText: const Color(0xFF57585B),
+      primaryText: Colors.black,
+      backgroundColor: Colors.grey.shade200,
+      blue: const Color(0xFF2546A9),
     )
   ]);
 }

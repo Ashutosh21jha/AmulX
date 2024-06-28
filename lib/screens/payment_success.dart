@@ -1,10 +1,12 @@
 import 'package:amul/screens/foodPage.dart';
-import 'package:amul/screens/home.dart';
+import 'package:amul/screens/home/home_page.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PaymentSuccessScreen extends StatelessWidget {
+  const PaymentSuccessScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +43,8 @@ class PaymentSuccessScreen extends StatelessWidget {
               Get.offAll(() => const Mainscreen());
             },
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 120, vertical: 16),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 120, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),

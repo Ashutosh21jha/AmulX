@@ -27,6 +27,7 @@ class AuthInputWidget extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
       child: TextFormField(
           // autovalidateMode: AutovalidateMode.onUserInteraction,
+          style: TextStyle(color: appColors.primaryText),
           controller: controller,
           validator: validator,
           obscureText: obscureText,
@@ -35,10 +36,11 @@ class AuthInputWidget extends StatelessWidget {
             floatingLabelBehavior: FloatingLabelBehavior.auto,
             hintText: hintText,
             suffixIcon: icon,
-            label: Text(label, style: TextStyle(color: appColors.text2)),
-            hintStyle: TextStyle(color: appColors.text1),
+            label: Text(label, style: TextStyle(color: appColors.primaryText)),
+            hintStyle: TextStyle(color: appColors.secondaryText),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: appColors.secondaryText),
             ),
             errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),

@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
@@ -21,8 +20,6 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   @override
   void initState() {
@@ -50,13 +47,13 @@ class _CartPageState extends State<CartPage> {
             appBar: widget.fromFoodPage
                 ? AppBar(
                     elevation: 0,
-                    backgroundColor: appColors.scaffoldBackgroundColor,
+                    backgroundColor: appColors.backgroundColor,
                     toolbarHeight: 70,
                     automaticallyImplyLeading: false,
                     leading: IconButton(
                       icon: Icon(
                         Icons.arrow_back_ios_new_sharp,
-                        color: appColors.text2,
+                        color: appColors.secondaryText,
                       ),
                       onPressed: () {
                         Get.to(Mainscreen());
@@ -68,11 +65,11 @@ class _CartPageState extends State<CartPage> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
-                          color: appColors.text2),
+                          color: appColors.secondaryText),
                     ),
                   )
                 : null,
-            backgroundColor: appColors.scaffoldBackgroundColor,
+            backgroundColor: appColors.backgroundColor,
             body: CartController.to.cartItems.isEmpty
                 ? Container(
                     padding: const EdgeInsets.only(left: 10),
@@ -272,7 +269,7 @@ class _CartPageState extends State<CartPage> {
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                      color: appColors.borderColor, width: 1),
+                                      color: appColors.surfaceColor, width: 1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
@@ -282,7 +279,7 @@ class _CartPageState extends State<CartPage> {
                                     Text(
                                       'Summary',
                                       style: TextStyle(
-                                          color: appColors.text2,
+                                          color: appColors.surfaceColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -299,15 +296,15 @@ class _CartPageState extends State<CartPage> {
                                                     Text(
                                                       '${item.quantity} ${item.name}',
                                                       style: TextStyle(
-                                                          color:
-                                                              appColors.text2,
+                                                          color: appColors
+                                                              .secondaryText,
                                                           fontSize: 14),
                                                     ),
                                                     Text(
                                                       '\₹${(item.price * item.quantity).toStringAsFixed(2)}',
                                                       style: TextStyle(
-                                                          color:
-                                                              appColors.text2,
+                                                          color: appColors
+                                                              .secondaryText,
                                                           fontSize: 14),
                                                     ), // Item price
                                                   ],
@@ -320,7 +317,7 @@ class _CartPageState extends State<CartPage> {
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  color: _isDarkMode
+                                  color: Get.isDarkMode
                                       ? Theme.of(context)
                                           .scaffoldBackgroundColor
                                       : Colors.white,
@@ -354,7 +351,7 @@ class _CartPageState extends State<CartPage> {
                                             '\₹ ${cartController.totalAmount.toStringAsFixed(2)}',
                                             style: TextStyle(
                                               fontSize: 20,
-                                              color: appColors.text2,
+                                              color: appColors.secondaryText,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           );

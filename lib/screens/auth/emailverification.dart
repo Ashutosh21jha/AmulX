@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/auth/auth_snackbar.dart';
 import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/mainscreen.dart';
@@ -22,6 +23,8 @@ class Emailverification extends StatefulWidget {
 class _EmailverificationState extends State<Emailverification> {
   final auth = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
+
+  late final appColors = Theme.of(context).extension<AppColors2>()!;
 
   @override
   void initState() {
@@ -82,11 +85,12 @@ class _EmailverificationState extends State<Emailverification> {
           const SizedBox(
             height: 10,
           ),
-          const Center(
+          Center(
             child: Text(
               "Verify your email address",
               style: TextStyle(
                 fontSize: 18,
+                color: appColors.primaryText,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -97,9 +101,9 @@ class _EmailverificationState extends State<Emailverification> {
           Center(
             child: Text(
               widget.email,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
-                color: Color(0xFF2546A9),
+                color: appColors.blue,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -107,12 +111,13 @@ class _EmailverificationState extends State<Emailverification> {
           const SizedBox(
             height: 30,
           ),
-          const Padding(
-            padding: EdgeInsets.all(10.0),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
                 "We have just send email verification link on \n your email Please check email and click on \n      that link to verify your Email address.",
                 style: TextStyle(
+                  color: appColors.primaryText,
                   fontSize: 14,
                 ),
               ),
@@ -143,18 +148,18 @@ class _EmailverificationState extends State<Emailverification> {
                     (route) => false);
               }
             },
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.arrow_back,
-                  color: Color(0xFF2546A9),
+                  color: appColors.blue,
                 ),
                 Text(
                   "Change e-mail?",
                   style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF2546A9),
+                    color: appColors.blue,
                   ),
                 ),
               ],
@@ -170,18 +175,18 @@ class _EmailverificationState extends State<Emailverification> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: const Color(0xFF2546A9), // Border color
+              color: appColors.blue, // Border color
               width: 1, // Border width
             ),
           ),
           child: InkWell(
             onTap: () => resendlink(),
-            child: const Center(
+            child: Center(
               child: Text(
                 "Resend Link",
                 style: TextStyle(
                     letterSpacing: 1.0,
-                    color: Color(0xFF2546A9),
+                    color: appColors.onPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 14),
               ),

@@ -1,30 +1,40 @@
 import 'package:flutter/material.dart';
 
 class AppColors2 extends ThemeExtension<AppColors2> {
-  AppColors2(
-      {required this.text1,
-      required this.text2,
-      required this.scaffoldBackgroundColor,
-      required this.cardColor,
-      required this.whiteText,
-      required this.borderColor});
+  AppColors2({
+    required this.backgroundColor,
+    required this.surfaceColor,
+    required this.primary,
+    required this.onPrimary,
+    required this.secondary,
+    required this.onSecondary,
+    required this.primaryText,
+    required this.secondaryText,
+    required this.blue,
+  });
 
-  final Color text1;
-  final Color text2;
-  final Color borderColor;
-  final Color cardColor;
-  final Color whiteText;
-  final Color scaffoldBackgroundColor;
+  final Color backgroundColor;
+  final Color surfaceColor;
+  final Color primary;
+  final Color onPrimary;
+  final Color secondary;
+  final Color onSecondary;
+  final Color primaryText;
+  final Color secondaryText;
+  final Color blue;
 
   @override
   AppColors2 copyWith() {
     return AppColors2(
-      text1: text1,
-      text2: text2,
-      cardColor: cardColor,
-      whiteText: whiteText,
-      scaffoldBackgroundColor: scaffoldBackgroundColor,
-      borderColor: borderColor,
+      backgroundColor: backgroundColor,
+      surfaceColor: surfaceColor,
+      primary: primary,
+      onPrimary: onPrimary,
+      secondary: secondary,
+      onSecondary: onSecondary,
+      primaryText: primaryText,
+      secondaryText: secondaryText,
+      blue: blue,
     );
   }
 
@@ -34,13 +44,15 @@ class AppColors2 extends ThemeExtension<AppColors2> {
       return this;
     }
     return AppColors2(
-      text1: Color.lerp(text1, other.text1, t)!,
-      text2: Color.lerp(text2, other.text2, t)!,
-      whiteText: Color.lerp(whiteText, other.whiteText, t)!,
-      cardColor: Color.lerp(cardColor, other.cardColor, t)!,
-      borderColor: Color.lerp(borderColor, other.borderColor, t)!,
-      scaffoldBackgroundColor: Color.lerp(
-          scaffoldBackgroundColor, other.scaffoldBackgroundColor, t)!,
+      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
+      surfaceColor: Color.lerp(surfaceColor, other.surfaceColor, t)!,
+      primary: Color.lerp(primary, other.primary, t)!,
+      onPrimary: Color.lerp(onPrimary, other.onPrimary, t)!,
+      secondary: Color.lerp(secondary, other.secondary, t)!,
+      onSecondary: Color.lerp(onSecondary, other.onSecondary, t)!,
+      primaryText: Color.lerp(primaryText, other.primaryText, t)!,
+      secondaryText: Color.lerp(secondaryText, other.secondaryText, t)!,
+      blue: Color.lerp(blue, other.blue, t)!,
     );
   }
 }

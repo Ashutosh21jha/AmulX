@@ -1,5 +1,6 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/Utils/darkTheme.dart';
+import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/profile_screens/profile_card2.dart';
@@ -113,7 +114,7 @@ class _ProfileState extends State<Profile> {
                 child: TextButton.icon(
                   onPressed: () async {
                     Get.changeTheme(
-                        Get.isDarkMode ? ThemeData.light() : ThemeData.dark());
+                        Get.isDarkMode ? lightThemeData() : darkThemeData());
                   },
                   label: Text(
                     Get.isDarkMode ? "Light Mode" : "Dark Mode",
@@ -130,7 +131,7 @@ class _ProfileState extends State<Profile> {
                   icon: Icons.person,
                   text: "Profile",
                   implement: false,
-                  textColor: appColors.whiteText,
+                  textColor: appColors.primaryText,
                   top: true,
                   screen: EditProfile(
                     parentImageUrl: RxString("initial"),
@@ -140,21 +141,21 @@ class _ProfileState extends State<Profile> {
                   icon: Icons.info_outline,
                   text: "About Us",
                   implement: false,
-                  textColor: appColors.whiteText,
+                  textColor: appColors.primaryText,
                   screen: const About(),
                   iconColor: const Color(0xFF02B9F0)),
               ProfileCard(
                   icon: Icons.question_answer_outlined,
                   text: "FAQ",
                   implement: false,
-                  textColor: appColors.whiteText,
+                  textColor: appColors.primaryText,
                   screen: Faq(),
                   iconColor: const Color(0xFFFC6DBB)),
               ProfileCard(
                   icon: Icons.file_copy,
                   implement: false,
                   text: "Terms and Conditions",
-                  textColor: appColors.whiteText,
+                  textColor: appColors.primaryText,
                   screen: const Terms(),
                   iconColor: const Color(0xFF3BA889)),
               const ProfileCard(

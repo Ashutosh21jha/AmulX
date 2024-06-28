@@ -1,10 +1,11 @@
+import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/cartPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'home.dart';
+import 'home/home_page.dart';
 
 class Mainscreen extends StatefulWidget {
   const Mainscreen({super.key});
@@ -32,13 +33,15 @@ class _MainscreenState extends State<Mainscreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
+    // SystemChrome.setSystemUIOverlayStyle(
+    //   const SystemUiOverlayStyle(
+    //     statusBarColor: Colors.transparent,
+    //     statusBarIconBrightness: Brightness.dark,
+    //   ),
+    // );
     return Scaffold(
+      backgroundColor:
+          Theme.of(context).extension<AppColors2>()!.backgroundColor,
       body: PageView(
         controller: _pageController,
         children: widgetList,

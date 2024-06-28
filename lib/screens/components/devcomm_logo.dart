@@ -1,3 +1,4 @@
+import 'package:amul/Utils/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class DevcommLogo extends StatelessWidget {
@@ -10,12 +11,13 @@ class DevcommLogo extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
+          Text(
             "Powered By",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14,
-            ),
+                fontSize: 14,
+                color:
+                    Theme.of(context).extension<AppColors2>()!.secondaryText),
           ),
           Image.asset(
             'assets/images/devcommlogo_noBG.png',

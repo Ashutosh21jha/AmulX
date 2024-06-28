@@ -1,17 +1,9 @@
-import 'dart:io';
-
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ProfileCard2 extends StatefulWidget {
   const ProfileCard2({super.key});
@@ -23,8 +15,6 @@ class ProfileCard2 extends StatefulWidget {
 class _ProfileCard2State extends State<ProfileCard2> {
   late UserController userController = Get.find<UserController>();
 
-  late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
   final List<BoxShadow> _shadows = [
     const BoxShadow(
       color: Color(0x28606170),
@@ -61,7 +51,7 @@ class _ProfileCard2State extends State<ProfileCard2> {
       // width: MediaQuery.of(context).size.width * .6,
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       decoration: ShapeDecoration(
-        color: _isDarkMode ? Colors.grey.shade200 : Colors.white,
+        color: Get.isDarkMode ? Colors.grey.shade200 : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),

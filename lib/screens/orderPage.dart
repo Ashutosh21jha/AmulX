@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +22,6 @@ class _OrderPageState extends State<OrderPage> {
   bool isRefunded = false;
 
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   @override
   void initState() {
@@ -226,7 +223,7 @@ class _OrderPageState extends State<OrderPage> {
             padding: const EdgeInsets.all(8.0),
             child: Card(
               elevation: 2,
-              color: appColors.cardColor,
+              color: appColors.surfaceColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -289,7 +286,8 @@ class _OrderPageState extends State<OrderPage> {
                                                     '',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  color: appColors.text2,
+                                                  color:
+                                                      appColors.secondaryText,
                                                   fontSize: 16,
                                                 ),
                                               ),
@@ -475,7 +473,7 @@ class _OrderPageState extends State<OrderPage> {
                                       margin: const EdgeInsets.symmetric(
                                           vertical: 16),
                                       decoration: BoxDecoration(
-                                        color: _isDarkMode
+                                        color: Get.isDarkMode
                                             ? Colors.black12
                                             : Colors.white,
                                         borderRadius: const BorderRadius.all(
@@ -495,7 +493,8 @@ class _OrderPageState extends State<OrderPage> {
                                             leading: Text(
                                               ' ${map.keys.elementAt(index)} (x${value['count']})',
                                               style: TextStyle(
-                                                  color: appColors.text2,
+                                                  color:
+                                                      appColors.secondaryText,
                                                   fontSize: 16),
                                             ),
                                             trailing: RichText(
@@ -519,7 +518,8 @@ class _OrderPageState extends State<OrderPage> {
                                                   TextSpan(
                                                     text: '  each',
                                                     style: TextStyle(
-                                                      color: appColors.text2,
+                                                      color: appColors
+                                                          .secondaryText,
                                                       fontSize: 16,
                                                     ),
                                                   ),
@@ -552,7 +552,7 @@ class _OrderPageState extends State<OrderPage> {
     } else if (getActiveStep(orderStatus) >= stepIndex) {
       return AppColors.green;
     } else {
-      return _isDarkMode ? Colors.white : Colors.grey;
+      return Get.isDarkMode ? Colors.white : Colors.grey;
     }
   }
 

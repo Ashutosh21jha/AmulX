@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +7,6 @@ class Terms extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late final appColors = Theme.of(context).extension<AppColors2>()!;
-    late final bool _isDarkMode =
-        AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
     return Scaffold(
         body: SingleChildScrollView(
@@ -55,12 +51,12 @@ class Terms extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
-            Center(
-              child: const Text(
+            const Center(
+              child: Text(
                 'Terms & Conditions',
                 style: TextStyle(
                   color: Colors.white,
@@ -96,21 +92,21 @@ class Terms extends StatelessWidget {
         Align(
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 80,
                   ),
                   Text(
                     'Devcomms Privacy Policy',
                     style: TextStyle(
                         fontSize: 18,
-                        color: appColors.text2,
+                        color: appColors.secondaryText,
                         fontWeight: FontWeight.w900,
                         fontFamily: 'Epilogue'),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   Padding(
@@ -119,7 +115,7 @@ class Terms extends StatelessWidget {
                       'License to Use: By downloading or using the Amulx app, you are granted a limited, non-exclusive, non-transferable license to use the app for your personal, non-commercial use. The app and all associated content remain the property of the apps developers and/or licensors.',
                       style: TextStyle(
                           fontSize: 14,
-                          color: appColors.text2,
+                          color: appColors.secondaryText,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Epilogue'),
                     ),
@@ -133,7 +129,7 @@ class Terms extends StatelessWidget {
                       'intangible losses, arising out of or in connection with the Amulx app or any associated content.',
                       style: TextStyle(
                           fontSize: 14,
-                          color: appColors.text2,
+                          color: appColors.secondaryText,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Epilogue'),
                     ),
@@ -147,7 +143,7 @@ class Terms extends StatelessWidget {
                       ' which can be found on the apps website.',
                       style: TextStyle(
                           fontSize: 14,
-                          color: appColors.text2,
+                          color: appColors.secondaryText,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Epilogue'),
                     ),
@@ -160,7 +156,7 @@ class Terms extends StatelessWidget {
                       'modifications will constitute your acceptance of the modified terms and conditions.',
                       style: TextStyle(
                           fontSize: 14,
-                          color: appColors.text2,
+                          color: appColors.secondaryText,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Epilogue'),
                     ),

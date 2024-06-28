@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:flutter/material.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
@@ -15,8 +14,6 @@ class CartItemCard extends StatefulWidget {
 
 class _CartItemCardState extends State<CartItemCard> {
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   bool tap = false;
   @override
@@ -26,7 +23,7 @@ class _CartItemCardState extends State<CartItemCard> {
       width: 100,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       decoration: BoxDecoration(
-        border: Border.all(color: appColors.borderColor, width: 1),
+        border: Border.all(color: appColors.surfaceColor, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
@@ -41,7 +38,7 @@ class _CartItemCardState extends State<CartItemCard> {
                   widget.item.name,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: appColors.text1,
+                    color: appColors.primaryText,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -71,7 +68,7 @@ class _CartItemCardState extends State<CartItemCard> {
                   height: 35,
                   padding: const EdgeInsets.all(0),
                   decoration: BoxDecoration(
-                    border: Border.all(color: appColors.borderColor, width: 1),
+                    border: Border.all(color: appColors.surfaceColor, width: 1),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Row(
@@ -81,7 +78,9 @@ class _CartItemCardState extends State<CartItemCard> {
                           icon: Icon(
                             Icons.remove,
                             color: tap == false
-                                ? (_isDarkMode ? Colors.white70 : Colors.black)
+                                ? (Get.isDarkMode
+                                    ? Colors.white70
+                                    : Colors.black)
                                 : Colors.grey,
                           ),
                           iconSize: 18,
@@ -110,7 +109,7 @@ class _CartItemCardState extends State<CartItemCard> {
                       Text(
                         widget.item.quantity.toString(),
                         style: TextStyle(
-                          color: _isDarkMode ? Colors.white60 : Colors.black,
+                          color: Get.isDarkMode ? Colors.white60 : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -118,7 +117,7 @@ class _CartItemCardState extends State<CartItemCard> {
                         icon: Icon(
                           Icons.add,
                           color: tap == false
-                              ? (_isDarkMode ? Colors.white70 : Colors.black)
+                              ? (Get.isDarkMode ? Colors.white70 : Colors.black)
                               : Colors.grey,
                         ),
                         iconSize: 18,

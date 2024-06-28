@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/models/items_model.dart';
@@ -31,8 +30,6 @@ class FoodPageState extends State<FoodPage> {
   final RxList<ItemsModel> unavailableItems = <ItemsModel>[].obs;
   final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
   RxList<ItemsModel> defaultOrder = <ItemsModel>[].obs;
   RxList<ItemsModel> searchResults = <ItemsModel>[].obs;
 
@@ -116,16 +113,16 @@ class FoodPageState extends State<FoodPage> {
     int index2 = 1;
     int index3 = 2;
     return Scaffold(
-      backgroundColor: appColors.scaffoldBackgroundColor,
+      backgroundColor: appColors.backgroundColor,
       appBar: AppBar(
-        backgroundColor: appColors.scaffoldBackgroundColor,
+        backgroundColor: appColors.backgroundColor,
         toolbarHeight: 70,
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new_sharp,
-            color: _isDarkMode ? Colors.white : Colors.black,
+            color: Get.isDarkMode ? Colors.white : Colors.black,
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -137,7 +134,7 @@ class FoodPageState extends State<FoodPage> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 30,
-            color: _isDarkMode ? Colors.white : Colors.black,
+            color: Get.isDarkMode ? Colors.white : Colors.black,
           ),
         ),
       ),
@@ -240,7 +237,7 @@ class FoodPageState extends State<FoodPage> {
                           decoration: BoxDecoration(
                             color: selected.value == index2
                                 ? AppColors.blue
-                                : (_isDarkMode
+                                : (Get.isDarkMode
                                     ? const Color(0xFFE6E6E6)
                                     : Colors.white),
                             border: Border.all(
@@ -281,7 +278,7 @@ class FoodPageState extends State<FoodPage> {
                           decoration: BoxDecoration(
                             color: selected.value == index3
                                 ? AppColors.blue
-                                : (_isDarkMode
+                                : (Get.isDarkMode
                                     ? const Color(0xFFE6E6E6)
                                     : Colors.white),
                             border: Border.all(
@@ -442,8 +439,8 @@ class FoodPageState extends State<FoodPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             body: FutureBuilder(
-              future: Future.delayed(
-                  Duration(seconds: 2)), // Add your desired delay duration
+              future: Future.delayed(const Duration(
+                  seconds: 2)), // Add your desired delay duration
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return ListView.builder(

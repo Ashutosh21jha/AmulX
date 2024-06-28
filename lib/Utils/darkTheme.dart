@@ -5,11 +5,15 @@ ThemeData darkThemeData() {
   return ThemeData.dark(useMaterial3: true)
       .copyWith(extensions: <ThemeExtension<AppColors2>>[
     AppColors2(
-        text1: Colors.white60,
-        text2: Colors.white70,
-        borderColor: Colors.white38,
-        cardColor: Colors.white10,
-        whiteText: Colors.white70,
-        scaffoldBackgroundColor: ThemeData.dark().scaffoldBackgroundColor)
+      backgroundColor: const Color(0xFF121212),
+      surfaceColor: const Color(0xFF181818),
+      primary: const Color(0xFF2546A9),
+      onPrimary: Colors.white,
+      secondary: const Color(0xFF18AE86),
+      onSecondary: Colors.white,
+      primaryText: const Color(0xFFFFFFFF),
+      secondaryText: const Color(0xFFB3B3B3),
+      blue: const Color(0xFF2546A9),
+    )
   ]);
 }

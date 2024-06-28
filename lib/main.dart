@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:amul/Utils/darkTheme.dart';
 import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/controllers/user_controller.dart';
@@ -17,29 +16,35 @@ void main() async {
 
   final UserController userController = Get.put(UserController());
 
-  runApp(const MyApp());
+  runApp(GetMaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: lightThemeData(),
+    darkTheme: darkThemeData(),
+    themeMode: ThemeMode.light,
+    home: const SplashScreen(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-    ));
-    return AdaptiveTheme(
-      light: lightThemeData(),
-      dark: darkThemeData(),
-      initial: AdaptiveThemeMode.light,
-      builder: (lightTheme, darkTheme) => GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        // themeMode: ThemeMode.dark,
-        home: const SplashScreen(),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+//       statusBarColor: Colors.transparent,
+//       statusBarIconBrightness: Brightness.dark,
+//     ));
+//     return AdaptiveTheme(
+//       light: lightThemeData(),
+//       dark: darkThemeData(),
+//       initial: AdaptiveThemeMode.light,
+//       builder: (lightTheme, darkTheme) => GetMaterialApp(
+//         debugShowCheckedModeBanner: false,
+//         theme: lightTheme,
+//         darkTheme: darkTheme,
+//         // themeMode: ThemeMode.dark,
+//         home: const SplashScreen(),
+//       ),
+//     );
+//   }
+// }

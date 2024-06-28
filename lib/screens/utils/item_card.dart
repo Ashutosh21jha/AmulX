@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,13 +26,11 @@ class ItemCard extends StatefulWidget {
 
 class _ItemCardState extends State<ItemCard> {
   //Remove tapped and count list use added and count variables for changing the Add button
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool added = false;
   int count = 0;
   bool tap = false;
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  late final bool _isDarkMode =
-      AdaptiveTheme.of(context).brightness == Brightness.dark ? true : false;
 
   @override
   void initState() {
@@ -83,7 +80,7 @@ class _ItemCardState extends State<ItemCard> {
         opacity: widget.unavailable ? .4 : 1.0,
         child: Card(
             elevation: 2,
-            color: appColors.cardColor,
+            color: appColors.surfaceColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
