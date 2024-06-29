@@ -170,7 +170,9 @@ class _SignInPageState extends State<SignInPage> {
               height: MediaQuery.of(context).size.height,
               child: Column(
                 children: [
-                  const AmulXAppBar(),
+                  const AmulXAppBar(
+                    title: "Sign In",
+                  ),
 
                   // Stack(children: [
                   //   SvgPicture.asset('assets/images/shape.svg',

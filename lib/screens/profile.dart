@@ -4,6 +4,7 @@ import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/profile_screens/profile_card2.dart';
+import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,66 +50,56 @@ const List<BoxShadow> _shadows = [
   )
 ];
 
-class Profile extends StatefulWidget {
+class Profile extends StatelessWidget {
   const Profile({super.key});
 
   @override
-  State<Profile> createState() => _ProfileState();
-}
-
-class _ProfileState extends State<Profile> {
-  String name = "";
-  String s_id = "";
-
-  late AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
+    // SystemChrome.setSystemUIOverlayStyle(
+    //   const SystemUiOverlayStyle(
+    //     statusBarColor: Colors.transparent,
+    //     statusBarIconBrightness: Brightness.light,
+    //   ),
+    // );
+    late AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
         children: [
           Column(
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                alignment: Alignment.center,
-                height: 140,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Color(0xFF00084B),
-                      Color(0xFF2E55C0),
-                      Color(0xFF148BFA),
-                    ],
-                  ),
-                ),
-                child: const Text('My Profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w700,
-                      height: 0.06,
-                    )),
+              const AmulXAppBar(
+                title: '',
+                showBackArrow: false,
               ),
+              // Container(
+              //   width: MediaQuery.of(context).size.width,
+              //   alignment: Alignment.center,
+              //   height: 140,
+              //   decoration: const BoxDecoration(
+              //     borderRadius: BorderRadius.only(
+              //       bottomLeft: Radius.circular(30),
+              //       bottomRight: Radius.circular(30),
+              //     ),
+              //     gradient: LinearGradient(
+              //       begin: Alignment.centerLeft,
+              //       end: Alignment.centerRight,
+              //       colors: [
+              //         Color(0xFF00084B),
+              //         Color(0xFF2E55C0),
+              //         Color(0xFF148BFA),
+              //       ],
+              //     ),
+              //   ),
+              //   child: const Text('My Profile',
+              //       style: TextStyle(
+              //         color: Colors.white,
+              //         fontSize: 18,
+              //         fontFamily: 'Epilogue',
+              //         fontWeight: FontWeight.w700,
+              //         height: 0.06,
+              //       )),
+              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 48, 0, 16),
                 child: TextButton.icon(
@@ -118,12 +109,11 @@ class _ProfileState extends State<Profile> {
                   },
                   label: Text(
                     Get.isDarkMode ? "Light Mode" : "Dark Mode",
-                    style: TextStyle(
-                        color: Get.isDarkMode ? Colors.white70 : Colors.black),
+                    style: TextStyle(color: appColors.primaryText),
                   ),
                   icon: Icon(
                     Get.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                    color: Get.isDarkMode ? Colors.white70 : Colors.black,
+                    color: appColors.primaryText,
                   ),
                 ),
               ),
@@ -131,31 +121,29 @@ class _ProfileState extends State<Profile> {
                   icon: Icons.person,
                   text: "Profile",
                   implement: false,
-                  textColor: appColors.primaryText,
+                  textColor: appColors.onPrimary,
                   top: true,
-                  screen: EditProfile(
-                    parentImageUrl: RxString("initial"),
-                  ),
+                  screen: const EditProfile(),
                   iconColor: const Color(0xFFA287F8)),
               ProfileCard(
                   icon: Icons.info_outline,
                   text: "About Us",
                   implement: false,
-                  textColor: appColors.primaryText,
+                  textColor: appColors.onPrimary,
                   screen: const About(),
                   iconColor: const Color(0xFF02B9F0)),
               ProfileCard(
                   icon: Icons.question_answer_outlined,
                   text: "FAQ",
                   implement: false,
-                  textColor: appColors.primaryText,
+                  textColor: appColors.onPrimary,
                   screen: Faq(),
                   iconColor: const Color(0xFFFC6DBB)),
               ProfileCard(
                   icon: Icons.file_copy,
                   implement: false,
                   text: "Terms and Conditions",
-                  textColor: appColors.primaryText,
+                  textColor: appColors.onPrimary,
                   screen: const Terms(),
                   iconColor: const Color(0xFF3BA889)),
               const ProfileCard(
@@ -169,7 +157,7 @@ class _ProfileState extends State<Profile> {
               ),
             ],
           ),
-          const Positioned(top: 100, child: ProfileCard2()),
+          Positioned(top: 100, child: ProfileCard2()),
           const DevcommLogo()
         ],
       ),

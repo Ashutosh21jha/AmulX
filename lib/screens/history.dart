@@ -1,5 +1,6 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
+import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -65,55 +66,7 @@ class _HistoryState extends State<History> {
           //     ),
           //   ),
           // ),
-          Container(
-            alignment: Alignment.bottomCenter,
-            height: MediaQuery.of(context).size.height * 0.16,
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Color(0xFF00084B),
-                  Color(0xFF2E55C0),
-                  Color(0xFF148BFA),
-                ],
-              ),
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Positioned(
-                  left: MediaQuery.of(context).size.width * 0.02,
-                  child: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: appColors.onPrimary,
-                      )),
-                ),
-
-                // SizedBox(width: MediaQuery.of(context).size.width * 0.27),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Orders",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: appColors.onPrimary,
-                      fontSize: 18,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w700,
-                      height: 0.06,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const AmulXAppBar(title: "Orders"),
 
           const SizedBox(height: 5),
           Expanded(

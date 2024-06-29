@@ -146,7 +146,7 @@ class ProfileCard extends StatelessWidget {
               ),
               trailing: const Icon(
                 Icons.arrow_forward_ios_sharp,
-                color: Color.fromARGB(255, 0, 0, 0),
+                color: Colors.white,
                 size: 16,
               ),
             ),

@@ -5,15 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-class ProfileCard2 extends StatefulWidget {
-  const ProfileCard2({super.key});
-
-  @override
-  State<ProfileCard2> createState() => _ProfileCard2State();
-}
-
-class _ProfileCard2State extends State<ProfileCard2> {
-  late UserController userController = Get.find<UserController>();
+class ProfileCard2 extends StatelessWidget {
+  ProfileCard2({super.key});
 
   final List<BoxShadow> _shadows = [
     const BoxShadow(
@@ -29,29 +22,17 @@ class _ProfileCard2State extends State<ProfileCard2> {
       spreadRadius: 0,
     )
   ];
-  // Future<void> pickImage() async {
-  //   final ImagePicker picker = ImagePicker();
-  //   final XFile? image = await picker.pickImage(
-  //       source: ImageSource.gallery, maxWidth: 500, maxHeight: 500);
-
-  //   if (image != null) {
-  //     // uploadImageToFirebase(image);
-  //   }
-  // }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
+    final UserController userController = Get.find<UserController>();
+    final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+
     return Container(
       // width: MediaQuery.of(context).size.width * .6,
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       decoration: ShapeDecoration(
-        color: Get.isDarkMode ? Colors.grey.shade200 : Colors.white,
+        color: Get.isDarkMode ? const Color(0xFF282828) : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -74,12 +55,12 @@ class _ProfileCard2State extends State<ProfileCard2> {
                       cacheKey: userController.imageUrl.value),
                 );
               } else {
-                return const SizedBox(
+                return SizedBox(
                   height: 60,
                   width: 60,
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: AppColors.blue,
+                      color: appColors.blue,
                     ),
                   ),
                 );
@@ -93,8 +74,8 @@ class _ProfileCard2State extends State<ProfileCard2> {
             children: [
               Text(
                 userController.userName.value,
-                style: const TextStyle(
-                  color: Color(0xFF414042),
+                style: TextStyle(
+                  color: appColors.primaryText,
                   fontSize: 18,
                   fontFamily: 'Epilogue',
                   fontWeight: FontWeight.w700,
@@ -103,8 +84,8 @@ class _ProfileCard2State extends State<ProfileCard2> {
               const SizedBox(height: 8),
               Text(
                 userController.studentId.value,
-                style: const TextStyle(
-                  color: Color(0xFF57585B),
+                style: TextStyle(
+                  color: appColors.primaryText,
                   fontSize: 14,
                   fontFamily: 'Epilogue',
                   fontWeight: FontWeight.w400,

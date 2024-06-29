@@ -35,6 +35,8 @@ class AuthInputWidget extends StatelessWidget {
           decoration: InputDecoration(
             floatingLabelBehavior: FloatingLabelBehavior.auto,
             hintText: hintText,
+            filled: true,
+            fillColor: appColors.surfaceColor,
             suffixIcon: icon,
             label: Text(label, style: TextStyle(color: appColors.primaryText)),
             hintStyle: TextStyle(color: appColors.secondaryText),
