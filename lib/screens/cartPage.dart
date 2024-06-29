@@ -53,7 +53,7 @@ class _CartPageState extends State<CartPage> {
                     leading: IconButton(
                       icon: Icon(
                         Icons.arrow_back_ios_new_sharp,
-                        color: appColors.secondaryText,
+                        color: appColors.primaryText,
                       ),
                       onPressed: () {
                         Get.to(Mainscreen());
@@ -65,7 +65,7 @@ class _CartPageState extends State<CartPage> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
-                          color: appColors.secondaryText),
+                          color: appColors.primaryText),
                     ),
                   )
                 : null,
@@ -244,7 +244,7 @@ class _CartPageState extends State<CartPage> {
                               },
                               style: ElevatedButton.styleFrom(
                                 textStyle: const TextStyle(fontSize: 24),
-                                backgroundColor: AppColors.blue,
+                                backgroundColor: appColors.blue,
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 40,
                                   vertical: 16,
@@ -253,10 +253,10 @@ class _CartPageState extends State<CartPage> {
                                   borderRadius: BorderRadius.circular(48),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Track Orders',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: appColors.onPrimary,
                                   fontSize: 18, // Increase font size
                                 ),
                               ),
@@ -269,7 +269,7 @@ class _CartPageState extends State<CartPage> {
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                      color: appColors.surfaceColor, width: 1),
+                                      color: appColors.primaryText, width: 1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
@@ -279,7 +279,7 @@ class _CartPageState extends State<CartPage> {
                                     Text(
                                       'Summary',
                                       style: TextStyle(
-                                          color: appColors.surfaceColor,
+                                          color: appColors.primaryText,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -318,12 +318,20 @@ class _CartPageState extends State<CartPage> {
                               Container(
                                 decoration: BoxDecoration(
                                   color: Get.isDarkMode
-                                      ? Theme.of(context)
-                                          .scaffoldBackgroundColor
-                                      : Colors.white,
+                                      ? appColors.backgroundColor
+                                      : appColors.surfaceColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Get.isDarkMode
+                                            ? Color(0xFF404040)
+                                            : appColors.primaryText,
+                                        spreadRadius: Get.isDarkMode ? 6 : 3,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 3))
+                                  ],
                                   borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      topRight: Radius.circular(15)),
+                                      topLeft: Radius.circular(8),
+                                      topRight: Radius.circular(8)),
                                 ),
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 20),
@@ -380,9 +388,9 @@ class _CartPageState extends State<CartPage> {
                                                   ),
                                                 );
                                                 /*Get.to(OrderReviewPage(
-                                                  cartItems:
-                                                      cartController.cartItems,
-                                                ));*/
+                                                    cartItems:
+                                                        cartController.cartItems,
+                                                  ));*/
                                               } else {
                                                 Get.to(
                                                   () => OrderPage(
@@ -390,8 +398,8 @@ class _CartPageState extends State<CartPage> {
                                                   ),
                                                 );
                                                 /* await  Get.to(() => OrderPage(
-                                                      userId: userId,
-                                                    ));*/
+                                                        userId: userId,
+                                                      ));*/
                                               }
                                             } else {
                                               Get.snackbar(

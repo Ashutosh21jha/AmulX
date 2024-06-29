@@ -23,7 +23,7 @@ class _CartItemCardState extends State<CartItemCard> {
       width: 100,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       decoration: BoxDecoration(
-        border: Border.all(color: appColors.surfaceColor, width: 1),
+        border: Border.all(color: appColors.secondaryText, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
@@ -78,9 +78,7 @@ class _CartItemCardState extends State<CartItemCard> {
                           icon: Icon(
                             Icons.remove,
                             color: tap == false
-                                ? (Get.isDarkMode
-                                    ? Colors.white70
-                                    : Colors.black)
+                                ? (appColors.primaryText)
                                 : Colors.grey,
                           ),
                           iconSize: 18,
@@ -109,7 +107,7 @@ class _CartItemCardState extends State<CartItemCard> {
                       Text(
                         widget.item.quantity.toString(),
                         style: TextStyle(
-                          color: Get.isDarkMode ? Colors.white60 : Colors.black,
+                          color: appColors.primaryText,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -117,7 +115,7 @@ class _CartItemCardState extends State<CartItemCard> {
                         icon: Icon(
                           Icons.add,
                           color: tap == false
-                              ? (Get.isDarkMode ? Colors.white70 : Colors.black)
+                              ? (appColors.primaryText)
                               : Colors.grey,
                         ),
                         iconSize: 18,

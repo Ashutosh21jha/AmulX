@@ -11,6 +11,7 @@ class AppColors2 extends ThemeExtension<AppColors2> {
     required this.primaryText,
     required this.secondaryText,
     required this.blue,
+    required this.green,
   });
 
   final Color backgroundColor;
@@ -22,6 +23,7 @@ class AppColors2 extends ThemeExtension<AppColors2> {
   final Color primaryText;
   final Color secondaryText;
   final Color blue;
+  final Color green;
 
   @override
   AppColors2 copyWith() {
@@ -35,6 +37,7 @@ class AppColors2 extends ThemeExtension<AppColors2> {
       primaryText: primaryText,
       secondaryText: secondaryText,
       blue: blue,
+      green: green,
     );
   }
 
@@ -53,6 +56,7 @@ class AppColors2 extends ThemeExtension<AppColors2> {
       primaryText: Color.lerp(primaryText, other.primaryText, t)!,
       secondaryText: Color.lerp(secondaryText, other.secondaryText, t)!,
       blue: Color.lerp(blue, other.blue, t)!,
+      green: Color.lerp(green, other.green, t)!,
     );
   }
 }

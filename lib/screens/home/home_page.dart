@@ -1,16 +1,14 @@
 import 'package:amul/Utils/AppColors.dart';
-import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/history.dart';
 import 'package:amul/screens/home/food_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../foodPage.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 
@@ -124,57 +122,18 @@ class _HomeState extends State<HomePage> {
   }
 
   Widget closedStoreMessage() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const SizedBox(
-          height: 40,
-        ),
-        Padding(
-          padding:
-              const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
-          child: SizedBox(
-            height: 92,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SvgPicture.asset(
-                    "assets/images/logo.svg",
-                    width: 85,
-                    height: 30,
-                  ),
-                  GestureDetector(
-                    onTap: () => Get.to(() => const History(),
-                        duration: const Duration(
-                          milliseconds: 800,
-                        ),
-                        transition: Transition.fade),
-                    child: const Icon(
-                      Icons.history,
-                      size: 30,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    return const Expanded(
+      child: Center(
+        child: Text(
+          'Store is Closed',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.red,
           ),
         ),
-        const Expanded(
-          child: Center(
-            child: Text(
-              'Store is Closed',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.red,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-      ],
+      ),
+      // const SizedBox(height: 20),
     );
   }
 
@@ -182,42 +141,6 @@ class _HomeState extends State<HomePage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const SizedBox(
-            height: 40,
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
-            child: SizedBox(
-              height: 92,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SvgPicture.asset(
-                      "assets/images/logo.svg",
-                      width: 85,
-                      height: 30,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(() => const History(),
-                            duration: const Duration(
-                              milliseconds: 800,
-                            ),
-                            transition: Transition.rightToLeft);
-                      },
-                      child: Icon(
-                        Icons.history,
-                        size: 30,
-                        color: appColors.secondaryText,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
           const SizedBox(height: 45),
           Text(
             "Answer your\nappetite!",
@@ -250,32 +173,80 @@ class _HomeState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(
+    // SystemChrome.setSystemUIOverlayStyle(const
     //   const SystemUiOverlayStyle(
     //     statusBarColor: Colors.transparent,
     //     statusBarIconBrightness: Brightness.dark,
     //   ),
     // );
-    return StreamBuilder<DocumentSnapshot>(
-      stream: db.collection('menu').doc('today menu').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          Center(
-            child: Text('Error: ${snapshot.error}'),
-          );
-        }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
+    return Column(
+      children: [
+        const SizedBox(
+          height: 40,
+        ),
+        Padding(
+          padding:
+              const EdgeInsets.only(left: 24, right: 30, top: 10, bottom: 10),
+          child: SizedBox(
+            height: 92,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SvgPicture.asset(
+                    "assets/images/logo.svg",
+                    width: 85,
+                    height: 30,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => const History(),
+                          duration: const Duration(
+                            milliseconds: 800,
+                          ),
+                          transition: Transition.rightToLeft);
+                    },
+                    child: Icon(
+                      Icons.history,
+                      size: 30,
+                      color: appColors.secondaryText,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        StreamBuilder(
+          stream: db.collection('menu').doc('today menu').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
 
-        final sessionData = snapshot.data;
-        final bool isStoreOpen = sessionData?['session'] ?? false;
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-        return isStoreOpen ? openStoreContent() : closedStoreMessage();
-      },
+            final sessionData = snapshot.data;
+            final bool isStoreOpen = sessionData?['session'] ?? false;
+
+            return isStoreOpen ? openStoreContent() : closedStoreMessage();
+          },
+        ),
+      ],
     );
+
+    // return StreamBuilder<DocumentSnapshot>(
+
+    //   stream: db.collection('menu').doc('today menu').snapshots(),
+    //   builder: (context, snapshot) {
+    //   },
+    // );
   }
 }

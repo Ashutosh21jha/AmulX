@@ -104,6 +104,7 @@ class _ListItemState extends State<ListItem>
       child: Column(
         children: [
           InkWell(
+            borderRadius: BorderRadius.circular(16),
             onTap: _toggleExpanded,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
@@ -114,8 +115,8 @@ class _ListItemState extends State<ListItem>
                 //   end: Alignment.bottomCenter,
                 //   colors: [
                 //     // Color(0xFF00084B).withAlpha(200),
-                //     Color(0xFF2E55C0).withAlpha(175),
-                //     Color(0xFF148BFA).withAlpha(175),
+                //     const Color(0xFF2E55C0).withAlpha(175),
+                //     const Color(0xFF148BFA).withAlpha(175),
                 //   ],
                 // ),
                 shape: RoundedRectangleBorder(
@@ -176,9 +177,7 @@ class _ListItemState extends State<ListItem>
                     title: Text(
                       widget.orderID,
                       style: TextStyle(
-                        color: Get.isDarkMode
-                            ? Colors.white70
-                            : const Color(0xFF282828),
+                        color: appColors.primaryText,
                         fontSize: 12,
                         fontFamily: 'Epilogue',
                         fontWeight: FontWeight.w700,
@@ -188,9 +187,7 @@ class _ListItemState extends State<ListItem>
                     subtitle: Text(
                       DateFormat('MMM d, y h:mm a').format(widget.timestamp),
                       style: TextStyle(
-                        color: Get.isDarkMode
-                            ? Colors.white54
-                            : const Color(0xFF36414C),
+                        color: appColors.primaryText,
                         fontSize: 14,
                         fontFamily: 'Epilogue',
                         fontWeight: FontWeight.w400,

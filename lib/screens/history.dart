@@ -2,9 +2,11 @@ import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../widgets/item.dart';
 
@@ -49,8 +51,25 @@ class _HistoryState extends State<History> {
       backgroundColor: appColors.backgroundColor,
       body: Column(
         children: [
+          // Container(
+          //   height: MediaQuery.of(context).size.height * 0.08,
+          //   decoration: const BoxDecoration(
+          //     gradient: LinearGradient(
+          //       begin: Alignment.centerLeft,
+          //       end: Alignment.centerRight,
+          //       colors: [
+          //         Color(0xFF00084B),
+          //         Color(0xFF2E55C0),
+          //         Color(0xFF148BFA),
+          //       ],
+          //     ),
+          //   ),
+          // ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.08,
+            alignment: Alignment.bottomCenter,
+            height: MediaQuery.of(context).size.height * 0.16,
+            padding:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
@@ -62,48 +81,40 @@ class _HistoryState extends State<History> {
                 ],
               ),
             ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.08,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Color(0xFF00084B),
-                  Color(0xFF2E55C0),
-                  Color(0xFF148BFA),
-                ],
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  IconButton(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned(
+                  left: MediaQuery.of(context).size.width * 0.02,
+                  child: IconButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back_ios,
-                        color: Colors.white,
+                        color: appColors.onPrimary,
                       )),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.27),
-                  const Text(
+                ),
+
+                // SizedBox(width: MediaQuery.of(context).size.width * 0.27),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
                     "Orders",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: appColors.onPrimary,
                       fontSize: 18,
                       fontFamily: 'Epilogue',
                       fontWeight: FontWeight.w700,
                       height: 0.06,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
+
           const SizedBox(height: 5),
           Expanded(
             child: Padding(
@@ -121,9 +132,9 @@ class _HistoryState extends State<History> {
                       child: SizedBox(
                         width: Get.width * 0.5,
                         height: Get.height * 0.3,
-                        child: const Center(
+                        child: Center(
                           child: CircularProgressIndicator(
-                            color: AppColors.blue,
+                            color: appColors.blue,
                           ),
                         ),
                       ),

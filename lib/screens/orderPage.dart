@@ -2,6 +2,8 @@ import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:get/get.dart';
@@ -165,7 +167,10 @@ class _OrderPageState extends State<OrderPage> {
       body: Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.08,
+            alignment: Alignment.bottomCenter,
+            height: MediaQuery.of(context).size.height * 0.16,
+            padding:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
@@ -177,52 +182,44 @@ class _OrderPageState extends State<OrderPage> {
                 ],
               ),
             ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.08,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Color(0xFF00084B),
-                  Color(0xFF2E55C0),
-                  Color(0xFF148BFA),
-                ],
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  IconButton(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned(
+                  left: MediaQuery.of(context).size.width * 0.02,
+                  child: IconButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back_ios,
-                        color: Colors.white,
+                        color: appColors.onPrimary,
                       )),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.27),
-                  const Text(
+                ),
+
+                // SizedBox(width: MediaQuery.of(context).size.width * 0.27),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
                     "Orders",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: appColors.onPrimary,
                       fontSize: 18,
                       fontFamily: 'Epilogue',
                       fontWeight: FontWeight.w700,
                       height: 0.06,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              elevation: 2,
+              elevation: 4,
+              surfaceTintColor: Colors.transparent,
               color: appColors.surfaceColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,9 +229,9 @@ class _OrderPageState extends State<OrderPage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     child: orderId == ''
-                        ? const Center(
+                        ? Center(
                             child: CircularProgressIndicator(
-                            color: AppColors.blue,
+                            color: appColors.blue,
                           ))
                         : StreamBuilder(
                             stream: isDeclined == false
@@ -272,11 +269,11 @@ class _OrderPageState extends State<OrderPage> {
                                         RichText(
                                           text: TextSpan(
                                             children: [
-                                              const TextSpan(
+                                              TextSpan(
                                                 text: "ID: ",
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  color: AppColors.blue,
+                                                  color: appColors.blue,
                                                   fontSize: 18,
                                                 ),
                                               ),
@@ -286,8 +283,7 @@ class _OrderPageState extends State<OrderPage> {
                                                     '',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  color:
-                                                      appColors.secondaryText,
+                                                  color: appColors.primaryText,
                                                   fontSize: 16,
                                                 ),
                                               ),
@@ -295,21 +291,22 @@ class _OrderPageState extends State<OrderPage> {
                                           ),
                                         ),
                                         RichText(
+                                          textAlign: TextAlign.center,
                                           text: TextSpan(
                                             children: [
-                                              const WidgetSpan(
+                                              WidgetSpan(
                                                 child: Icon(
                                                   Icons.currency_rupee_outlined,
-                                                  color: Colors.green,
+                                                  color: appColors.green,
                                                   size: 17,
                                                 ),
                                               ),
                                               TextSpan(
                                                 text: totalAmount.toString(),
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.green,
+                                                  color: appColors.green,
                                                 ),
                                               ),
                                             ],
@@ -469,66 +466,44 @@ class _OrderPageState extends State<OrderPage> {
                                               ],
                                             ),
                                           ),
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 16),
-                                      decoration: BoxDecoration(
-                                        color: Get.isDarkMode
-                                            ? Colors.black12
-                                            : Colors.white,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount:
-                                            snapshot.data?['items'].length,
-                                        itemBuilder: (context, index) {
-                                          Map<String, dynamic> map =
-                                              snapshot.data?['items'];
-                                          final key = map.keys.elementAt(index);
-                                          final value = map[key];
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: snapshot.data?['items'].length,
+                                      itemBuilder: (context, index) {
+                                        Map<String, dynamic> map =
+                                            snapshot.data?['items'];
+                                        final key = map.keys.elementAt(index);
+                                        final value = map[key];
 
-                                          return ListTile(
+                                        return ListTile(
                                             leading: Text(
                                               ' ${map.keys.elementAt(index)} (x${value['count']})',
                                               style: TextStyle(
-                                                  color:
-                                                      appColors.secondaryText,
+                                                  color: appColors.primaryText,
                                                   fontSize: 16),
                                             ),
                                             trailing: RichText(
                                               text: TextSpan(
                                                 children: [
-                                                  const WidgetSpan(
-                                                    child: Icon(
-                                                      Icons
-                                                          .currency_rupee_outlined,
-                                                      color: Colors.green,
-                                                      size: 16,
-                                                    ),
-                                                  ),
                                                   TextSpan(
-                                                    text: ' ${value['price']}',
-                                                    style: const TextStyle(
-                                                      color: AppColors.green,
+                                                    text: '₹ ${value['price']}',
+                                                    style: TextStyle(
+                                                      color: appColors.green,
                                                       fontSize: 16,
                                                     ),
                                                   ),
                                                   TextSpan(
-                                                    text: '  each',
+                                                    text: " each",
                                                     style: TextStyle(
                                                       color: appColors
                                                           .secondaryText,
                                                       fontSize: 16,
                                                     ),
-                                                  ),
+                                                  )
                                                 ],
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      ),
+                                            ));
+                                      },
                                     ),
                                   ],
                                 );

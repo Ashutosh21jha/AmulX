@@ -14,31 +14,26 @@ class HomeFoodTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors2>()!;
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Center(
-          child: GestureDetector(
-            onTap: () {
-              Get.to(
-                () => FoodPage(
-                  cat: "Food",
-                  itemList: ItemController.to.food,
-                ),
-              );
-            },
-            child: Container(
+        GestureDetector(
+          onTap: () {
+            Get.to(
+              () => FoodPage(
+                cat: "Food",
+                itemList: ItemController.to.food,
+              ),
+            );
+          },
+          child: Card(
+            color: appColors.surfaceColor,
+            elevation: 4,
+            shape: const CircleBorder(),
+            surfaceTintColor: Colors.transparent,
+            child: SizedBox(
               width: 134.5,
               height: 134.5,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Get.isDarkMode ? AppColors.blackbase : Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    spreadRadius: 1,
-                    blurRadius: 1,
-                  ),
-                ],
-              ),
               child: Center(
                 child: Image.asset(
                   imageUrl,

@@ -2,9 +2,12 @@ import 'package:amul/screens/auth/auth_input_widget.dart';
 import 'package:amul/screens/auth/auth_snackbar.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/auth/signup_page.dart';
+import 'package:amul/widgets/amulX_appbar.dart';
+import 'package:amul/widgets/custom_shape.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../Utils/AppColors.dart';
@@ -167,24 +170,26 @@ class _SignInPageState extends State<SignInPage> {
               height: MediaQuery.of(context).size.height,
               child: Column(
                 children: [
-                  Stack(children: [
-                    SvgPicture.asset('assets/images/shape.svg',
-                        color: appColors.blue),
-                    Container(
-                      height: 10,
-                      width: double.infinity,
-                      color: appColors.blue,
-                    ),
-                    Positioned(
-                        top: 100,
-                        left: 20,
-                        child: SvgPicture.asset(
-                          'assets/images/logo.svg',
-                          width: 48,
-                          height: 48,
-                          color: appColors.onPrimary,
-                        )),
-                  ]),
+                  const AmulXAppBar(),
+
+                  // Stack(children: [
+                  //   SvgPicture.asset('assets/images/shape.svg',
+                  //       color: appColors.blue),
+                  //   Container(
+                  //     height: 10,
+                  //     width: double.infinity,
+                  //     color: appColors.blue,
+                  //   ),
+                  //   Positioned(
+                  //       top: 100,
+                  //       left: 20,
+                  //       child: SvgPicture.asset(
+                  //         'assets/images/logo.svg',
+                  //         width: 48,
+                  //         height: 48,
+                  //         color: appColors.onPrimary,
+                  //       )),
+                  // ]),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Form(
