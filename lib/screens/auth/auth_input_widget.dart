@@ -42,7 +42,7 @@ class AuthInputWidget extends StatelessWidget {
             hintStyle: TextStyle(color: appColors.secondaryText),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: appColors.secondaryText),
+              // borderSide: BorderSide(color: appColors.secondaryText),
             ),
             errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),

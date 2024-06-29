@@ -31,12 +31,6 @@ final db = FirebaseFirestore.instance;
 
 Future<void> signOut() async {
   try {
-    print(auth.currentUser?.email);
-    Directory appDir = await getApplicationDocumentsDirectory();
-
-    final cacheFileDir = Uri.parse(appDir.path).resolve('urlFile.txt');
-    File imageFile = File(cacheFileDir.toFilePath());
-    await imageFile.delete();
     await auth.signOut();
   } catch (e) {
     throw Exception(e);

@@ -20,7 +20,7 @@ void main() async {
     debugShowCheckedModeBanner: false,
     theme: lightThemeData(),
     darkTheme: darkThemeData(),
-    themeMode: ThemeMode.light,
+    themeMode: ThemeMode.dark,
     home: const SplashScreen(),
   ));
 }

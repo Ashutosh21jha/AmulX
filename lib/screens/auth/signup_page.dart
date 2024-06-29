@@ -227,36 +227,46 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: appColors.backgroundColor,
       body: SingleChildScrollView(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
+        child: SizedBox(
+          height: height,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Column(
                 children: [
-                  Stack(children: [
-                    SvgPicture.asset('assets/images/shape.svg',
-                        color: appColors.blue),
-                    Container(
-                      height: 10,
-                      width: double.infinity,
-                      color: appColors.blue,
+                  SizedBox(
+                    height: height / 7,
+                  ),
+                  Text(
+                    "Welcome To",
+                    style: TextStyle(
+                      color: appColors.primaryText,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
                     ),
-                    Positioned(
-                        top: 100,
-                        left: 20,
-                        child: SvgPicture.asset(
-                          'assets/images/logo.svg',
-                          width: 48,
-                          height: 48,
-                          color: appColors.onPrimary,
-                        )),
-                  ]),
+                  ),
+                  SvgPicture.asset(
+                    'assets/images/logo.svg',
+                    width: 200,
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    "Before ordering, please create your\naccount",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: appColors.secondaryText,
+                      fontSize: 16,
+                    ),
+                  ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 24),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -333,7 +343,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 child: Text(
                                   "Sign Up",
                                   style: TextStyle(
-                                    color: appColors.primaryText,
+                                    color: appColors.onPrimary,
                                     fontSize: 16,
                                   ),
                                 ),
@@ -368,9 +378,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ],
               ),
-            ),
-            const DevcommLogo()
-          ],
+              const DevcommLogo()
+            ],
+          ),
         ),
       ),
     );
