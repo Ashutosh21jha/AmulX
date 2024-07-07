@@ -1,4 +1,5 @@
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/controllers/order_payment_controller.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/cartPage.dart';
@@ -19,6 +20,9 @@ class _MainscreenState extends State<Mainscreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    Get.put(OrderPaymentController());
+
     final userController = Get.find<UserController>();
     userController.getUserData();
   }

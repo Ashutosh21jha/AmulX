@@ -1,12 +1,12 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
-import 'package:amul/screens/orderPage.dart';
+import 'package:amul/screens/order/orderPage.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/utils/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:amul/screens/order_review.dart';
+import 'package:amul/screens/order/order_review.dart';
 import 'package:lottie/lottie.dart';
 
 class CartPage extends StatefulWidget {

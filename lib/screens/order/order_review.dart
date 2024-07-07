@@ -1,21 +1,29 @@
 import 'dart:math';
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/controllers/order_payment_controller.dart';
+import 'package:amul/models/order_data_model.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'cart_components/cart_controller.dart';
-import 'cart_components/cartItem_model.dart';
-import 'mainscreen.dart';
+import '../cart_components/cart_controller.dart';
+import '../cart_components/cartItem_model.dart';
+import '../mainscreen.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:intl/intl.dart';
+
+String generateRandomOrderID() {
+  int randomOrderNumber = Random().nextInt(9000) + 1000;
+  return 'ORD-$randomOrderNumber';
+}
 
 class OrderReviewPage extends StatefulWidget {
   OrderReviewPage({super.key, required this.cartItems});
 
-  String get userId => auth.currentUser?.email ?? '';
+  String get userEmail => auth.currentUser?.email ?? '';
+  String get userId => auth.currentUser?.uid ?? '';
   final auth = FirebaseAuth.instance;
 
   final RxList<CartItem> cartItems;
@@ -24,12 +32,9 @@ class OrderReviewPage extends StatefulWidget {
   State<OrderReviewPage> createState() => _OrderReviewPageState();
 }
 
-String generateRandomOrderID() {
-  int randomOrderNumber = Random().nextInt(9000) + 1000;
-  return 'ORD-$randomOrderNumber';
-}
-
 class _OrderReviewPageState extends State<OrderReviewPage> {
+  late final orderPaymentController = Get.find<OrderPaymentController>();
+
   late int count;
   bool isLoading = false;
   final messaging = FirebaseMessaging.instance;
@@ -47,6 +52,25 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     priceFetch();
     fetch();
     getToken();
+  }
+
+  Future<void> processPayment() async {
+    final OrderDataModel? orderData = await orderPaymentController
+        .getOrderIdAndSession(totalAmount, widget.userId, widget.userEmail);
+
+    if (orderData == null) {
+      handlePaymentErrorResponse();
+      return;
+    }
+
+    final cfSession = await orderPaymentController.getSession();
+
+    if (cfSession == null) {
+      handlePaymentErrorResponse();
+      return;
+    }
+
+    await orderPaymentController.payWithUpi(cfSession);
   }
 
   Future<void> fetch() async {
@@ -236,7 +260,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     Get.offAll(() => const Mainscreen());
   }
 
-  void handlePaymentErrorResponse(PaymentFailureResponse response) {
+  void handlePaymentErrorResponse() {
     Get.snackbar(
       'Payment decline',
       'Provide valid credentials',
@@ -402,12 +426,12 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                   ],
                 ),
               ),
-              child: SizedBox.expand(),
+              child: const SizedBox.expand(),
             ),
             Container(
               height: MediaQuery.of(context).size.height * 0.08,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                   colors: [
@@ -521,17 +545,19 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
               onPressed: isPaymentInProgress
                   ? null
                   : () async {
-                      setState(() {
-                        isLoading = true;
-                        isPaymentInProgress = true;
-                      });
+                      processPayment();
 
-                      navigateToPayment();
-                      await CartController.to
-                          .updateStockOnPay(CartController.to.cartItems);
-                      setState(() {
-                        isLoading = false;
-                      });
+                      // setState(() {
+                      //   isLoading = true;
+                      //   isPaymentInProgress = true;
+                      // });
+
+                      // navigateToPayment();
+                      // await CartController.to
+                      // .updateStockOnPay(CartController.to.cartItems);
+                      // setState(() {
+                      // isLoading = false;
+                      // });
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.blue,
