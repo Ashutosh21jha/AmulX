@@ -70,7 +70,6 @@ class _SignInPageState extends State<SignInPage> {
             () => const Mainscreen(),
             preventDuplicates: true,
             duration: const Duration(milliseconds: 800),
-            transition: Transition.rightToLeft,
           );
           break;
         case SignInState.needVerification:
@@ -78,7 +77,6 @@ class _SignInPageState extends State<SignInPage> {
             () => Emailverification(email),
             preventDuplicates: true,
             duration: const Duration(milliseconds: 800),
-            transition: Transition.rightToLeft,
           );
           break;
         case SignInState.userNotFound:
@@ -131,11 +129,12 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void goToForgotPasswordPage() {
-    Get.to(() => const ForgetPasswordPage(),
-        duration: const Duration(
-          milliseconds: 800,
-        ),
-        transition: Transition.rightToLeft);
+    Get.to(
+      () => const ForgetPasswordPage(),
+      duration: const Duration(
+        milliseconds: 800,
+      ),
+    );
   }
 
   String? _validteEmail(String? value) {

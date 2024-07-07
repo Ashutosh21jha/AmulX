@@ -201,11 +201,12 @@ class _HomeState extends State<HomePage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => const History(),
-                          duration: const Duration(
-                            milliseconds: 800,
-                          ),
-                          transition: Transition.rightToLeft);
+                      Get.to(
+                        () => const History(),
+                        duration: const Duration(
+                          milliseconds: 800,
+                        ),
+                      );
                     },
                     child: Icon(
                       Icons.history,

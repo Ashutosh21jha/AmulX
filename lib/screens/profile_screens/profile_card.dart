@@ -77,12 +77,13 @@ class ProfileCard extends StatelessWidget {
       onTap: () async {
         if (implement == true) {
           await signOut();
-          Get.offAll(() => screen,
-              predicate: (route) => route.isFirst,
-              duration: const Duration(
-                milliseconds: 800,
-              ),
-              transition: Transition.rightToLeft);
+          Get.offAll(
+            () => screen,
+            predicate: (route) => route.isFirst,
+            duration: const Duration(
+              milliseconds: 800,
+            ),
+          );
         } else {
           Get.to(
             () => screen,
