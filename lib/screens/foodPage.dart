@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/utils/item_card.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:shimmer/shimmer.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -26,50 +27,54 @@ class FoodPage extends StatefulWidget {
 }
 
 class FoodPageState extends State<FoodPage> {
-  final RxList<ItemsModel> availableItems = <ItemsModel>[].obs;
-  final RxList<ItemsModel> unavailableItems = <ItemsModel>[].obs;
-  final RxList<ItemsModel> mergedList = <ItemsModel>[].obs;
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  RxList<ItemsModel> defaultOrder = <ItemsModel>[].obs;
   RxList<ItemsModel> searchResults = <ItemsModel>[].obs;
+
+  RxList<ItemsModel> filteredResults = <ItemsModel>[].obs;
 
   String get userId => auth.currentUser?.email ?? '';
   final RxInt selected = 0.obs;
 
   final TextEditingController _searchController = TextEditingController();
 
-  void separateItems() {
-    for (ItemsModel itemData in widget.itemList) {
-      bool available = itemData.availability;
-      ItemsModel item = ItemsModel(
-        id: itemData.id,
-        price: itemData.price,
-        type: itemData.type,
-        availability: itemData.availability,
-        imageUrl: itemData.imageUrl,
-        stock: itemData.stock,
-      );
-      if (available == true) {
-        availableItems.add(item);
-      } else {
-        unavailableItems.add(item);
-      }
-    }
-    mergedList.clear();
-    defaultOrder.addAll(widget.itemList);
-    print(defaultOrder);
-    mergedList.addAll(availableItems);
-    mergedList.addAll(unavailableItems);
-
-    searchResults.clear();
-    searchResults.addAll(mergedList);
+  int sortPriceLowToHighFxn(ItemsModel a, ItemsModel b) {
+    return a.price.compareTo(b.price);
   }
 
-  void _showDefaultOrder() {
-    print('Before : $mergedList');
-    mergedList.clear();
-    mergedList.addAll(defaultOrder);
-    print(mergedList);
+  int sortPriceHighToLowFxn(ItemsModel a, ItemsModel b) {
+    return b.price.compareTo(a.price);
+  }
+
+  int sortAccordingToStockFxn(ItemsModel a, ItemsModel b) {
+    return a.stock.compareTo(b.stock);
+  }
+
+  int foodItemSortFunction(ItemsModel a, ItemsModel b) {
+    if (a.availability && !b.availability) {
+      return -1;
+    } else if (!a.availability && b.availability) {
+      return 1;
+    } else {
+      if (selected.value == 1) {
+        return sortPriceLowToHighFxn(a, b);
+      } else if (selected.value == 2) {
+        return sortPriceHighToLowFxn(a, b);
+      } else {
+        return sortAccordingToStockFxn(a, b);
+      }
+    }
+  }
+
+  Future<void> filterResults(String query) async {
+    if (query.isEmpty) {
+      filteredResults.value = widget.itemList;
+      return;
+    }
+
+    filteredResults.value = widget.itemList
+        .where((element) =>
+            element.id!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 
   Widget loadingShimmer() {
@@ -146,34 +151,36 @@ class FoodPageState extends State<FoodPage> {
               child: Padding(
                 padding: const EdgeInsets.only(right: 15, left: 15),
                 child: TextFormField(
-                  cursorColor: Colors.black,
-                  style: const TextStyle(
-                      color: Colors.black, decorationColor: Colors.black),
-                  controller: _searchController,
-                  textAlign: TextAlign.justify,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.search_rounded,
-                      color: Colors.black,
+                    cursorColor: Colors.black,
+                    style: const TextStyle(
+                        color: Colors.black, decorationColor: Colors.black),
+                    controller: _searchController,
+                    textAlign: TextAlign.justify,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search_rounded,
+                        color: Colors.black,
+                      ),
+                      hintText: 'Search',
+                      hintStyle: const TextStyle(color: Color(0xFF57585B)),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      fillColor: const Color(0xFFE6E6E6),
+                      filled: true,
                     ),
-                    hintText: 'Search',
-                    hintStyle: const TextStyle(color: Color(0xFF57585B)),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(8),
+                    onChanged: filterResults
+                    // (value) {
+
+                    // searchResults.clear();
+                    // searchResults.addAll(mergedList.where((item) =>
+                    //     item.id!.toLowerCase().contains(value.toLowerCase())));
+                    // },
                     ),
-                    fillColor: const Color(0xFFE6E6E6),
-                    filled: true,
-                  ),
-                  onChanged: (value) {
-                    searchResults.clear();
-                    searchResults.addAll(mergedList.where((item) =>
-                        item.id!.toLowerCase().contains(value.toLowerCase())));
-                  },
-                ),
               ),
             ),
             const SizedBox(
@@ -189,7 +196,7 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index1;
-                        print(selected.value);
+                        filteredResults.sort(foodItemSortFunction);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -222,13 +229,8 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index2;
-                        availableItems.sort(
-                          (a, b) =>
-                              int.parse(a.price).compareTo(int.parse(b.price)),
-                        );
-                        mergedList.clear();
-                        mergedList.addAll(availableItems);
-                        mergedList.addAll(unavailableItems);
+
+                        filteredResults.sort(foodItemSortFunction);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -263,13 +265,7 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index3;
-                        availableItems.sort(
-                          (a, b) =>
-                              int.parse(b.price).compareTo(int.parse(a.price)),
-                        );
-                        mergedList.clear();
-                        mergedList.addAll(availableItems);
-                        mergedList.addAll(unavailableItems);
+                        filteredResults.sort(foodItemSortFunction);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -308,20 +304,16 @@ class FoodPageState extends State<FoodPage> {
             const SizedBox(
               height: 10,
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 95),
-                child: Obx(() {
-                  return ListView.builder(
+            Obx(
+              () => Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 95),
+                  child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    itemCount: _searchController.text.isEmpty
-                        ? mergedList.length
-                        : searchResults.length,
+                    itemCount: filteredResults.length,
                     itemBuilder: (context, index) {
-                      ItemsModel itemData = _searchController.text.isEmpty
-                          ? mergedList[index]
-                          : searchResults[index];
+                      ItemsModel itemData = filteredResults[index];
                       bool available = itemData.availability;
                       bool unavailable = !available;
 
@@ -343,8 +335,8 @@ class FoodPageState extends State<FoodPage> {
                         index: index,
                       );
                     },
-                  );
-                }),
+                  ),
+                ),
               ),
             ),
           ],
@@ -353,7 +345,7 @@ class FoodPageState extends State<FoodPage> {
       floatingActionButton: InkWell(
         onTap: () async {
           await Get.to(
-            () => CartPage(true),
+            CartPage(true),
           );
 
           /* await Navigator.push(context,
@@ -415,12 +407,15 @@ class FoodPageState extends State<FoodPage> {
   void initState() {
     super.initState();
 
-    separateItems();
+    filteredResults.value = widget.itemList.value;
+
+    filteredResults.sort(
+      (a, b) => foodItemSortFunction(a, b),
+    );
+
+    // separateItems();
     ItemController.to.fetchItems();
-    CartController.to.tappedList = List.filled(mergedList.length, false);
-    CartController.to.countList = List.filled(mergedList.length, 0);
     selected.value = 0;
-    defaultOrder();
   }
 
   @override
