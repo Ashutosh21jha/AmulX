@@ -71,7 +71,6 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             preventDuplicates: true,
             duration: const Duration(milliseconds: 800),
-            transition: Transition.rightToLeft,
           );
           break;
         case SignUpState.error:
