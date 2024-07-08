@@ -71,6 +71,8 @@ class Profile extends StatelessWidget {
               const AmulXAppBar(
                 title: '',
                 showBackArrow: false,
+                bottomRoundedCorners: true,
+                bottomPadding: EdgeInsets.only(bottom: 20),
               ),
               // Container(
               //   width: MediaQuery.of(context).size.width,
@@ -104,8 +106,8 @@ class Profile extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 48, 0, 16),
                 child: TextButton.icon(
                   onPressed: () async {
-                    Get.changeTheme(
-                        Get.isDarkMode ? lightThemeData() : darkThemeData());
+                    Get.changeThemeMode(
+                        Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
                   },
                   label: Text(
                     Get.isDarkMode ? "Light Mode" : "Dark Mode",
@@ -137,7 +139,7 @@ class Profile extends StatelessWidget {
                   text: "FAQ",
                   implement: false,
                   textColor: appColors.onPrimary,
-                  screen: Faq(),
+                  screen: const Faq(),
                   iconColor: const Color(0xFFFC6DBB)),
               ProfileCard(
                   icon: Icons.file_copy,
@@ -157,7 +159,7 @@ class Profile extends StatelessWidget {
               ),
             ],
           ),
-          Positioned(top: 100, child: ProfileCard2()),
+          Positioned(top: 100 + 20, child: ProfileCard2()),
           const DevcommLogo()
         ],
       ),

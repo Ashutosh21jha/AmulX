@@ -137,7 +137,11 @@ class _EditProfileState extends State<EditProfile> {
             children: [
               Column(
                 children: [
-                  const AmulXAppBar(title: "Edit Profile"),
+                  const AmulXAppBar(
+                    title: "Edit Profile",
+                    bottomRoundedCorners: true,
+                    bottomPadding: EdgeInsets.only(bottom: 45),
+                  ),
                   Padding(
                     padding:
                         const EdgeInsets.only(left: 16, right: 16, top: 32),

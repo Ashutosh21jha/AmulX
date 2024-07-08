@@ -10,11 +10,15 @@ class AmulXAppBar extends StatelessWidget {
       {super.key,
       required this.title,
       this.showBackArrow = true,
+      this.bottomRoundedCorners = false,
+      this.bottomPadding = const EdgeInsets.only(bottom: 0),
       this.children = const <Widget>[]});
 
   final List<Widget> children;
   final String title;
   final bool showBackArrow;
+  final EdgeInsets bottomPadding;
+  final bool bottomRoundedCorners;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +27,19 @@ class AmulXAppBar extends StatelessWidget {
 
     return Container(
       alignment: Alignment.bottomCenter,
-      height: MediaQuery.of(context).size.height * 0.16,
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
+      height:
+          (MediaQuery.of(context).size.height * 0.16) + bottomPadding.bottom,
+      padding: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height * 0.08,
+          bottom: bottomPadding.bottom),
+      decoration: BoxDecoration(
+        borderRadius: bottomRoundedCorners
+            ? const BorderRadius.only(
+                bottomLeft: Radius.elliptical(40, 20),
+                bottomRight: Radius.elliptical(40, 20),
+              )
+            : null,
+        gradient: const LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [

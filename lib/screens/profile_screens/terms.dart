@@ -1,4 +1,5 @@
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:flutter/material.dart';
 
 class Terms extends StatelessWidget {
@@ -11,162 +12,79 @@ class Terms extends StatelessWidget {
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(children: [
-      Container(
-        height: 60,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [
-              Color(0xFF00084B),
-              Color(0xFF2E55C0),
-              Color(0xFF148BFA),
-            ],
-          ),
-          /* borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(80),
-                  bottomRight: Radius.circular(80),
-                ),*/
-        ),
-      ),
-      Container(
-        height: 75,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [
-              Color(0xFF00084B),
-              Color(0xFF2E55C0),
-              Color(0xFF148BFA),
-            ],
-          ),
-          /* borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(80),
-                  bottomRight: Radius.circular(80),
-                ),*/
-        ),
-        child: Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.of(context).pop(),
+      const AmulXAppBar(title: "Terms & Conditions"),
+      SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              // Text(
+              //   'Devcomms Privacy Policy',
+              //   style: TextStyle(
+              //       fontSize: 18,
+              //       color: appColors.secondaryText,
+              //       fontWeight: FontWeight.w900,
+              //       fontFamily: 'Epilogue'),
+              // ),
+              const SizedBox(
+                height: 30,
               ),
-            ),
-            const Center(
-              child: Text(
-                'Terms & Conditions',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontFamily: 'Epilogue',
-                  fontWeight: FontWeight.w700,
-                  height: 0.06,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'License to Use: By downloading or using the Amulx app, you are granted a limited, non-exclusive, non-transferable license to use the app for your personal, non-commercial use. The app and all associated content remain the property of the apps developers and/or licensors.',
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: appColors.primaryText,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Epilogue'),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-      Stack(children: [
-        Container(
-          height: 45,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                Color(0xFF00084B),
-                Color(0xFF2E55C0),
-                Color(0xFF148BFA),
-              ],
-            ),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.elliptical(40, 20),
-              bottomRight: Radius.elliptical(40, 20),
-            ),
-          ),
-        ),
-        Align(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 80,
-                  ),
-                  Text(
-                    'Devcomms Privacy Policy',
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: appColors.secondaryText,
-                        fontWeight: FontWeight.w900,
-                        fontFamily: 'Epilogue'),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'License to Use: By downloading or using the Amulx app, you are granted a limited, non-exclusive, non-transferable license to use the app for your personal, non-commercial use. The app and all associated content remain the property of the apps developers and/or licensors.',
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: appColors.secondaryText,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Epilogue'),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'In no event will the apps developers and/or licensors be liable for any direct, '
-                      'indirect, incidental, special, consequential, or exemplary damages, '
-                      'including but not limited to damages for loss of profits, goodwill, use, data, or other '
-                      'intangible losses, arising out of or in connection with the Amulx app or any associated content.',
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: appColors.secondaryText,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Epilogue'),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'The Amulx app may collect certain personal information from you,'
-                      ' such as your name, email address, and usage data.'
-                      ' The apps developers and/or licensors will use this information in accordance with their privacy policy,'
-                      ' which can be found on the apps website.',
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: appColors.secondaryText,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Epilogue'),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'The apps developers and/or licensors reserve the right to modify these terms and '
-                      'conditions at any time, without notice. Your continued use of the Amulx app following any such '
-                      'modifications will constitute your acceptance of the modified terms and conditions.',
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: appColors.secondaryText,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Epilogue'),
-                    ),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'In no event will the apps developers and/or licensors be liable for any direct, '
+                  'indirect, incidental, special, consequential, or exemplary damages, '
+                  'including but not limited to damages for loss of profits, goodwill, use, data, or other '
+                  'intangible losses, arising out of or in connection with the Amulx app or any associated content.',
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: appColors.primaryText,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Epilogue'),
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'The Amulx app may collect certain personal information from you,'
+                  ' such as your name, email address, and usage data.'
+                  ' The apps developers and/or licensors will use this information in accordance with their privacy policy,'
+                  ' which can be found on the apps website.',
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: appColors.primaryText,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Epilogue'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'The apps developers and/or licensors reserve the right to modify these terms and '
+                  'conditions at any time, without notice. Your continued use of the Amulx app following any such '
+                  'modifications will constitute your acceptance of the modified terms and conditions.',
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: appColors.primaryText,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Epilogue'),
+                ),
+              ),
+            ],
           ),
-        )
-      ])
+        ),
+      )
     ])));
   }
 }

@@ -1,132 +1,73 @@
+import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class Faq extends StatefulWidget {
+  const Faq({super.key});
+
   @override
   _FaqPageState createState() => _FaqPageState();
 }
 
 class _FaqPageState extends State<Faq> {
-  bool _isExpanded1 = true;
-  bool _isExpanded2 = true;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
           children: [
-            Container(
-              height: 60,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xFF00084B),
-                    Color(0xFF2E55C0),
-                    Color(0xFF148BFA),
-                  ],
-                ),
-              ),
+            const AmulXAppBar(
+              title: "FAQs",
+              showBackArrow: true,
+              bottomRoundedCorners: true,
+              bottomPadding: EdgeInsets.only(bottom: 45),
             ),
-            Container(
-              height: 75,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xFF00084B),
-                    Color(0xFF2E55C0),
-                    Color(0xFF148BFA),
-                  ],
-                ),
-              ),
-              child: Stack(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ),
-                  Center(
-                    child: const Text(
-                      'FAQs',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'Epilogue',
-                        fontWeight: FontWeight.w700,
-                        height: 0.06,
+            Positioned.fill(
+              top: 130,
+              child: Align(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      StreamBuilder<QuerySnapshot>(
+                        stream: _firestore.collection('QNA').snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return const Text("Something went wrong");
+                          }
+
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Text("Loading");
+                          }
+
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: snapshot.data!.docs
+                                  .map((DocumentSnapshot document) {
+                                Map<String, dynamic> data =
+                                    document.data() as Map<String, dynamic>;
+                                return FAQItem(
+                                  question: data['question'],
+                                  answer: data['answer'],
+                                  isExpanded: false,
+                                  onExpansionChanged: (value) {},
+                                );
+                              }).toList(),
+                            ),
+                          );
+                        },
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-            Stack(
-              children: [
-                Container(
-                  height: 45,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Color(0xFF00084B),
-                        Color(0xFF2E55C0),
-                        Color(0xFF148BFA),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.elliptical(40, 20),
-                      bottomRight: Radius.elliptical(40, 20),
-                    ),
-                  ),
-                ),
-                Align(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        StreamBuilder<QuerySnapshot>(
-                          stream: _firestore.collection('QNA').snapshots(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (snapshot.hasError) {
-                              return Text("Something went wrong");
-                            }
-
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Text("Loading");
-                            }
-
-                            return SingleChildScrollView(
-                              child: Column(
-                                children: snapshot.data!.docs
-                                    .map((DocumentSnapshot document) {
-                                  Map<String, dynamic> data =
-                                      document.data() as Map<String, dynamic>;
-                                  return FAQItem(
-                                    question: data['question'],
-                                    answer: data['answer'],
-                                    isExpanded: false,
-                                    onExpansionChanged: (value) {},
-                                  );
-                                }).toList(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),
@@ -141,7 +82,8 @@ class FAQItem extends StatefulWidget {
   final bool isExpanded;
   final ValueChanged<bool> onExpansionChanged;
 
-  FAQItem({
+  const FAQItem({
+    super.key,
     required this.question,
     required this.answer,
     required this.isExpanded,
@@ -155,6 +97,8 @@ class FAQItem extends StatefulWidget {
 class _FAQItemState extends State<FAQItem> {
   @override
   Widget build(BuildContext context) {
+    late final AppColors2 appColors =
+        Theme.of(context).extension<AppColors2>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -167,11 +111,34 @@ class _FAQItemState extends State<FAQItem> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: ExpansionTile(
-              shape: BeveledRectangleBorder(),
+              shape: const BeveledRectangleBorder(),
+              backgroundColor: appColors.surfaceColor,
+              collapsedBackgroundColor: appColors.surfaceColor,
               title: Text(widget.question),
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                  decoration: ShapeDecoration(
+                    color: appColors.surfaceColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                    shadows: const [
+                      BoxShadow(
+                        color: Color(0x28606170),
+                        blurRadius: 2,
+                        offset: Offset(0, 0.50),
+                        spreadRadius: 0,
+                      ),
+                      BoxShadow(
+                        color: Color(0x1428293D),
+                        blurRadius: 1,
+                        offset: Offset(0, 0),
+                        spreadRadius: 0,
+                      )
+                    ],
+                  ),
                   child: Text(widget.answer),
                 ),
               ],
