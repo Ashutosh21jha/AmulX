@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:logger/web.dart';
 import '../widgets/item.dart';
 
 class History extends StatefulWidget {
@@ -97,9 +99,32 @@ class _HistoryState extends State<History> {
                   List<Map<String, dynamic>> orders = snapshot.data!.docs
                       .map((doc) => doc.data() as Map<String, dynamic>)
                       .toList();
-                  orders.sort((order1, order2) =>
-                      (order2['orders'][0]['time'] as Timestamp)
-                          .compareTo(order1['orders'][0]['time'] as Timestamp));
+
+                  orders = orders.map((Map<String, dynamic> order) {
+                    order['orders'] =
+                        (order['orders'] as List<dynamic>).map((perOrder) {
+                      late final DateTime orderTime;
+                      dynamic time = perOrder['time'];
+
+                      try {
+                        orderTime = (time as Timestamp).toDate();
+                      } catch (e) {
+                        orderTime =
+                            DateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(time);
+                      }
+
+                      perOrder['time'] = orderTime;
+
+                      return perOrder;
+                    }).toList();
+
+                    return order;
+                  }).toList();
+
+                  orders.sort((order1, order2) {
+                    return order2['orders'][0]['time']
+                        .compareTo(order1['orders'][0]['time']);
+                  });
 
                   return ListView.builder(
                     itemCount: orders.length,
@@ -126,8 +151,18 @@ class _HistoryState extends State<History> {
                                   quantity: item.value['count']))
                               .toList();
                           String orderName = orderItem['orderID'];
-                          DateTime orderTime =
-                              (orderItem['time'] as Timestamp).toDate();
+
+                          // print(orderItem['time']);
+
+                          final DateTime orderTime = orderItem['time'];
+
+                          // try {
+                          //   orderTime =
+                          //       (orderItem['time'] as Timestamp).toDate();
+                          // } catch (e) {
+                          //   orderTime = DateFormat("yyyy-MM-dd'T'HH:mm:ssxxx")
+                          //       .parse(orderItem['time']);
+                          // }
 
                           return ListItem(
                             id: snapshot.data!.docs[index].id,
