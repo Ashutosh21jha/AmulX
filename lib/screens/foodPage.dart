@@ -28,11 +28,9 @@ class FoodPage extends StatefulWidget {
 
 class FoodPageState extends State<FoodPage> {
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
-  RxList<ItemsModel> searchResults = <ItemsModel>[].obs;
 
   RxList<ItemsModel> filteredResults = <ItemsModel>[].obs;
 
-  String get userId => auth.currentUser?.email ?? '';
   final RxInt selected = 0.obs;
 
   final TextEditingController _searchController = TextEditingController();
@@ -50,11 +48,7 @@ class FoodPageState extends State<FoodPage> {
   }
 
   int foodItemSortFunction(ItemsModel a, ItemsModel b) {
-    if (a.availability && !b.availability) {
-      return -1;
-    } else if (!a.availability && b.availability) {
-      return 1;
-    } else {
+    if (!(a.availability ^ b.availability)) {
       if (selected.value == 1) {
         return sortPriceLowToHighFxn(a, b);
       } else if (selected.value == 2) {
@@ -62,19 +56,27 @@ class FoodPageState extends State<FoodPage> {
       } else {
         return sortAccordingToStockFxn(a, b);
       }
+    } else {
+      if (a.availability && !b.availability) {
+        return -1;
+      } else {
+        return 1;
+      }
     }
   }
 
   Future<void> filterResults(String query) async {
     if (query.isEmpty) {
       filteredResults.value = widget.itemList;
-      return;
+    } else {
+      filteredResults.value = widget.itemList
+          .where((element) =>
+              element.id!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     }
 
-    filteredResults.value = widget.itemList
-        .where((element) =>
-            element.id!.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+    filteredResults.value = filteredResults.toList()
+      ..sort(foodItemSortFunction);
   }
 
   Widget loadingShimmer() {
@@ -196,7 +198,8 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index1;
-                        filteredResults.sort(foodItemSortFunction);
+                        filteredResults.value = filteredResults.toList()
+                          ..sort(foodItemSortFunction);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -230,7 +233,8 @@ class FoodPageState extends State<FoodPage> {
                       onTap: () {
                         selected.value = index2;
 
-                        filteredResults.sort(foodItemSortFunction);
+                        filteredResults.value = filteredResults.toList()
+                          ..sort(foodItemSortFunction);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -265,7 +269,8 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index3;
-                        filteredResults.sort(foodItemSortFunction);
+                        filteredResults.value = filteredResults.toList()
+                          ..sort(foodItemSortFunction);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -318,15 +323,6 @@ class FoodPageState extends State<FoodPage> {
                       bool unavailable = !available;
 
                       bool isOutOfStock = available && itemData.stock == 0;
-
-                      String? itemname = itemData.id;
-
-                      if (_searchController.text.isNotEmpty &&
-                          !itemname!
-                              .toLowerCase()
-                              .contains(_searchController.text.toLowerCase())) {
-                        return Container();
-                      }
 
                       return ItemCard(
                         itemData: itemData,
@@ -409,9 +405,8 @@ class FoodPageState extends State<FoodPage> {
 
     filteredResults.value = widget.itemList.value;
 
-    filteredResults.sort(
-      (a, b) => foodItemSortFunction(a, b),
-    );
+    filteredResults.value = filteredResults.toList()
+      ..sort(foodItemSortFunction);
 
     // separateItems();
     ItemController.to.fetchItems();
@@ -433,6 +428,7 @@ class FoodPageState extends State<FoodPage> {
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
+            backgroundColor: appColors.backgroundColor,
             body: FutureBuilder(
               future: Future.delayed(const Duration(
                   seconds: 2)), // Add your desired delay duration
