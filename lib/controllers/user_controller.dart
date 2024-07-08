@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -29,7 +30,6 @@ class UserController extends GetxController {
     if (userData != null) {
       userName.value = (userData['name'] as String).capitalizeFirst ?? '';
       studentId.value = userData['student id'] ?? '';
-      email.value = userData['email'] ?? '';
       imageUrl.value = userData['imageUrl'] ?? '';
     }
   }
@@ -43,6 +43,50 @@ class UserController extends GetxController {
           .putFile(imageFile);
     } on FirebaseException catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> updateUserOrderStatusTo(bool status) async {
+    await FirebaseFirestore.instance
+        .collection('User')
+        .doc(email.value)
+        .update({'currentOrder': status});
+  }
+
+  Future<void> addOrderToUserHistrory(
+      String formattedDate, String orderID) async {
+    final CartController cartController = Get.find<CartController>();
+
+    final orderData = {
+      'orders': FieldValue.arrayUnion([
+        {
+          'items': cartController.cartItems.fold<Map<String, dynamic>>({},
+              (map, item) {
+            map[item.name] = {
+              'count': item.quantity,
+              'price': item.price,
+            };
+            return map;
+          }),
+          'orderID': orderID,
+          'time': formattedDate,
+          'orderStatus': 'Placed',
+        }
+      ]),
+    };
+
+    await updateUserOrderStatusTo(true);
+
+    final historyCollection =
+        FirebaseFirestore.instance.collection('User/${email.value}/history');
+    final docSnapshot = await historyCollection.doc(formattedDate).get();
+
+    if (docSnapshot.exists) {
+      // Document exists, update it
+      await historyCollection.doc(formattedDate).update(orderData);
+    } else {
+      // Document doesn't exist, create it
+      await historyCollection.doc(formattedDate).set(orderData);
     }
   }
 }

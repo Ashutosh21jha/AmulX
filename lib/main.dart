@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:logger/web.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -15,6 +16,7 @@ void main() async {
   await FirebaseMessaging.instance.requestPermission();
 
   final UserController userController = Get.put(UserController());
+  final logger = Get.put(Logger());
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,

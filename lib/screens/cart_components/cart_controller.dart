@@ -284,32 +284,32 @@ class CartController extends GetxController {
       // Handle the error as needed
     }
   }
-}
 
-Future<void> addBackStock(List<CartItem> cartItems) async {
-  try {
-    await _db.runTransaction((transaction) async {
-      final availableCollection =
-          _db.collection('menu').doc('today menu').collection('available');
+  Future<void> addBackStock(List<CartItem> cartItems) async {
+    try {
+      await _db.runTransaction((transaction) async {
+        final availableCollection =
+            _db.collection('menu').doc('today menu').collection('available');
 
-      for (final cartItem in cartItems) {
-        final itemDoc = await availableCollection.doc(cartItem.name).get();
+        for (final cartItem in cartItems) {
+          final itemDoc = await availableCollection.doc(cartItem.name).get();
 
-        if (itemDoc.exists) {
-          final currentStock = itemDoc['stock'] ?? 0;
-          final newStock = currentStock + cartItem.quantity;
+          if (itemDoc.exists) {
+            final currentStock = itemDoc['stock'] ?? 0;
+            final newStock = currentStock + cartItem.quantity;
 
-          // Update the stock
-          transaction.update(
-            availableCollection.doc(cartItem.name),
-            {'stock': newStock},
-          );
+            // Update the stock
+            transaction.update(
+              availableCollection.doc(cartItem.name),
+              {'stock': newStock},
+            );
+          }
         }
-      }
-    });
-  } catch (error) {
-    print('Error adding back stock: $error');
-    // Handle the error as needed
+      });
+    } catch (error) {
+      print('Error adding back stock: $error');
+      // Handle the error as needed
+    }
   }
 }
 

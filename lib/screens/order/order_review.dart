@@ -3,21 +3,18 @@ import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/order_payment_controller.dart';
 import 'package:amul/models/order_data_model.dart';
 import 'package:amul/screens/profile.dart';
+import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/web.dart';
 import '../cart_components/cart_controller.dart';
 import '../cart_components/cartItem_model.dart';
 import '../mainscreen.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:intl/intl.dart';
-
-String generateRandomOrderID() {
-  int randomOrderNumber = Random().nextInt(9000) + 1000;
-  return 'ORD-$randomOrderNumber';
-}
 
 class OrderReviewPage extends StatefulWidget {
   OrderReviewPage({super.key, required this.cartItems});
@@ -33,47 +30,59 @@ class OrderReviewPage extends StatefulWidget {
 }
 
 class _OrderReviewPageState extends State<OrderReviewPage> {
+  late final logger = Get.find<Logger>();
   late final orderPaymentController = Get.find<OrderPaymentController>();
 
   late int count;
   bool isLoading = false;
-  final messaging = FirebaseMessaging.instance;
-  late String fcm_token;
   bool isPaymentInProgress = false;
-
-  Future<void> getToken() async {
-    fcm_token = (await messaging.getToken())!;
-    print('Token is : $fcm_token');
-  }
 
   @override
   void initState() {
     super.initState();
     priceFetch();
-    fetch();
-    getToken();
   }
 
   Future<void> processPayment() async {
-    final OrderDataModel? orderData = await orderPaymentController
-        .getOrderIdAndSession(totalAmount, widget.userId, widget.userEmail);
+    setState(() {
+      isPaymentInProgress = true;
+      isLoading = true;
+    });
 
-    if (orderData == null) {
-      handlePaymentErrorResponse();
-      return;
+    try {
+      final String? orderID = await getAndUpdateOrderIdInFirebase();
+
+      logger.i(orderID);
+
+      final OrderDataModel? orderData =
+          await orderPaymentController.getOrderIdAndSession(
+              totalAmount, widget.userId, widget.userEmail, orderID!);
+
+      if (orderData == null) {
+        AmulXSnackBars.showPaymentOrderFailureSnackbar();
+        return;
+      }
+
+      final cfSession = await orderPaymentController.getSession();
+
+      if (cfSession == null) {
+        AmulXSnackBars.showPaymentOrderFailureSnackbar();
+        return;
+      }
+
+      await CartController.to.updateStockOnPay(CartController.to.cartItems);
+
+      await orderPaymentController.payWithUpi(cfSession);
+    } finally {
+      setState(() {
+        isLoading = false;
+        isPaymentInProgress = false;
+      });
     }
-
-    final cfSession = await orderPaymentController.getSession();
-
-    if (cfSession == null) {
-      handlePaymentErrorResponse();
-      return;
-    }
-
-    await orderPaymentController.payWithUpi(cfSession);
   }
 
-  Future<void> fetch() async {
+  Future<String?> getAndUpdateOrderIdInFirebase() async {
+    String? orderID;
     try {
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         DocumentReference countRef =
@@ -81,224 +90,59 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
         DocumentSnapshot countSnapshot = await transaction.get(countRef);
         int count = countSnapshot.get('ID');
-
         transaction.update(countRef, {'ID': ++count});
+        orderID = "ORD-$count";
       });
     } catch (error) {
       print('Error updating order count: $error');
     }
+
+    return orderID;
   }
 
-  Future<void> addBackStock(List<CartItem> cartItems) async {
-    try {
-      await db.runTransaction((transaction) async {
-        final availableCollection =
-            db.collection('menu').doc('today menu').collection('available');
+  // Future<void> addBackStock(List<CartItem> cartItems) async {
+  //   try {
+  //     await db.runTransaction((transaction) async {
+  //       final availableCollection =
+  //           db.collection('menu').doc('today menu').collection('available');
 
-        for (final cartItem in cartItems) {
-          final itemDoc = await availableCollection.doc(cartItem.name).get();
+  //       for (final cartItem in cartItems) {
+  //         final itemDoc = await availableCollection.doc(cartItem.name).get();
 
-          if (itemDoc.exists) {
-            final currentStock = itemDoc['stock'] ?? 0;
-            final newStock = currentStock + cartItem.quantity;
+  //         if (itemDoc.exists) {
+  //           final currentStock = itemDoc['stock'] ?? 0;
+  //           final newStock = currentStock + cartItem.quantity;
 
-            // Update the stock
-            transaction.update(
-              availableCollection.doc(cartItem.name),
-              {'stock': newStock},
-            );
-            if (newStock == 0) {
-              transaction.update(
-                availableCollection.doc(cartItem.name),
-                {'availability': false},
-              );
-            }
-            if (itemDoc['availability'] == false) {
-              if (newStock > 0) {
-                transaction.update(
-                  availableCollection.doc(cartItem.name),
-                  {'availability': true},
-                );
-              }
-            }
-          }
-        }
-      });
-    } catch (error) {
-      print('Error adding back stock: $error');
-      // Handle the error as needed
-    }
-    CartController.to.reloadCart();
-  }
+  //           // Update the stock
+  //           transaction.update(
+  //             availableCollection.doc(cartItem.name),
+  //             {'stock': newStock},
+  //           );
+  //           if (newStock == 0) {
+  //             transaction.update(
+  //               availableCollection.doc(cartItem.name),
+  //               {'availability': false},
+  //             );
+  //           }
+  //           if (itemDoc['availability'] == false) {
+  //             if (newStock > 0) {
+  //               transaction.update(
+  //                 availableCollection.doc(cartItem.name),
+  //                 {'availability': true},
+  //               );
+  //             }
+  //           }
+  //         }
+  //       }
+  //     });
+  //   } catch (error) {
+  //     print('Error adding back stock: $error');
+  //     // Handle the error as needed
+  //   }
+  //   CartController.to.reloadCart();
+  // }
 
-  Future<String> getUserName(String userId) async {
-    try {
-      final userDoc =
-          await FirebaseFirestore.instance.collection('User').doc(userId).get();
-
-      if (userDoc.exists) {
-        return userDoc['name'];
-      } else {
-        return '';
-      }
-    } catch (error) {
-      print('Error getting user name: $error');
-      return '';
-    }
-  }
-
-  void handlePaymentSuccessResponse(
-      PaymentSuccessResponse response, CartController cartController) async {
-    try {
-      final formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
-
-      final historyCollection =
-          FirebaseFirestore.instance.collection('User/$userId/history');
-      count = 0;
-      await FirebaseFirestore.instance
-          .collection('orderID')
-          .doc('IDCount')
-          .get()
-          .then((value) {
-        count = value.get('ID');
-      });
-
-      final prepListCollection =
-          FirebaseFirestore.instance.collection('prepList');
-
-      String orderID = generateRandomOrderID();
-
-      final orderData = {
-        'orders': FieldValue.arrayUnion([
-          {
-            'items': cartController.cartItems.fold<Map<String, dynamic>>({},
-                (map, item) {
-              map[item.name] = {
-                'count': item.quantity,
-                'price': item.price,
-              };
-              return map;
-            }),
-            'orderID': 'ORD-$count',
-            'time': DateTime.now(),
-            'orderStatus': 'Placed',
-          }
-        ]),
-      };
-
-      final itemsMap = cartController.cartItems.fold<Map<String, dynamic>>(
-        {},
-        (map, item) {
-          map[item.name] = {
-            'count': item.quantity,
-            'price': item.price,
-          };
-          return map;
-        },
-      );
-      final prepListOrderData = {
-        'userId': userId,
-        'items': itemsMap,
-        'orderID': 'ORD-$count',
-        'orderStatus': 'Preparing',
-        'name': await getUserName(userId),
-        'time': DateTime.now(),
-        'token': fcm_token,
-      };
-
-      final docSnapshot = await historyCollection.doc(formattedDate).get();
-
-      if (docSnapshot.exists) {
-        // Document exists, update it
-        await historyCollection.doc(formattedDate).update(orderData);
-      } else {
-        // Document doesn't exist, create it
-        await historyCollection.doc(formattedDate).set(orderData);
-      }
-
-      await prepListCollection.doc('ORD-$count').set(prepListOrderData);
-
-      prepListCollection.doc('ORD-$count').snapshots().listen((event) async {
-        final newOrderStatus = event['orderStatus'];
-      });
-
-      await FirebaseFirestore.instance
-          .collection('User')
-          .doc(userId)
-          .update({'currentOrder': true});
-
-      Get.snackbar(
-        'Payment Successful',
-        'Thank You for using Amul',
-        backgroundGradient: const LinearGradient(
-          colors: [
-            Color(0xFFA2E8D8),
-            AppColors.green,
-            Color(0xFF007A52),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        duration: const Duration(seconds: 1),
-        barBlur: 10,
-        icon: Image.asset(
-          'assets/images/icon.png',
-          width: 24,
-          height: 24,
-        ),
-      );
-      await CartController.to.deleteCart();
-      setState(() {
-        isLoading = false;
-      });
-    } catch (error) {
-      print('Error handling payment success: $error');
-      setState(() {
-        isLoading = false;
-      });
-    }
-    Get.offAll(() => const Mainscreen());
-  }
-
-  void handlePaymentErrorResponse() {
-    Get.snackbar(
-      'Payment decline',
-      'Provide valid credentials',
-      barBlur: 10,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFF98181),
-          AppColors.red,
-          Color(0xFF850000),
-        ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ),
-      duration: const Duration(seconds: 1),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
-    );
-    Get.offAll(() => const Mainscreen());
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
-    }
-    addBackStock(CartController.to.cartItems);
-  }
-
-  void handleExternalWalletSelected(ExternalWalletResponse response) {
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  void showsnackBar(List item) {
+  void stockExceedSnackBar(List item) {
     Get.snackbar(
       'Stock Exceeded',
       'Reduce quantity for ${item.join(', ')}',
@@ -319,18 +163,9 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         height: 24,
       ),
     );
-
-    // Get.snackbar(
-    //   'Stock Exceeded',
-    //   'Reduce quantity for ${item.join(', ')}',
-    //   colorText: Colors.indigo,
-    //   backgroundColor: Colors.transparent,
-    //   snackPosition: SnackPosition.TOP,
-    // );
   }
 
   Future<void> navigateToPayment() async {
-    print('Inside navigateToPayment');
     final exceededItems = <String>[];
 
     // Check if the quantity exceeds stock for each item
@@ -344,44 +179,18 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
     if (exceededItems.isNotEmpty) {
       print('Stock Exceeded for items: ${exceededItems.join(', ')}');
-      showsnackBar(exceededItems);
+
       setState(() {
         isLoading = false;
       });
-      // Get.back();
-    } else {
-      print("Stock check passed");
-      final cartItems = widget.cartItems;
-      double totalAmount = 0.0;
-      for (var item in cartItems) {
-        totalAmount += item.price * item.quantity;
-      }
-      Razorpay razorpay = Razorpay();
 
-      var options = {
-        /*          'key': 'rzp_test_Hy9f4oAIXRyJIw',*/
-        'key': 'rzp_test_Hy9f4oAIXRyJIw',
-        'amount': (totalAmount * 100).toInt(),
-        'name': 'Amul powered by Devcomm',
-        'image': 'https://example.com/your_image.png',
-        'description': 'Amul Nsut',
-        'timeout': 90,
-        'currency': 'INR',
-        'retry': {'enabled': true, 'max_count': 1},
-        'send_sms_hash': true,
-        'external': {
-          'wallets': ['paytm']
-        },
-        'prefill': {'contact': '8178600597', 'email': 'devcomm.nsut@nsut.ac.in'}
-      };
-
-      razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
-      razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (response) {
-        handlePaymentSuccessResponse(response, CartController.to);
-      });
-      razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
-      razorpay.open(options);
+      stockExceedSnackBar(exceededItems);
+      return;
     }
+
+    print("Stock check passed");
+
+    processPayment();
   }
 
   Future<int> getStockFromMenu(String itemName) async {
@@ -546,11 +355,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                   ? null
                   : () async {
                       processPayment();
-
-                      // setState(() {
-                      //   isLoading = true;
-                      //   isPaymentInProgress = true;
-                      // });
 
                       // navigateToPayment();
                       // await CartController.to
