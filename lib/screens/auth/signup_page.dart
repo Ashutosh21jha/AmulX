@@ -309,7 +309,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             obscureText: false,
                           ),
                           AuthInputWidget(
-                              hintText: " ",
+                              hintText: "Password",
                               label: "Password",
                               icon: IconButton(
                                   onPressed: () {
