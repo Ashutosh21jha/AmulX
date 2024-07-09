@@ -219,7 +219,7 @@ class _SignInPageState extends State<SignInPage> {
                             obscureText: false,
                           ),
                           AuthInputWidget(
-                              hintText: "*************",
+                              hintText: " ",
                               label: "Password",
                               icon: IconButton(
                                   onPressed: () {
