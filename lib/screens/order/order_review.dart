@@ -3,6 +3,7 @@ import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/order_payment_controller.dart';
 import 'package:amul/models/order_data_model.dart';
 import 'package:amul/screens/profile.dart';
+import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -228,59 +229,9 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.10,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xFF00084B),
-                    Color(0xFF2E55C0),
-                    Color(0xFF148BFA),
-                  ],
-                ),
-              ),
-              child: const SizedBox.expand(),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.08,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xFF00084B),
-                    Color(0xFF2E55C0),
-                    Color(0xFF148BFA),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(0.01),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      )),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.27),
-                  const Text(
-                    "Summary",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontFamily: 'Epilogue',
-                      fontWeight: FontWeight.w700,
-                      height: 0.06,
-                    ),
-                  ),
-                ],
-              ),
+            const AmulXAppBar(
+              title: "Summary",
+              showBackArrow: true,
             ),
             const SizedBox(
               height: 20,
