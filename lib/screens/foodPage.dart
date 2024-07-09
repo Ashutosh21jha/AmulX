@@ -207,10 +207,12 @@ class FoodPageState extends State<FoodPage> {
                           width: 160,
                           decoration: BoxDecoration(
                             color: selected.value == index1
-                                ? AppColors.blue
-                                : Colors.white,
+                                ? appColors.blue
+                                : appColors.surfaceColor,
                             border: Border.all(
-                              color: const Color(0xFF2546A9),
+                              color: Get.isDarkMode
+                                  ? Colors.white70
+                                  : const Color(0xFF2546A9),
                               width: 1, // Border width
                             ),
                             borderRadius:
@@ -221,8 +223,8 @@ class FoodPageState extends State<FoodPage> {
                               "Most Popular",
                               style: TextStyle(
                                 color: selected.value == index1
-                                    ? Colors.white
-                                    : AppColors.blue,
+                                    ? appColors.onPrimary
+                                    : appColors.secondaryText,
                               ),
                             ),
                           ),
@@ -242,12 +244,12 @@ class FoodPageState extends State<FoodPage> {
                           width: 240,
                           decoration: BoxDecoration(
                             color: selected.value == index2
-                                ? AppColors.blue
-                                : (Get.isDarkMode
-                                    ? const Color(0xFFE6E6E6)
-                                    : Colors.white),
+                                ? appColors.blue
+                                : appColors.surfaceColor,
                             border: Border.all(
-                              color: const Color(0xFF2546A9), // Border color
+                              color: Get.isDarkMode
+                                  ? Colors.white70
+                                  : const Color(0xFF2546A9),
                               width: 1, // Border width
                             ),
                             borderRadius:
@@ -258,8 +260,8 @@ class FoodPageState extends State<FoodPage> {
                               "Price: Lowest - Highest",
                               style: TextStyle(
                                 color: selected.value == index2
-                                    ? Colors.white
-                                    : AppColors.blue,
+                                    ? appColors.onPrimary
+                                    : appColors.secondaryText,
                               ),
                             ),
                           ),
@@ -278,12 +280,12 @@ class FoodPageState extends State<FoodPage> {
                           width: 240,
                           decoration: BoxDecoration(
                             color: selected.value == index3
-                                ? AppColors.blue
-                                : (Get.isDarkMode
-                                    ? const Color(0xFFE6E6E6)
-                                    : Colors.white),
+                                ? appColors.blue
+                                : appColors.surfaceColor,
                             border: Border.all(
-                              color: const Color(0xFF2546A9), // Border color
+                              color: Get.isDarkMode
+                                  ? Colors.white70
+                                  : const Color(0xFF2546A9),
                               width: 1, // Border width
                             ),
                             borderRadius:
@@ -294,8 +296,8 @@ class FoodPageState extends State<FoodPage> {
                               "Price: Highest - Lowest",
                               style: TextStyle(
                                 color: selected.value == index3
-                                    ? Colors.white
-                                    : AppColors.blue,
+                                    ? appColors.onPrimary
+                                    : appColors.secondaryText,
                               ),
                             ),
                           ),
@@ -325,6 +327,7 @@ class FoodPageState extends State<FoodPage> {
                       bool isOutOfStock = available && itemData.stock == 0;
 
                       return ItemCard(
+                        key: Key(index.toString()),
                         itemData: itemData,
                         isOutOfStock: isOutOfStock,
                         unavailable: unavailable,
