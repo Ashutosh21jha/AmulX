@@ -4,6 +4,7 @@ import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:logger/web.dart';
 
 final _auth = FirebaseAuth.instance;
 final _db = FirebaseFirestore.instance;
@@ -247,7 +248,9 @@ class CartController extends GetxController {
     }
   }
 
-  Future<void> updateStockOnPay(List<CartItem> cartItems) async {
+  Future<bool?> updateStockOnPay(List<CartItem> cartItems) async {
+    bool? anyItemOutOfStock = false;
+
     try {
       await _db.runTransaction((transaction) async {
         final availableCollection =
@@ -257,8 +260,8 @@ class CartController extends GetxController {
           final itemDoc = await availableCollection.doc(cartItem.name).get();
 
           if (itemDoc.exists) {
-            final currentStock = itemDoc['stock'] ?? 0;
-            final newStock = currentStock - cartItem.quantity;
+            final int currentStock = itemDoc['stock'] ?? 0;
+            final int newStock = currentStock - cartItem.quantity;
 
             if (newStock > 0) {
               // Update the stock
@@ -266,13 +269,13 @@ class CartController extends GetxController {
                 availableCollection.doc(cartItem.name),
                 {'stock': newStock},
               );
-            }
-            if (newStock == 0) {
+            } else if (newStock == 0) {
               transaction.update(
                 availableCollection.doc(cartItem.name),
                 {'availability': false, 'stock': newStock},
               );
             } else {
+              anyItemOutOfStock = true;
               // Handle out-of-stock case
               print('Item ${cartItem.name} is out of stock.');
             }
@@ -281,8 +284,11 @@ class CartController extends GetxController {
       });
     } catch (error) {
       print('Error updating stock on pay: $error');
+      return null;
       // Handle the error as needed
     }
+
+    return anyItemOutOfStock;
   }
 
   Future<void> addBackStock(List<CartItem> cartItems) async {
@@ -313,32 +319,32 @@ class CartController extends GetxController {
   }
 }
 
-Future<void> updateStockOnPay(List<CartItem> cartItems) async {
-  try {
-    await _db.runTransaction((transaction) async {
-      final availableCollection =
-          _db.collection('menu').doc('today menu').collection('available');
+// Future<void> updateStockOnPay(List<CartItem> cartItems) async {
+//   try {
+//     await _db.runTransaction((transaction) async {
+//       final availableCollection =
+//           _db.collection('menu').doc('today menu').collection('available');
 
-      for (final cartItem in cartItems) {
-        final itemDoc = await availableCollection.doc(cartItem.name).get();
+//       for (final cartItem in cartItems) {
+//         final itemDoc = await availableCollection.doc(cartItem.name).get();
 
-        if (itemDoc.exists) {
-          final currentStock = itemDoc['stock'] ?? 0;
-          final newStock = currentStock - cartItem.quantity;
+//         if (itemDoc.exists) {
+//           final currentStock = itemDoc['stock'] ?? 0;
+//           final newStock = currentStock - cartItem.quantity;
 
-          if (newStock >= 0) {
-            transaction.update(
-              availableCollection.doc(cartItem.name),
-              {'stock': newStock},
-            );
-          } else {
-            // Handle out-of-stock case
-            print('Item ${cartItem.name} is out of stock.');
-          }
-        }
-      }
-    });
-  } catch (error) {
-    print('Error updating stock on pay: $error');
-  }
-}
+//           if (newStock >= 0) {
+//             transaction.update(
+//               availableCollection.doc(cartItem.name),
+//               {'stock': newStock},
+//             );
+//           } else {
+//             // Handle out-of-stock case
+//             print('Item ${cartItem.name} is out of stock.');
+//           }
+//         }
+//       }
+//     });
+//   } catch (error) {
+//     print('Error updating stock on pay: $error');
+//   }
+// }

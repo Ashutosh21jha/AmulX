@@ -50,6 +50,14 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     });
 
     try {
+      final bool? itemsOutOfStock =
+          await CartController.to.updateStockOnPay(CartController.to.cartItems);
+
+      if (itemsOutOfStock == null || itemsOutOfStock) {
+        AmulXSnackBars.showItemOutOfStockSnackbar();
+        return;
+      }
+
       final String? orderID = await getAndUpdateOrderIdInFirebase();
 
       logger.i(orderID);
@@ -69,8 +77,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         AmulXSnackBars.showPaymentOrderFailureSnackbar();
         return;
       }
-
-      await CartController.to.updateStockOnPay(CartController.to.cartItems);
 
       await orderPaymentController.payWithUpi(cfSession);
     } finally {
