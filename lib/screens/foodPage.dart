@@ -316,6 +316,10 @@ class FoodPageState extends State<FoodPage> {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 95),
                   child: ListView.builder(
+                    // key: Key(filteredResults.fold<String>(
+                    //     '',
+                    //     (previousValue, element) =>
+                    //         previousValue + element.id!)),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     itemCount: filteredResults.length,
@@ -327,7 +331,7 @@ class FoodPageState extends State<FoodPage> {
                       bool isOutOfStock = available && itemData.stock == 0;
 
                       return ItemCard(
-                        key: Key(index.toString()),
+                        key: Key(itemData.id!),
                         itemData: itemData,
                         isOutOfStock: isOutOfStock,
                         unavailable: unavailable,
