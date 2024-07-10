@@ -10,6 +10,8 @@ import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfupi.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfupipayment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfwebcheckoutpayment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
@@ -25,7 +27,7 @@ class OrderPaymentController extends GetxController {
 
   final cfPaymentGateway = CFPaymentGatewayService();
 
-  Rx<OrderDataModel?> orderData = Rx<OrderDataModel?>(null);
+  OrderDataModel? orderData;
 
   OrderPaymentController() {
     cfPaymentGateway.setCallback(
@@ -41,12 +43,8 @@ class OrderPaymentController extends GetxController {
       String orderID, double orderAmount) async {
     final UserController user = Get.find<UserController>();
 
-    orderData.value = await CashfreeGatewayApi.createNewOrderWithOrderID(
-        orderID,
-        orderAmount,
-        user.userId.value,
-        user.userName.value,
-        user.email.value);
+    orderData = await CashfreeGatewayApi.createNewOrderWithOrderID(orderID,
+        orderAmount, user.userId.value, user.userName.value, user.email.value);
   }
 
   // Future<void> onClientOrderFailure(
@@ -71,7 +69,7 @@ class OrderPaymentController extends GetxController {
   //       "Error: PAYMENT FAILED: ${cfErrorResponse.getCode()} - ${cfErrorResponse.getMessage()}\n status: ${cfErrorResponse.getStatus()}\n error: $error");
   // }
 
-  Future<void> addOrderToPrepList() async {
+  Future<void> addOrderToPrepList(OrderPaymentStatus orderPaymentStatus) async {
     final UserController userController = Get.find<UserController>();
     final firebaseMessaging = FirebaseMessaging.instance;
     final CartController cartController = Get.find<CartController>();
@@ -93,16 +91,15 @@ class OrderPaymentController extends GetxController {
     final prepListOrderData = {
       'userId': userController.userId.value,
       'items': itemsMap,
-      'orderID': orderData.value!.orderID,
+      'orderID': orderData!.orderID,
       'orderStatus': 'Preparing',
+      'paymentStatus': orderPaymentStatus.value,
       'name': userController.userName.value,
       'time': DateTime.now(),
       'token': await firebaseMessaging.getToken(),
     };
 
-    await prepListCollection
-        .doc(orderData.value!.orderID)
-        .set(prepListOrderData);
+    await prepListCollection.doc(orderData!.orderID).set(prepListOrderData);
   }
 
   Future<void> handlePaymentError() async {
@@ -111,36 +108,36 @@ class OrderPaymentController extends GetxController {
     AmulXSnackBars.showPaymentOrderFailureSnackbar();
   }
 
-  Future<void> handlePaymentSuccess() async {
-    final formattedDate = orderData.value!.createdAt;
+  Future<void> handlePaymentSuccess(
+      OrderPaymentStatus orderPaymentStatus) async {
+    final formattedDate = orderData!.createdAt;
     final UserController userController = Get.find<UserController>();
 
     await userController.addOrderToUserHistrory(
-        formattedDate, orderData.value!.orderID);
+        formattedDate, orderData!.orderID, orderPaymentStatus);
 
-    await addOrderToPrepList();
+    await addOrderToPrepList(orderPaymentStatus);
 
     await CartController.to.deleteCart();
 
-    await userController.updateUserOrderStatusTo(false);
+    // TODO REMOVE LINE BELOW IN PRODUCTION
+    await userController.updateUserCurrentOrderStatusTo(false);
+    // TODO REMOVE ABOVE LINE IN PRODUCTION
 
-    AmulXSnackBars.showPaymentOrderSuccessSnackbar();
+    orderPaymentStatus == OrderPaymentStatus.SUCCESS
+        ? AmulXSnackBars.showPaymentOrderSuccessSnackbar()
+        : AmulXSnackBars.showPaymentOrderPendingSnackbar();
 
     Get.offAll(() => const Mainscreen());
   }
 
-  Future<void> handlePaymentPending() async {
-    // TODO IMPLEMENT PAYMENT PENDING
-  }
-
   Future<void> verifyPayment(String _, CFErrorResponse? errorResponse) async {
     final OrderPaymentStatus orderPaymentStatus =
-        (await CashfreeGatewayApi.getOrderStatus(orderData.value!.orderID))!;
+        (await CashfreeGatewayApi.getOrderStatus(orderData!.orderID))!;
 
-    if (orderPaymentStatus == OrderPaymentStatus.SUCCESS) {
-      await handlePaymentSuccess();
-    } else if (orderPaymentStatus == OrderPaymentStatus.PENDING) {
-      await handlePaymentPending();
+    if (orderPaymentStatus == OrderPaymentStatus.SUCCESS ||
+        orderPaymentStatus == OrderPaymentStatus.PENDING) {
+      await handlePaymentSuccess(orderPaymentStatus);
     } else {
       await handlePaymentError();
     }
@@ -152,8 +149,8 @@ class OrderPaymentController extends GetxController {
     try {
       session = CFSessionBuilder()
           .setEnvironment(environment)
-          .setOrderId(orderData.value!.orderID)
-          .setPaymentSessionId(orderData.value!.paymentSessionId)
+          .setOrderId(orderData!.orderID)
+          .setPaymentSessionId(orderData!.paymentSessionId)
           .build();
     } on CFException catch (e) {
       print(e.message);
@@ -163,15 +160,14 @@ class OrderPaymentController extends GetxController {
   }
 
   Future<void> payWithUpi(CFSession session) async {
-    // final upi = CFUPIBuilder()
-    //     .setChannel(CFUPIChannel.INTENT)
-    //     .setUPIID("9315082027@jio")
-    //     .build();
-    // final upiPayment =
-    //     CFUPIPaymentBuilder().setSession(session).setUPI(upi).build();
-    final cfWebCheckout =
-        CFWebCheckoutPaymentBuilder().setSession(session).build();
-    await cfPaymentGateway.doPayment(cfWebCheckout);
-    // await cfPaymentGateway.doPayment(upiPayment);
+    final upi = CFUPIBuilder()
+        .setChannel(CFUPIChannel.INTENT)
+        .setUPIID('testsuccess@gocash')
+        .build();
+    final upiPayment =
+        CFUPIPaymentBuilder().setSession(session).setUPI(upi).build();
+    // final cfWebCheckout = CFWebCheckoutPaymentBuilder().setSession(session).build();
+    // await cfPaymentGateway.doPayment(cfWebCheckout);
+    await cfPaymentGateway.doPayment(upiPayment);
   }
 }

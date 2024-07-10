@@ -4,13 +4,16 @@ import 'package:amul/models/order_data_model.dart';
 import 'package:dio/dio.dart';
 
 enum OrderPaymentStatus {
-  SUCCESS,
-  NOT_ATTEMPTED,
-  FAILED,
-  USER_DROPPED,
-  VOID,
-  CANCELLED,
-  PENDING;
+  SUCCESS("SUCCESS"),
+  NOT_ATTEMPTED("NOT_ATTEMPTED"),
+  FAILED("FAILED"),
+  USER_DROPPED("USER_DROPPED"),
+  VOID("VOID"),
+  CANCELLED("CANCELLED"),
+  PENDING("PENDING");
+
+  final String value;
+  const OrderPaymentStatus(this.value);
 
   static OrderPaymentStatus fromString(String status) {
     switch (status) {

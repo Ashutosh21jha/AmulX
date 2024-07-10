@@ -49,6 +49,29 @@ class AmulXSnackBars {
     );
   }
 
+  static void showPaymentOrderPendingSnackbar() {
+    Get.snackbar(
+      'Payment Pending',
+      'Please wait for the payment to be processed',
+      barBlur: 10,
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFA2E8D8),
+          AppColors.green,
+          Color(0xFF007A52),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 1),
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+
   static void showItemOutOfStockSnackbar() {
     Get.snackbar(
       'Some item is out of stock',

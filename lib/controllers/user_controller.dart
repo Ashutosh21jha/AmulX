@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:amul/api/cashfree.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,15 +47,15 @@ class UserController extends GetxController {
     }
   }
 
-  Future<void> updateUserOrderStatusTo(bool status) async {
+  Future<void> updateUserCurrentOrderStatusTo(bool status) async {
     await FirebaseFirestore.instance
         .collection('User')
         .doc(email.value)
         .update({'currentOrder': status});
   }
 
-  Future<void> addOrderToUserHistrory(
-      String formattedDate, String orderID) async {
+  Future<void> addOrderToUserHistrory(String formattedDate, String orderID,
+      OrderPaymentStatus orderPaymentStatus) async {
     final CartController cartController = Get.find<CartController>();
 
     final orderData = {
@@ -71,11 +72,10 @@ class UserController extends GetxController {
           'orderID': orderID,
           'time': formattedDate,
           'orderStatus': 'Placed',
+          'paymentStatus': orderPaymentStatus.value
         }
       ]),
     };
-
-    await updateUserOrderStatusTo(true);
 
     final historyCollection =
         FirebaseFirestore.instance.collection('User/${email.value}/history');
@@ -88,5 +88,7 @@ class UserController extends GetxController {
       // Document doesn't exist, create it
       await historyCollection.doc(formattedDate).set(orderData);
     }
+
+    await updateUserCurrentOrderStatusTo(true);
   }
 }
