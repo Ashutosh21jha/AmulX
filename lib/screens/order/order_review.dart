@@ -1,21 +1,14 @@
-import 'dart:math';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/order_payment_controller.dart';
-import 'package:amul/models/order_data_model.dart';
-import 'package:amul/screens/profile.dart';
 import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
 import '../cart_components/cart_controller.dart';
 import '../cart_components/cartItem_model.dart';
-import '../mainscreen.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:intl/intl.dart';
 
 class OrderReviewPage extends StatefulWidget {
   OrderReviewPage({super.key, required this.cartItems});
@@ -63,11 +56,15 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
 
       logger.i(orderID);
 
-      final OrderDataModel? orderData =
-          await orderPaymentController.getOrderIdAndSession(
-              totalAmount, widget.userId, widget.userEmail, orderID!);
+      if (orderID == null) {
+        AmulXSnackBars.showPaymentOrderFailureSnackbar();
+        return;
+      }
 
-      if (orderData == null) {
+      await orderPaymentController.createNewOrderWithOrderID(
+          orderID, totalAmount);
+
+      if (orderPaymentController.orderData.value == null) {
         AmulXSnackBars.showPaymentOrderFailureSnackbar();
         return;
       }

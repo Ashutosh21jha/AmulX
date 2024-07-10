@@ -1,15 +1,15 @@
 import 'dart:convert';
+import 'package:amul/api/cashfree.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/models/order_data_model.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
-import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfupi.dart';
-import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfupipayment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfwebcheckoutpayment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
@@ -25,37 +25,51 @@ class OrderPaymentController extends GetxController {
 
   final cfPaymentGateway = CFPaymentGatewayService();
 
-  OrderDataModel? orderData;
+  Rx<OrderDataModel?> orderData = Rx<OrderDataModel?>(null);
 
   OrderPaymentController() {
-    cfPaymentGateway.setCallback(onClientOrderSuccess, onClientOrderFailure);
+    cfPaymentGateway.setCallback(
+        (
+          String _,
+        ) =>
+            verifyPayment(_, null),
+        (CFErrorResponse cfErrorResponse, String _) =>
+            verifyPayment(_, cfErrorResponse));
   }
 
-  Future<void> onClientOrderSuccess(String p0) async {
-    final bool orderVerified = await verfiyOrder();
+  Future<void> createNewOrderWithOrderID(
+      String orderID, double orderAmount) async {
+    final UserController user = Get.find<UserController>();
 
-    if (orderVerified) {
-      await handlePaymentSuccess();
-    } else {
-      await handlePaymentError();
-    }
+    orderData.value = await CashfreeGatewayApi.createNewOrderWithOrderID(
+        orderID,
+        orderAmount,
+        user.userId.value,
+        user.userName.value,
+        user.email.value);
   }
 
-  Future<void> onClientOrderFailure(
-      CFErrorResponse cfErrorResponse, String error) async {
-    await handlePaymentError();
+  // Future<void> onClientOrderFailure(
+  //     CFErrorResponse cfErrorResponse, String error) async {
+  //   print("XXXXXXXXXXXXXXXXXXXXXXXX");
+  //   print("ON CLIENT ORDER FAILURE FXN CALLED");
+  //   print("XXXXXXXXXXXXXXXXXXXXXXXX");
 
-    Get.snackbar(cfErrorResponse.getCode()!, cfErrorResponse.getMessage()!,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        margin: const EdgeInsets.all(10),
-        borderRadius: 10,
-        duration: const Duration(seconds: 5));
+  //   await verifyPayment(error, null);
 
-    Get.find<Logger>().e(
-        "Error: PAYMENT FAILED: ${cfErrorResponse.getCode()} - ${cfErrorResponse.getMessage()}\n status: ${cfErrorResponse.getStatus()}\n error: $error");
-  }
+  //   await handlePaymentError();
+
+  //   Get.snackbar(cfErrorResponse.getCode()!, cfErrorResponse.getMessage()!,
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //       margin: const EdgeInsets.all(10),
+  //       borderRadius: 10,
+  //       duration: const Duration(seconds: 5));
+
+  //   Get.find<Logger>().e(
+  //       "Error: PAYMENT FAILED: ${cfErrorResponse.getCode()} - ${cfErrorResponse.getMessage()}\n status: ${cfErrorResponse.getStatus()}\n error: $error");
+  // }
 
   Future<void> addOrderToPrepList() async {
     final UserController userController = Get.find<UserController>();
@@ -79,14 +93,16 @@ class OrderPaymentController extends GetxController {
     final prepListOrderData = {
       'userId': userController.userId.value,
       'items': itemsMap,
-      'orderID': orderData!.orderID,
+      'orderID': orderData.value!.orderID,
       'orderStatus': 'Preparing',
       'name': userController.userName.value,
       'time': DateTime.now(),
       'token': await firebaseMessaging.getToken(),
     };
 
-    await prepListCollection.doc(orderData!.orderID).set(prepListOrderData);
+    await prepListCollection
+        .doc(orderData.value!.orderID)
+        .set(prepListOrderData);
   }
 
   Future<void> handlePaymentError() async {
@@ -96,11 +112,11 @@ class OrderPaymentController extends GetxController {
   }
 
   Future<void> handlePaymentSuccess() async {
-    final formattedDate = orderData!.createdAt;
+    final formattedDate = orderData.value!.createdAt;
     final UserController userController = Get.find<UserController>();
 
     await userController.addOrderToUserHistrory(
-        formattedDate, orderData!.orderID);
+        formattedDate, orderData.value!.orderID);
 
     await addOrderToPrepList();
 
@@ -113,65 +129,20 @@ class OrderPaymentController extends GetxController {
     Get.offAll(() => const Mainscreen());
   }
 
-  Future<bool> verfiyOrder() async {
-    if (orderData == null) {
-      Get.find<Logger>().e("Error: ORDER DATA IS NULL");
-      return false;
-    }
-
-    final http.Response res = await http.get(
-      Uri.tryParse("$backendURL/payment/verify_order/${orderData!.orderID}")!,
-    );
-    if (res.statusCode == 200) {
-      final Map<String, dynamic> jsonBody = jsonDecode(res.body);
-
-      if (jsonBody['status'] == 'PAID') {
-        return true;
-      } else if (jsonBody['status'] == 'ACTIVE') {
-        // TODO IMPLEMENT WHAT TO DO IF ORDER IS ACTIVE
-
-        return false;
-      } else if (jsonBody['status'] == 'EXPIRED') {
-        // TODO IMPLEMENT WHAT TO DO IF ORDER IS EXPIRED
-
-        return false;
-      } else if (jsonBody['status'] == 'TERMINATED') {
-        // TODO IMPLEMENT WHAT TO DO IF ORDER IS TERMINATED
-
-        return false;
-      } else if (jsonBody['status'] == 'TERMINATION_REQUESTED') {
-        // TODO IMPLEMENT WHAT TO DO IF ORDER IS TERMINATED_REQUESTED
-
-        return false;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
+  Future<void> handlePaymentPending() async {
+    // TODO IMPLEMENT PAYMENT PENDING
   }
 
-  Future<OrderDataModel?> getOrderIdAndSession(double orderAmount,
-      String customerId, String customerEmail, String orderID) async {
-    final http.Response res = await http
-        .post(Uri.tryParse('$backendURL/payment/create_order')!, body: {
-      "orderAmount": orderAmount.toString(),
-      "orderID": orderID,
-      "customerId": customerId,
-      "customerEmail": customerEmail
-    });
+  Future<void> verifyPayment(String _, CFErrorResponse? errorResponse) async {
+    final OrderPaymentStatus orderPaymentStatus =
+        (await CashfreeGatewayApi.getOrderStatus(orderData.value!.orderID))!;
 
-    if (res.statusCode != 200) {
-      Get.find<Logger>().e("Error: ERROR IN GETTING ORDER ID AND SESSION");
-
-      return null;
+    if (orderPaymentStatus == OrderPaymentStatus.SUCCESS) {
+      await handlePaymentSuccess();
+    } else if (orderPaymentStatus == OrderPaymentStatus.PENDING) {
+      await handlePaymentPending();
     } else {
-      final Map<String, dynamic> jsonBody = jsonDecode(res.body);
-
-      final OrderDataModel orderDataModel = OrderDataModel.fromJson(jsonBody);
-
-      orderData = orderDataModel;
-      return orderDataModel;
+      await handlePaymentError();
     }
   }
 
@@ -181,8 +152,8 @@ class OrderPaymentController extends GetxController {
     try {
       session = CFSessionBuilder()
           .setEnvironment(environment)
-          .setOrderId(orderData!.orderID)
-          .setPaymentSessionId(orderData!.paymentSessionId)
+          .setOrderId(orderData.value!.orderID)
+          .setPaymentSessionId(orderData.value!.paymentSessionId)
           .build();
     } on CFException catch (e) {
       print(e.message);
