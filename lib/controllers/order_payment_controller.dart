@@ -94,6 +94,7 @@ class OrderPaymentController extends GetxController {
       'orderID': orderData!.orderID,
       'orderStatus': 'Preparing',
       'paymentStatus': orderPaymentStatus.value,
+      'email': userController.email.value,
       'name': userController.userName.value,
       'time': DateTime.now(),
       'token': await firebaseMessaging.getToken(),
