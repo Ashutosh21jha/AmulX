@@ -112,7 +112,8 @@ class _SignUpPageState extends State<SignUpPage> {
         "name": name,
         "student id": id,
         "userUid": uid,
-        "currentOrder": null,
+        'imageUrl': '',
+        "currentOrder": false,
       });
     } on FirebaseException catch (e) {
       return false;

@@ -96,6 +96,7 @@ class OrderPaymentController extends GetxController {
       'paymentStatus': orderPaymentStatus.value,
       'email': userController.email.value,
       'name': userController.userName.value,
+      'userImageUrl': userController.imageUrl.value,
       'time': orderData!.createdAt,
       'token': await firebaseMessaging.getToken(),
     };
