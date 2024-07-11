@@ -21,7 +21,7 @@ class HomeFoodTile extends StatelessWidget {
           onTap: () {
             Get.to(
               () => FoodPage(
-                cat: "Food",
+                cat: title,
                 itemList: ItemController.to.food,
               ),
             );
