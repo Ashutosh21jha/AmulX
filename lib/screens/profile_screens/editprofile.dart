@@ -84,6 +84,10 @@ class _EditProfileState extends State<EditProfile> {
     await ref.putFile(imageFile);
     final downloadUrl = await ref.getDownloadURL();
 
+    await db.collection('User').doc(userController.email.value).update({
+      'imageUrl': downloadUrl,
+    });
+
     userController.imageUrl.value = downloadUrl;
 
     overlayPortalController.hide();

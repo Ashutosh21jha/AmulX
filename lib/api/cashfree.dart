@@ -87,7 +87,7 @@ class CashfreeGatewayApi {
     };
 
     final Map<String, dynamic> data = {
-      "order_amount": orderAmount.toString(),
+      "order_amount": orderAmount.toStringAsFixed(2),
       "order_currency": "INR",
       "order_id": orderID,
       "customer_details": {
