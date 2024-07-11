@@ -11,6 +11,7 @@ class ListItem extends StatefulWidget {
   final String id;
   final List<CartItem> items;
   final String orderStatus;
+  final String? refundStatus;
   final DateTime timestamp;
   final String orderID;
   final double totalAmount;
@@ -20,6 +21,7 @@ class ListItem extends StatefulWidget {
     required this.id,
     required this.items,
     required this.orderStatus,
+    required this.refundStatus,
     required this.orderID,
     required this.timestamp,
     required this.totalAmount,
@@ -195,11 +197,17 @@ class _ListItemState extends State<ListItem>
                       ),
                     ),
                     trailing: Text(
-                      widget.orderStatus,
+                      widget.refundStatus != null
+                          ? "REFUND ${widget.refundStatus}"
+                          : widget.orderStatus.toUpperCase(),
                       style: TextStyle(
-                        color: widget.orderStatus == "Declined"
-                            ? AppColors.red
-                            : const Color(0xFF18AE86),
+                        color: widget.refundStatus != null
+                            ? (widget.refundStatus == "CANCELLED"
+                                ? AppColors.red
+                                : const Color(0xFFF2C14E))
+                            : (widget.orderStatus == "Declined"
+                                ? AppColors.red
+                                : const Color(0xFF18AE86)),
                         fontSize: 14,
                         fontFamily: 'Urbanist',
                         fontWeight: FontWeight.w700,

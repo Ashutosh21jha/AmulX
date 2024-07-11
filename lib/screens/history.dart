@@ -147,7 +147,8 @@ class _HistoryState extends State<History> {
                           List<CartItem> historyItems = items.entries
                               .map((item) => CartItem(
                                   name: item.key,
-                                  price: item.value['price'],
+                                  price: double.parse(
+                                      (item.value['price']).toString()),
                                   quantity: item.value['count']))
                               .toList();
                           String orderName = orderItem['orderID'];
@@ -168,6 +169,7 @@ class _HistoryState extends State<History> {
                             id: snapshot.data!.docs[index].id,
                             items: historyItems,
                             orderStatus: orderItem['orderStatus'],
+                            refundStatus: orderItem['refundStatus'],
                             timestamp: orderTime,
                             orderID: orderName,
                             totalAmount: totalAmount.toDouble(),
