@@ -30,13 +30,18 @@ class OrderPaymentController extends GetxController {
   OrderDataModel? orderData;
 
   OrderPaymentController() {
+    paymentSuccessCallbackFxn(String _) => Get.showOverlay(
+        asyncFunction: () => verifyPayment(_, null),
+        loadingWidget: const Center(child: CircularProgressIndicator()));
+    paymentFailureCallbackFxn(CFErrorResponse cfErrorResponse, String _) =>
+        Get.showOverlay(
+            asyncFunction: () => verifyPayment(_, cfErrorResponse),
+            loadingWidget: const Center(child: CircularProgressIndicator()));
+
     cfPaymentGateway.setCallback(
-        (
-          String _,
-        ) =>
-            verifyPayment(_, null),
-        (CFErrorResponse cfErrorResponse, String _) =>
-            verifyPayment(_, cfErrorResponse));
+      paymentSuccessCallbackFxn,
+      paymentFailureCallbackFxn,
+    );
   }
 
   Future<void> createNewOrderWithOrderID(

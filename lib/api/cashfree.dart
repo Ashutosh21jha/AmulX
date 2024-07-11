@@ -137,11 +137,17 @@ class CashfreeGatewayApi {
       return OrderPaymentStatus.NOT_ATTEMPTED;
     }
 
-    payments.sort((a, b) {
-      final aTime = DateTime.parse(a['payment_time']);
-      final bTime = DateTime.parse(b['payment_time']);
-      return bTime.compareTo(aTime);
-    });
+    if (payments.length != 1) {
+      try {
+        payments.sort((a, b) {
+          final aTime = DateTime.parse(a['payment_time']);
+          final bTime = DateTime.parse(b['payment_time']);
+          return bTime.compareTo(aTime);
+        });
+      } catch (e) {
+        print(e);
+      }
+    }
 
     bool isAnyPaymentSuccessfull =
         payments.any((element) => element['payment_status'] == 'SUCCESS');
