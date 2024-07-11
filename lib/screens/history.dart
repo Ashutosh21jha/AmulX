@@ -1,4 +1,5 @@
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/api/firebaseAPI.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -68,7 +69,18 @@ class _HistoryState extends State<History> {
           //     ),
           //   ),
           // ),
-          const AmulXAppBar(title: "Orders"),
+          AmulXAppBar(
+            title: "Orders",
+            rightIcon: IconButton(
+                onPressed: () => Get.showOverlay(
+                    asyncFunction: AmulxFirebaseAPI.checkAndUpdateRefundsStatus,
+                    loadingWidget:
+                        const Center(child: CircularProgressIndicator())),
+                icon: Icon(
+                  Icons.refresh,
+                  color: appColors.onPrimary,
+                )),
+          ),
 
           const SizedBox(height: 5),
           Expanded(

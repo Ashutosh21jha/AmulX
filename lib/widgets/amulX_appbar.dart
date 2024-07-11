@@ -6,19 +6,20 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmulXAppBar extends StatelessWidget {
-  const AmulXAppBar(
-      {super.key,
-      required this.title,
-      this.showBackArrow = true,
-      this.bottomRoundedCorners = false,
-      this.bottomPadding = const EdgeInsets.only(bottom: 0),
-      this.children = const <Widget>[]});
+  const AmulXAppBar({
+    super.key,
+    required this.title,
+    this.rightIcon,
+    this.showBackArrow = true,
+    this.bottomRoundedCorners = false,
+    this.bottomPadding = const EdgeInsets.only(bottom: 0),
+  });
 
-  final List<Widget> children;
   final String title;
   final bool showBackArrow;
   final EdgeInsets bottomPadding;
   final bool bottomRoundedCorners;
+  final Widget? rightIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +67,13 @@ class AmulXAppBar extends StatelessWidget {
                 )
               : const SizedBox.shrink(),
 
+          rightIcon != null
+              ? Positioned(
+                  right: MediaQuery.of(context).size.width * 0.02,
+                  child: rightIcon!,
+                )
+              : const SizedBox.shrink(),
+
           // SizedBox(width: MediaQuery.of(context).size.width * 0.27),
           Align(
             alignment: Alignment.center,
@@ -81,7 +89,6 @@ class AmulXAppBar extends StatelessWidget {
               ),
             ),
           ),
-          ...children
         ],
       ),
     );

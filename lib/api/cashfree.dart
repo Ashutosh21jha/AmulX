@@ -3,6 +3,28 @@ import 'dart:convert';
 import 'package:amul/models/order_data_model.dart';
 import 'package:dio/dio.dart';
 
+enum RefundStatus {
+  SUCCESS,
+  PENDING,
+  CANCELLED,
+  ONHOLD;
+
+  static RefundStatus fromString(String status) {
+    switch (status) {
+      case 'SUCCESS':
+        return SUCCESS;
+      case 'PENDING':
+        return PENDING;
+      case 'CANCELLED':
+        return CANCELLED;
+      case 'ONHOLD':
+        return ONHOLD;
+      default:
+        throw Exception('Invalid RefundStatus');
+    }
+  }
+}
+
 enum OrderPaymentStatus {
   SUCCESS("SUCCESS"),
   NOT_ATTEMPTED("NOT_ATTEMPTED"),
@@ -160,5 +182,30 @@ class CashfreeGatewayApi {
         OrderPaymentStatus.fromString(payments.first['payment_status']);
 
     return latestPaymentStatus;
+  }
+
+  static Future<RefundStatus?> getRefundStatus(String orderID) async {
+    try {
+      final Map<String, String> headers = {
+        'accept': 'application/json',
+        'x-api-version': '2023-08-01',
+        'x-client-id': 'TEST102440183c3125107d983f09d55c81044201',
+        'x-client-secret':
+            'cfsk_ma_test_2f4e1dee5061fc679e5abe8369f84496_a5e8d5e9',
+      };
+
+      final String url = '/orders/$orderID/refunds/$orderID-refund';
+
+      final res = await _dio.get(url, options: Options(headers: headers));
+
+      final status = res.statusCode;
+      if (status != 200)
+        throw Exception('http.post error: statusCode= $status');
+
+      return RefundStatus.fromString(res.data['refund_status']);
+    } on DioException catch (e) {
+      print(e.message);
+      return null;
+    }
   }
 }
