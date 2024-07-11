@@ -22,9 +22,13 @@ class _MainscreenState extends State<Mainscreen> {
     super.initState();
 
     Get.put(OrderPaymentController());
-
     final userController = Get.find<UserController>();
-    userController.getUserData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.showOverlay(
+          asyncFunction: userController.getUserData,
+          loadingWidget: const Center(child: CircularProgressIndicator()));
+    });
   }
 
   int myindex = 0;

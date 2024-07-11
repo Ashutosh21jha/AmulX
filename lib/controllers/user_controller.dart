@@ -25,6 +25,7 @@ class UserController extends GetxController {
   }
 
   Future<void> getUserData() async {
+    email.value = FirebaseAuth.instance.currentUser!.email!;
     final doc = await db.collection("User").doc(email.value).get();
     Map<String, dynamic>? userData = doc.data();
 

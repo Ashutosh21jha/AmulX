@@ -23,15 +23,6 @@ final db = FirebaseFirestore.instance;
 
 String get userId => auth.currentUser?.email ?? '';
 
-Future<void> signOut() async {
-  try {
-    print(auth.currentUser?.email);
-    await auth.signOut();
-  } catch (e) {
-    throw Exception(e);
-  }
-}
-
 const EdgeInsets _paddingButtons =
     EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 

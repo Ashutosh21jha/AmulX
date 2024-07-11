@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/screens/auth/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,11 @@ final db = FirebaseFirestore.instance;
 
 Future<void> signOut() async {
   try {
+    print(auth.currentUser?.email);
     await auth.signOut();
+    Get.offAll(
+      () => const SignInPage(),
+    );
   } catch (e) {
     throw Exception(e);
   }
@@ -77,13 +82,6 @@ class ProfileCard extends StatelessWidget {
       onTap: () async {
         if (implement == true) {
           await signOut();
-          Get.offAll(
-            () => screen,
-            predicate: (route) => route.isFirst,
-            duration: const Duration(
-              milliseconds: 800,
-            ),
-          );
         } else {
           Get.to(
             () => screen,

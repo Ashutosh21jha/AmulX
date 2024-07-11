@@ -2,6 +2,7 @@ import 'package:amul/Utils/darkTheme.dart';
 import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/splashscreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ void main() async {
   await FirebaseMessaging.instance.requestPermission();
 
   final UserController userController = Get.put(UserController());
+
   final logger = Get.put(Logger());
 
   runApp(GetMaterialApp(
