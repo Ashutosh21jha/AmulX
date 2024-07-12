@@ -2,6 +2,7 @@ import 'package:amul/Utils/darkTheme.dart';
 import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/splashscreen.dart';
+import 'package:amul/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,15 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseMessaging.instance.requestPermission();
+
+  final NotificationService notificationService = NotificationService();
+  notificationService.requestPermission();
+  notificationService.getDeviceToken();
+  notificationService.firebaseInit();
+
+  Get.put(notificationService);
+
+  // await FirebaseMessaging.instance.requestPermission();
 
   final UserController userController = Get.put(UserController());
 
@@ -29,6 +38,11 @@ void main() async {
   ));
 }
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  print(message.notification!.title);
+}
 // class MyApp extends StatelessWidget {
 //   const MyApp({super.key});
 
