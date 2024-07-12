@@ -4,6 +4,8 @@ import 'package:amul/screens/foodPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../models/items_model.dart';
+
 class HomeFoodTile extends StatelessWidget {
   const HomeFoodTile({super.key, required this.title, required this.imageUrl});
 
@@ -12,6 +14,23 @@ class HomeFoodTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    RxList<ItemsModel> itemType(String title){
+      if (title.toLowerCase() == "food"){
+        return ItemController.to.food;
+      }
+      if (title.toLowerCase() == "drinks"){
+        return ItemController.to.drink;
+      }
+      if (title.toLowerCase() == "munchies"){
+        return ItemController.to.munchies;
+      }
+      if (title.toLowerCase() == "dairy"){
+        return ItemController.to.dairy;
+      }
+      return ItemController().Items;
+    }
+
     final appColors = Theme.of(context).extension<AppColors2>()!;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -22,7 +41,7 @@ class HomeFoodTile extends StatelessWidget {
             Get.to(
               () => FoodPage(
                 cat: title,
-                itemList: ItemController.to.food,
+                itemList: itemType(title),
               ),
             );
           },
