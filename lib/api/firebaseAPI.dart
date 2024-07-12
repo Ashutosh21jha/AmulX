@@ -1,65 +1,130 @@
+import 'package:amul/Utils/enums.dart';
 import 'package:amul/api/cashfree.dart';
 import 'package:amul/controllers/user_controller.dart';
+import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 class AmulxFirebaseAPI {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static UserController user = Get.find<UserController>();
 
-  static Future<void> checkAndUpdateRefundsStatus() async {
+  static Future<void> checkPaymentStatusAndPlaceOrder(
+      String docID, String orderID) async {
+    final OrderPaymentStatus? orderPaymentStatus =
+        await CashfreeGatewayApi.getOrderStatus(orderID);
+
+    if (orderPaymentStatus == null) {
+      return;
+    }
+
     try {
-      final snapshot = await _firestore
+      if (orderPaymentStatus == OrderPaymentStatus.SUCCESS ||
+          orderPaymentStatus == OrderPaymentStatus.PENDING) {
+        // ADD ITEM TO PREPLIST
+        {
+          final UserController userController = Get.find<UserController>();
+          final firebaseMessaging = FirebaseMessaging.instance;
+          final CartController cartController = Get.find<CartController>();
+
+          final prepListCollection =
+              FirebaseFirestore.instance.collection('prepList');
+
+          final itemsMap = cartController.cartItems.fold<Map<String, dynamic>>(
+            {},
+            (map, item) {
+              map[item.name] = {
+                'count': item.quantity,
+                'price': item.price,
+              };
+              return map;
+            },
+          );
+
+          final prepListOrderData = {
+            'userId': userController.userId.value,
+            'items': itemsMap,
+            'orderID': orderID,
+            'orderStatus': 'Preparing',
+            'paymentStatus': orderPaymentStatus.value,
+            'email': userController.email.value,
+            'name': userController.userName.value,
+            'userImageUrl': userController.imageUrl.value,
+            'time': docID,
+            'token': await firebaseMessaging.getToken(),
+          };
+
+          await prepListCollection.doc(orderID).set(prepListOrderData);
+        }
+
+        // SET USER ORDER STATUS TO PLACED
+        {
+          final doc = await _firestore
+              .collection('User')
+              .doc(user.email.value)
+              .collection('history')
+              .doc(docID)
+              .get();
+
+          final Map<String, dynamic> data = doc.data()!['orders'][0];
+
+          data['orderStatus'] = "Placed";
+
+          await _firestore
+              .collection('User')
+              .doc(user.email.value)
+              .collection('history')
+              .doc(docID)
+              .update({
+            'orders': [data]
+          });
+        }
+
+        orderPaymentStatus == OrderPaymentStatus.SUCCESS
+            ? AmulXSnackBars.showPaymentOrderSuccessSnackbar()
+            : AmulXSnackBars.showPaymentOrderPendingSnackbar();
+      } else {
+        AmulXSnackBars.showPaymentOrderFailureSnackbar();
+      }
+    } catch (e) {
+      AmulXSnackBars.showPaymentOrderFailureSnackbar();
+    }
+  }
+
+  static Future<void> checkAndUpdateRefundStatus(String docID) async {
+    try {
+      final doc = await _firestore
           .collection('User')
           .doc(user.email.value)
           .collection('history')
+          .doc(docID)
           .get();
 
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = [];
+      final data = doc.data()!['orders'][0];
 
-      for (final doc in snapshot.docs) {
-        docs.add(doc);
+      final RefundStatus? refundStatus =
+          await CashfreeGatewayApi.getRefundStatus(data['orderID']);
+
+      if (refundStatus == null) {
+        return;
       }
 
-      docs = docs.where((doc) {
-        final data = doc.data()['orders'][0];
-
-        if (!(data.containsKey('refundStatus'))) return false;
-
-        final String refundStatus = data['refundStatus'];
-
-        if (refundStatus == "SUCCESS") {
-          return false;
-        } else {
-          return true;
-        }
-      }).toList();
-
-      for (final doc in docs) {
-        final data = doc.data()['orders'][0];
-        print(data['orderID']);
-        final RefundStatus? refundStatus =
-            await CashfreeGatewayApi.getRefundStatus(data['orderID']);
-
-        if (refundStatus == null) {
-          continue;
-        }
-
-        if (refundStatus.name == data['refundStatus']) {
-          continue;
-        }
-
-        data['refundStatus'] = refundStatus.name;
-
-        await _firestore
-            .collection('User')
-            .doc(user.email.value)
-            .collection('history')
-            .doc(doc.id)
-            .update({
-          'orders': [data]
-        });
+      if (refundStatus.name == data['refundStatus']) {
+        return;
       }
+
+      data['refundStatus'] = refundStatus.name;
+
+      await _firestore
+          .collection('User')
+          .doc(user.email.value)
+          .collection('history')
+          .doc(doc.id)
+          .update({
+        'orders': [data]
+      });
     } catch (e) {
       return;
     }

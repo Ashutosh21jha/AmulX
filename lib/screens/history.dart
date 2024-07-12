@@ -1,4 +1,5 @@
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/Utils/enums.dart';
 import 'package:amul/api/firebaseAPI.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:amul/widgets/amulX_appbar.dart';
@@ -69,17 +70,16 @@ class _HistoryState extends State<History> {
           //     ),
           //   ),
           // ),
-          AmulXAppBar(
+          const AmulXAppBar(
             title: "Orders",
-            rightIcon: IconButton(
-                onPressed: () => Get.showOverlay(
-                    asyncFunction: AmulxFirebaseAPI.checkAndUpdateRefundsStatus,
-                    loadingWidget:
-                        const Center(child: CircularProgressIndicator())),
-                icon: Icon(
-                  Icons.refresh,
-                  color: appColors.onPrimary,
-                )),
+            // rightIcon: IconButton( onPressed: () => Get.showOverlay(
+            //         asyncFunction: AmulxFirebaseAPI.checkAndUpdateRefundsStatus,
+            //         loadingWidget:
+            //             const Center(child: CircularProgressIndicator())),
+            //     icon: Icon(
+            //       Icons.refresh,
+            //       color: appColors.onPrimary,
+            //     )),
           ),
 
           const SizedBox(height: 5),
@@ -112,30 +112,36 @@ class _HistoryState extends State<History> {
                       .map((doc) => doc.data() as Map<String, dynamic>)
                       .toList();
 
-                  orders = orders.map((Map<String, dynamic> order) {
-                    order['orders'] =
-                        (order['orders'] as List<dynamic>).map((perOrder) {
-                      late final DateTime orderTime;
-                      dynamic time = perOrder['time'];
+                  // orders = orders.map((Map<String, dynamic> order) {
+                  //   order['orders'] =
+                  //       (order['orders'] as List<dynamic>).map((perOrder) {
+                  //     late final DateTime orderTime;
+                  //     dynamic time = perOrder['time'];
 
-                      try {
-                        orderTime = (time as Timestamp).toDate();
-                      } catch (e) {
-                        orderTime =
-                            DateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(time);
-                      }
+                  //     try {
+                  //       orderTime = (time as Timestamp).toDate();
+                  //     } catch (e) {
+                  //       orderTime =
+                  //           DateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(time);
+                  //     }
 
-                      perOrder['time'] = orderTime;
+                  //     perOrder['time'] = orderTime;
 
-                      return perOrder;
-                    }).toList();
+                  //     return perOrder;
+                  //   }).toList();
 
-                    return order;
-                  }).toList();
+                  //   return order;
+                  // }).toList();
 
                   orders.sort((order1, order2) {
-                    return order2['orders'][0]['time']
-                        .compareTo(order1['orders'][0]['time']);
+                    final DateTime order1Time =
+                        DateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                            .parse(order1['orders'][0]['time']);
+                    final DateTime order2Time =
+                        DateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                            .parse(order2['orders'][0]['time']);
+
+                    return order2Time.compareTo(order1Time);
                   });
 
                   return ListView.builder(
@@ -165,23 +171,24 @@ class _HistoryState extends State<History> {
                               .toList();
                           String orderName = orderItem['orderID'];
 
-                          // print(orderItem['time']);
+                          final DateTime orderTime =
+                              DateFormat("yyyy-MM-dd'T'HH:mm")
+                                  .parse(orderItem['time']);
 
-                          final DateTime orderTime = orderItem['time'];
-
-                          // try {
-                          //   orderTime =
-                          //       (orderItem['time'] as Timestamp).toDate();
-                          // } catch (e) {
-                          //   orderTime = DateFormat("yyyy-MM-dd'T'HH:mm:ssxxx")
-                          //       .parse(orderItem['time']);
-                          // }
+                          final FirebaseOrderStatus firebaseOrderStatus =
+                              FirebaseOrderStatus.fromString(
+                                  orderItem['orderStatus']);
+                          final RefundStatus? refundStatus =
+                              orderItem['refundStatus'] != null
+                                  ? RefundStatus.fromString(
+                                      orderItem['refundStatus'])
+                                  : null;
 
                           return ListItem(
-                            id: snapshot.data!.docs[index].id,
+                            id: orderItem['time'],
                             items: historyItems,
-                            orderStatus: orderItem['orderStatus'],
-                            refundStatus: orderItem['refundStatus'],
+                            orderStatus: firebaseOrderStatus,
+                            refundStatus: refundStatus,
                             timestamp: orderTime,
                             orderID: orderName,
                             totalAmount: totalAmount.toDouble(),

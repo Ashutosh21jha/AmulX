@@ -4,6 +4,7 @@ import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/models/order_data_model.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
+import 'package:amul/widgets/amulX_dialogs.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -138,9 +139,28 @@ class OrderPaymentController extends GetxController {
     Get.offAll(() => const Mainscreen());
   }
 
+  Future<void> createOrderInFireabseIfPaymentStatusIsUnknown() async {
+    final formattedDate = orderData!.createdAt;
+    final UserController userController = Get.find<UserController>();
+
+    await userController.addOrderToUserHistrory(
+        formattedDate, orderData!.orderID, OrderPaymentStatus.UNKNOWN);
+
+    // TODO REMOVE LINE BELOW IN PRODUCTION
+    await userController.updateUserCurrentOrderStatusTo(false);
+    // TODO REMOVE ABOVE LINE IN PRODUCTION
+
+    AmulXDialogs.showPaymentIfPaymentStatusCheckFailed();
+  }
+
   Future<void> verifyPayment(String _, CFErrorResponse? errorResponse) async {
-    final OrderPaymentStatus orderPaymentStatus =
-        (await CashfreeGatewayApi.getOrderStatus(orderData!.orderID))!;
+    final OrderPaymentStatus? orderPaymentStatus =
+        (await CashfreeGatewayApi.getOrderStatus(orderData!.orderID));
+
+    if (orderPaymentStatus == null) {
+      await createOrderInFireabseIfPaymentStatusIsUnknown();
+      return;
+    }
 
     if (orderPaymentStatus == OrderPaymentStatus.SUCCESS ||
         orderPaymentStatus == OrderPaymentStatus.PENDING) {
