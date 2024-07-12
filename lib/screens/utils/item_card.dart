@@ -284,7 +284,7 @@ class _ItemCardState extends State<ItemCard> {
                                   // });
                                   CartController.to.addItem(CartItem(
                                     name: widget.itemData.id!,
-                                    price: double.parse(widget.itemData.price),
+                                    price: widget.itemData.price.toDouble(),
                                   ));
                                 } else {
                                   showDialog(

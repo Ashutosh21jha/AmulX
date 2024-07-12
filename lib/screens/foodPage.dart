@@ -35,6 +35,20 @@ class FoodPageState extends State<FoodPage> {
 
   final TextEditingController _searchController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+
+    filteredResults.value = widget.itemList.value;
+
+    filteredResults.value = filteredResults.toList()
+      ..sort(foodItemSortFunction);
+
+    // separateItems();
+    ItemController.to.fetchItems();
+    selected.value = 0;
+  }
+
   int sortPriceLowToHighFxn(ItemsModel a, ItemsModel b) {
     return a.price.compareTo(b.price);
   }
@@ -404,20 +418,6 @@ class FoodPageState extends State<FoodPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    filteredResults.value = widget.itemList.value;
-
-    filteredResults.value = filteredResults.toList()
-      ..sort(foodItemSortFunction);
-
-    // separateItems();
-    ItemController.to.fetchItems();
-    selected.value = 0;
   }
 
   @override
