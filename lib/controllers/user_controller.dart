@@ -72,7 +72,9 @@ class UserController extends GetxController {
           }),
           'orderID': orderID,
           'time': formattedDate,
-          'orderStatus': 'Placed',
+          'orderStatus': orderPaymentStatus != OrderPaymentStatus.UNKNOWN
+              ? 'Placed'
+              : "Not Placed",
           'paymentStatus': orderPaymentStatus.value
         }
       ]),

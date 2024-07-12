@@ -26,6 +26,29 @@ class AmulXSnackBars {
     );
   }
 
+  static void showManualOrderCreationFailedSnackbar() {
+    Get.snackbar(
+      'Order creation failed',
+      'please contact AMULX',
+      barBlur: 10,
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFF98181),
+          AppColors.red,
+          Color(0xFF850000),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 1),
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+
   static void showPaymentOrderFailureSnackbar() {
     Get.snackbar(
       'Payment Failed',

@@ -1,29 +1,10 @@
 import 'dart:convert';
 
+import 'package:amul/Utils/enums.dart';
 import 'package:amul/models/order_data_model.dart';
 import 'package:dio/dio.dart';
-
-enum RefundStatus {
-  SUCCESS,
-  PENDING,
-  CANCELLED,
-  ONHOLD;
-
-  static RefundStatus fromString(String status) {
-    switch (status) {
-      case 'SUCCESS':
-        return SUCCESS;
-      case 'PENDING':
-        return PENDING;
-      case 'CANCELLED':
-        return CANCELLED;
-      case 'ONHOLD':
-        return ONHOLD;
-      default:
-        throw Exception('Invalid RefundStatus');
-    }
-  }
-}
+import 'package:get/get.dart';
+import 'package:logger/web.dart';
 
 enum OrderPaymentStatus {
   SUCCESS("SUCCESS"),
@@ -32,7 +13,8 @@ enum OrderPaymentStatus {
   USER_DROPPED("USER_DROPPED"),
   VOID("VOID"),
   CANCELLED("CANCELLED"),
-  PENDING("PENDING");
+  PENDING("PENDING"),
+  UNKNOWN("UNKNOWN"); // NOT PRIMITIVE, DOES NOT EXIST IN CASHFREE
 
   final String value;
   const OrderPaymentStatus(this.value);
@@ -53,6 +35,8 @@ enum OrderPaymentStatus {
         return CANCELLED;
       case 'PENDING':
         return PENDING;
+      case 'UNKNOWN':
+        return UNKNOWN;
       default:
         throw Exception('Invalid OrderPaymentStatus');
     }
@@ -93,95 +77,122 @@ class CashfreeGatewayApi {
     ),
   );
 
-  static Future<OrderDataModel> createNewOrderWithOrderID(
+  static Future<OrderDataModel?> createNewOrderWithOrderID(
       String orderID,
       double orderAmount,
       String customerId,
       String customerName,
       String customerEmail) async {
-    final Map<String, String> headers = {
-      'x-client-id': 'TEST102440183c3125107d983f09d55c81044201',
-      'x-client-secret':
-          'cfsk_ma_test_2f4e1dee5061fc679e5abe8369f84496_a5e8d5e9',
-      'x-api-version': '2023-08-01',
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
+    try {
+      final Map<String, String> headers = {
+        'x-client-id': 'TEST102440183c3125107d983f09d55c81044201',
+        'x-client-secret':
+            'cfsk_ma_test_2f4e1dee5061fc679e5abe8369f84496_a5e8d5e9',
+        'x-api-version': '2023-08-01',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
 
-    final Map<String, dynamic> data = {
-      "order_amount": orderAmount.toStringAsFixed(2),
-      "order_currency": "INR",
-      "order_id": orderID,
-      "customer_details": {
-        "customer_id": customerId,
-        "customer_name": customerName,
-        "customer_email": customerEmail,
-        "customer_phone": "9999999999"
-      },
-      "order_expiry_time": "2024-07-18T10:20:12+05:30"
-    };
+      final Map<String, dynamic> data = {
+        "order_amount": orderAmount.toStringAsFixed(2),
+        "order_currency": "INR",
+        "order_id": orderID,
+        "customer_details": {
+          "customer_id": customerId,
+          "customer_name": customerName,
+          "customer_email": customerEmail,
+          "customer_phone": "9999999999"
+        },
+        "order_expiry_time": "2024-07-18T10:20:12+05:30"
+      };
 
-    const url = '/orders';
+      const url = '/orders';
 
-    final res = await _dio.post(url,
-        options: Options(headers: headers), data: jsonEncode(data));
-    final status = res.statusCode;
+      final res = await _dio.post(url,
+          options: Options(
+              headers: headers,
+              sendTimeout: const Duration(seconds: 5),
+              receiveTimeout: const Duration(seconds: 5)),
+          data: jsonEncode(data));
+      final status = res.statusCode;
 
-    if (status != 200) {
-      throw Exception('http.post error: statusCode= $status');
+      if (status != 200) {
+        throw Exception(
+            'http.post error: statusCode= $status message: ${res.data}');
+      }
+
+      final Map<String, dynamic> body = res.data;
+
+      return OrderDataModel.fromJson(body);
+    } catch (e) {
+      if (e is DioException) {
+        Get.find<Logger>().e(e.response?.data ?? e.message);
+      }
+      return null;
     }
-
-    final Map<String, dynamic> body = res.data;
-
-    return OrderDataModel.fromJson(body);
   }
 
   static Future<OrderPaymentStatus?> getOrderStatus(String orderID) async {
-    final headers = {
-      'accept': 'application/json',
-      'x-api-version': '2023-08-01',
-      'x-client-id': 'TEST102440183c3125107d983f09d55c81044201',
-      'x-client-secret':
-          'cfsk_ma_test_2f4e1dee5061fc679e5abe8369f84496_a5e8d5e9',
-    };
+    try {
+      final headers = {
+        'accept': 'application/json',
+        'x-api-version': '2023-08-01',
+        'x-client-id': 'TEST102440183c3125107d983f09d55c81044201',
+        'x-client-secret':
+            'cfsk_ma_test_2f4e1dee5061fc679e5abe8369f84496_a5e8d5e9',
+      };
 
-    final url = '/orders/$orderID/payments';
+      final url = '/orders/$orderID/payments';
 
-    final res = await _dio.get(url, options: Options(headers: headers));
-    final status = res.statusCode;
-    if (status != 200) throw Exception('http.get error: statusCode= $status');
+      final res = await _dio.get(
+        url,
+        options: Options(
+            headers: headers,
+            sendTimeout: const Duration(seconds: 5),
+            receiveTimeout: const Duration(seconds: 5)),
+      );
 
-    print(res.data);
-
-    final List<dynamic> payments = res.data;
-
-    if (payments.isEmpty) {
-      return OrderPaymentStatus.NOT_ATTEMPTED;
-    }
-
-    if (payments.length != 1) {
-      try {
-        payments.sort((a, b) {
-          final aTime = DateTime.parse(a['payment_time']);
-          final bTime = DateTime.parse(b['payment_time']);
-          return bTime.compareTo(aTime);
-        });
-      } catch (e) {
-        print(e);
+      final status = res.statusCode;
+      if (status != 200) {
+        throw Exception(
+            'http.get error: statusCode= $status message: ${res.data}');
       }
+
+      final List<dynamic> payments = res.data;
+
+      if (payments.isEmpty) {
+        return OrderPaymentStatus.NOT_ATTEMPTED;
+      }
+
+      if (payments.length != 1) {
+        try {
+          payments.sort((a, b) {
+            final aTime = DateTime.parse(a['payment_time']);
+            final bTime = DateTime.parse(b['payment_time']);
+            return bTime.compareTo(aTime);
+          });
+        } catch (e) {
+          print(e);
+        }
+      }
+
+      bool isAnyPaymentSuccessfull =
+          payments.any((element) => element['payment_status'] == 'SUCCESS');
+
+      if (isAnyPaymentSuccessfull) {
+        return OrderPaymentStatus.SUCCESS;
+      }
+
+      final OrderPaymentStatus latestPaymentStatus =
+          OrderPaymentStatus.fromString(payments.first['payment_status']);
+
+      return latestPaymentStatus;
+    } catch (e) {
+      if (e is DioException) {
+        Get.find<Logger>().e(e.response?.data ?? e.message);
+      }
+      return null;
     }
-
-    bool isAnyPaymentSuccessfull =
-        payments.any((element) => element['payment_status'] == 'SUCCESS');
-
-    if (isAnyPaymentSuccessfull) {
-      return OrderPaymentStatus.SUCCESS;
-    }
-
-    final OrderPaymentStatus latestPaymentStatus =
-        OrderPaymentStatus.fromString(payments.first['payment_status']);
-
-    return latestPaymentStatus;
   }
 
   static Future<RefundStatus?> getRefundStatus(String orderID) async {
@@ -196,15 +207,22 @@ class CashfreeGatewayApi {
 
       final String url = '/orders/$orderID/refunds/$orderID-refund';
 
-      final res = await _dio.get(url, options: Options(headers: headers));
+      final res = await _dio.get(url,
+          options: Options(
+              headers: headers,
+              sendTimeout: const Duration(seconds: 5),
+              receiveTimeout: const Duration(seconds: 5)));
 
       final status = res.statusCode;
-      if (status != 200)
+      if (status != 200) {
         throw Exception('http.post error: statusCode= $status');
+      }
 
       return RefundStatus.fromString(res.data['refund_status']);
-    } on DioException catch (e) {
-      print(e.message);
+    } catch (e) {
+      if (e is DioException) {
+        Get.find<Logger>().e(e.response?.data ?? e.message);
+      }
       return null;
     }
   }

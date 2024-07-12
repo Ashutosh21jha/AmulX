@@ -1,4 +1,7 @@
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/Utils/enums.dart';
+import 'package:amul/api/cashfree.dart';
+import 'package:amul/api/firebaseAPI.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,8 +13,8 @@ import 'package:intl/intl.dart';
 class ListItem extends StatefulWidget {
   final String id;
   final List<CartItem> items;
-  final String orderStatus;
-  final String? refundStatus;
+  final FirebaseOrderStatus orderStatus;
+  final RefundStatus? refundStatus;
   final DateTime timestamp;
   final String orderID;
   final double totalAmount;
@@ -175,47 +178,45 @@ class _ListItemState extends State<ListItem>
                   //   },
                   // ),
                   // const SizedBox(width: 16),
-                  ListTile(
-                    title: Text(
-                      widget.orderID,
-                      style: TextStyle(
-                        color: appColors.primaryText,
-                        fontSize: 12,
-                        fontFamily: 'Epilogue',
-                        fontWeight: FontWeight.w700,
-                        height: 0.07,
-                      ),
-                    ),
-                    subtitle: Text(
-                      DateFormat('MMM d, y h:mm a').format(widget.timestamp),
-                      style: TextStyle(
-                        color: appColors.primaryText,
-                        fontSize: 14,
-                        fontFamily: 'Epilogue',
-                        fontWeight: FontWeight.w400,
-                        height: 0.07,
-                      ),
-                    ),
-                    trailing: Text(
-                      widget.refundStatus != null
-                          ? "REFUND ${widget.refundStatus}"
-                          : widget.orderStatus.toUpperCase(),
-                      style: TextStyle(
-                        color: widget.refundStatus != null
-                            ? (widget.refundStatus == "CANCELLED"
-                                ? AppColors.red
-                                : const Color(0xFFF2C14E))
-                            : (widget.orderStatus == "Declined"
-                                ? AppColors.red
-                                : const Color(0xFF18AE86)),
-                        fontSize: 14,
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w700,
-                        height: 0.11,
-                        letterSpacing: 0.20,
-                      ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.orderID,
+                              style: TextStyle(
+                                color: appColors.primaryText,
+                                fontSize: 14,
+                                fontFamily: 'Epilogue',
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              DateFormat('MMM d, y h:mm a')
+                                  .format(widget.timestamp),
+                              style: TextStyle(
+                                color: appColors.primaryText,
+                                fontSize: 12,
+                                fontFamily: 'Epilogue',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        TrailingWidget(
+                            docID: widget.id,
+                            orderID: widget.orderID,
+                            orderStatus: widget.orderStatus,
+                            refundStatus: widget.refundStatus)
+                      ],
                     ),
                   ),
+
                   SizeTransition(
                     sizeFactor: _heightFactorAnimation,
                     child: SizeTransition(
@@ -309,6 +310,122 @@ class _ListItemState extends State<ListItem>
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TrailingWidget extends StatelessWidget {
+  const TrailingWidget(
+      {super.key,
+      required this.orderStatus,
+      required this.refundStatus,
+      required this.orderID,
+      required this.docID});
+
+  final FirebaseOrderStatus orderStatus;
+  final RefundStatus? refundStatus;
+  final String docID;
+  final String orderID;
+
+  @override
+  Widget build(BuildContext context) {
+    if (refundStatus != null) {
+      if (refundStatus == RefundStatus.SUCCESS) {
+        return Text(
+          "REFUND ${refundStatus!.name}",
+          style: const TextStyle(
+            color: AppColors.green,
+            fontSize: 14,
+            fontFamily: 'Urbanist',
+            fontWeight: FontWeight.w700,
+            height: 0.11,
+            letterSpacing: 0.20,
+          ),
+        );
+      }
+
+      return Wrap(
+        direction: Axis.horizontal,
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 0,
+        runSpacing: 0,
+        children: [
+          IconButton(
+            onPressed: () {
+              Get.showOverlay(
+                  asyncFunction: () =>
+                      AmulxFirebaseAPI.checkAndUpdateRefundStatus(docID),
+                  loadingWidget: const Center(
+                    child: CircularProgressIndicator(),
+                  ));
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+          Text(
+            "REFUND ${refundStatus!.name}",
+            style: TextStyle(
+              color: refundStatus == RefundStatus.CANCELLED
+                  ? AppColors.red
+                  : const Color(0xFFF2C14E),
+              fontSize: 14,
+              fontFamily: 'Urbanist',
+              fontWeight: FontWeight.w700,
+              height: 0.11,
+              letterSpacing: 0.20,
+            ),
+          )
+        ],
+      );
+    }
+
+    if (orderStatus == FirebaseOrderStatus.NOT_PLACED) {
+      return Wrap(
+        direction: Axis.horizontal,
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 0,
+        runSpacing: 0,
+        children: [
+          IconButton(
+            onPressed: () => Get.showOverlay(
+                asyncFunction: () =>
+                    AmulxFirebaseAPI.checkPaymentStatusAndPlaceOrder(
+                        docID, orderID),
+                loadingWidget: const Center(
+                  child: CircularProgressIndicator(),
+                )),
+            icon: const Icon(Icons.refresh),
+          ),
+          Text(
+            "Payment\nFailed".toUpperCase(),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppColors.red,
+              fontSize: 14,
+              fontFamily: 'Urbanist',
+              fontWeight: FontWeight.w700,
+              // height: 0.11,
+              letterSpacing: 0.20,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Text(
+      orderStatus.name.toUpperCase(),
+      style: TextStyle(
+        color: (orderStatus == FirebaseOrderStatus.DECLINED
+            ? AppColors.red
+            : const Color(0xFF18AE86)),
+        fontSize: 14,
+        fontFamily: 'Urbanist',
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.20,
       ),
     );
   }
