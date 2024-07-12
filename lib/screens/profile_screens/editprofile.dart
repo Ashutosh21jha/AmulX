@@ -2,6 +2,7 @@ import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/auth/auth_input_widget.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/widgets/amulX_appbar.dart';
+import 'package:amul/widgets/user_image_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -155,15 +156,11 @@ class _EditProfileState extends State<EditProfile> {
                           Container(
                             width: 100,
                             height: 100,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Colors.grey,
                               shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: CachedNetworkImageProvider(
-                                    userController.imageUrl.value),
-                                fit: BoxFit.cover,
-                              ),
                             ),
+                            child: UserImageWidget(imageUrl: imageUrl ?? ''),
                           ),
                           Positioned(
                             bottom: 0,

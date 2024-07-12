@@ -1,5 +1,6 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/user_controller.dart';
+import 'package:amul/widgets/user_image_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -45,26 +46,9 @@ class ProfileCard2 extends StatelessWidget {
         children: [
           Obx(
             () {
-              if (userController.imageUrl.value.isNotEmpty) {
-                return ClipOval(
-                  child: CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      height: 64,
-                      width: 64,
-                      imageUrl: userController.imageUrl.value,
-                      cacheKey: userController.imageUrl.value),
-                );
-              } else {
-                return SizedBox(
-                  height: 60,
-                  width: 60,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: appColors.blue,
-                    ),
-                  ),
-                );
-              }
+              return UserImageWidget(
+                imageUrl: userController.imageUrl.value,
+              );
             },
           ),
           const SizedBox(width: 16),
