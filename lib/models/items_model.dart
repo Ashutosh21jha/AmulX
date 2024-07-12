@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ItemsModel {
   final String? id;
-  final int price;
+  final double price;
   final String imageUrl;
   final String type;
   final bool availability;

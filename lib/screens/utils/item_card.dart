@@ -118,7 +118,7 @@ class _ItemCardState extends State<ItemCard> {
                         ),
                       ),
                       Text(
-                        "₹ ${widget.itemData.price}",
+                        "₹ ${widget.itemData.price.toStringAsFixed(0)}",
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

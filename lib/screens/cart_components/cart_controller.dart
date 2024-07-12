@@ -202,7 +202,7 @@ class CartController extends GetxController {
           cartItems.addAll(cartdoc.docs.map((doc) {
             return CartItem(
               name: doc['name'] ?? '',
-              price: (doc['price']).toDouble() ?? 0.0,
+              price: doc['price'],
               quantity: doc['count'] ?? 0,
             );
           }));
