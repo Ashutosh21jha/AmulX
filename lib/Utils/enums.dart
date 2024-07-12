@@ -1,5 +1,7 @@
 enum FirebaseOrderStatus {
   PLACED('PLACED'),
+  READY('READY'),
+  COMPLETED("COMPLETED"),
   NOT_PLACED('NOT PLACED'),
   DECLINED("DECLINED");
 
@@ -7,6 +9,10 @@ enum FirebaseOrderStatus {
     switch (status.toUpperCase()) {
       case 'PLACED':
         return PLACED;
+      case 'READY':
+        return READY;
+      case 'COMPLETED':
+        return COMPLETED;
       case 'NOT PLACED':
         return NOT_PLACED;
       case 'DECLINED':

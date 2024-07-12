@@ -37,10 +37,19 @@ class ItemController extends GetxController {
               .get();
 
           Items.clear();
+
           Items.addAll(availableSnapshot.docs.map((snapshot) {
+            dynamic price = snapshot.data()['price'];
+
+            if (price is int) {
+              price = price.toDouble();
+            } else if (price is String) {
+              price = double.parse(price);
+            }
+
             return ItemsModel(
               id: snapshot.id,
-              price: snapshot.data()['price'] ?? '',
+              price: price,
               type: snapshot.data()['type'] ?? '',
               availability: snapshot.data()['availability'] as bool? ?? false,
               imageUrl: snapshot.data()['imageUrl'] ?? '',

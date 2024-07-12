@@ -1,3 +1,4 @@
+import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/auth/auth_input_widget.dart';
 import 'package:amul/screens/auth/auth_snackbar.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
@@ -66,6 +67,7 @@ class _SignInPageState extends State<SignInPage> {
 
       switch (signInState) {
         case SignInState.success:
+          await Get.find<UserController>().getUserData();
           Get.to(
             () => const Mainscreen(),
             preventDuplicates: true,
@@ -260,7 +262,12 @@ class _SignInPageState extends State<SignInPage> {
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
-                            onPressed: isLoading ? null : _submitform,
+                            onPressed: () => isLoading
+                                ? null
+                                : Get.showOverlay(
+                                    asyncFunction: _submitform,
+                                    loadingWidget: const Center(
+                                        child: CircularProgressIndicator())),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: appColors.blue,
                               shape: RoundedRectangleBorder(
