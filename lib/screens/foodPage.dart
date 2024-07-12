@@ -320,6 +320,7 @@ class FoodPageState extends State<FoodPage> {
                     //     '',
                     //     (previousValue, element) =>
                     //         previousValue + element.id!)),
+
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     itemCount: filteredResults.length,
@@ -329,7 +330,6 @@ class FoodPageState extends State<FoodPage> {
                       bool unavailable = !available;
 
                       bool isOutOfStock = available && itemData.stock == 0;
-
                       return ItemCard(
                         key: Key(itemData.id!),
                         itemData: itemData,
