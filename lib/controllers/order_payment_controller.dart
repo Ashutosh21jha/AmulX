@@ -155,7 +155,7 @@ class OrderPaymentController extends GetxController {
 
   Future<void> verifyPayment(String _, CFErrorResponse? errorResponse) async {
     final OrderPaymentStatus? orderPaymentStatus =
-        (await CashfreeGatewayApi.getOrderStatus(orderData!.orderID));
+        await CashfreeGatewayApi.getOrderStatus(orderData!.orderID);
 
     if (orderPaymentStatus == null) {
       await createOrderInFireabseIfPaymentStatusIsUnknown();
