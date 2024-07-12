@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:amul/api/cashfree.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/screens/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -25,7 +26,8 @@ class UserController extends GetxController {
   }
 
   Future<void> getUserData() async {
-    email.value = FirebaseAuth.instance.currentUser!.email!;
+    email.value = FirebaseAuth.instance.currentUser?.email! ?? '';
+    userId.value = FirebaseAuth.instance.currentUser?.uid ?? '';
     final doc = await db.collection("User").doc(email.value).get();
     Map<String, dynamic>? userData = doc.data();
 

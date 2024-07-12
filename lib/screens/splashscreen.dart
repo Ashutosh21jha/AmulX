@@ -55,9 +55,10 @@ class _Splashscreenstate extends State<SplashScreen> {
     });
   }
 
-  void _navigateToNextScreen() {
+  void _navigateToNextScreen() async {
     if (auth.currentUser != null) {
       if (auth.currentUser?.emailVerified ?? false) {
+        await Get.find<UserController>().getUserData();
         Get.off(() => const Mainscreen());
       } else {
         Get.off(() => Emailverification(

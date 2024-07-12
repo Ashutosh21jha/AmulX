@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/auth/auth_snackbar.dart';
 import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/mainscreen.dart';
@@ -7,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class Emailverification extends StatefulWidget {
@@ -49,6 +51,15 @@ class _EmailverificationState extends State<Emailverification> {
 
   Future<void> signIn() async {
     if (auth.currentUser?.emailVerified ?? false) {
+      await Get.showOverlay(
+          asyncFunction: () async {
+            final userController = Get.find<UserController>();
+            await userController.getUserData();
+          },
+          loadingWidget: const Center(child: CircularProgressIndicator()));
+
+      if (!mounted) return;
+
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const Mainscreen()),

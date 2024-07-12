@@ -35,7 +35,6 @@ class _EditProfileState extends State<EditProfile> {
   final UserController userController = Get.find<UserController>();
 
   String get userId => auth.currentUser?.email ?? '';
-  String? imageUrl;
   late TextEditingController nameController;
   String name = '';
 
@@ -160,7 +159,8 @@ class _EditProfileState extends State<EditProfile> {
                               color: Colors.grey,
                               shape: BoxShape.circle,
                             ),
-                            child: UserImageWidget(imageUrl: imageUrl ?? ''),
+                            child: UserImageWidget(
+                                imageUrl: userController.imageUrl.value),
                           ),
                           Positioned(
                             bottom: 0,

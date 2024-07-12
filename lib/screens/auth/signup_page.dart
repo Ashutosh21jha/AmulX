@@ -112,8 +112,7 @@ class _SignUpPageState extends State<SignUpPage> {
         "name": name,
         "student id": id,
         "userUid": uid,
-        'imageUrl':
-            'https://firebasestorage.googleapis.com/v0/b/amul-c27e3.appspot.com/o/defaultProfileImage%2F%E2%80%94Pngtree%E2%80%94default%20male%20avatar_5939655.png?alt=media&token=7c56df62-39af-4e19-8af7-b4bfb64c9bf3',
+        'imageUrl': '',
         "currentOrder": false,
       });
     } on FirebaseException catch (e) {

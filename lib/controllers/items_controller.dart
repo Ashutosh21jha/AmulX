@@ -40,7 +40,7 @@ class ItemController extends GetxController {
           Items.addAll(availableSnapshot.docs.map((snapshot) {
             return ItemsModel(
               id: snapshot.id,
-              price: snapshot.data()['price'] ?? '',
+              price: (snapshot.data()['price']).toString() ?? '',
               type: snapshot.data()['type'] ?? '',
               availability: snapshot.data()['availability'] as bool? ?? false,
               imageUrl: snapshot.data()['imageUrl'] ?? '',
