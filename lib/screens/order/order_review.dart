@@ -64,7 +64,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       await orderPaymentController.createNewOrderWithOrderID(
           orderID, totalAmount);
 
-      if (orderPaymentController.orderData == null) {
+      if (orderPaymentController.orderData.value == null) {
         AmulXSnackBars.showPaymentOrderFailureSnackbar();
         return;
       }

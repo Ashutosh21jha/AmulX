@@ -19,8 +19,10 @@ import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/web.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class OrderPaymentController extends GetxController {
   final String backendURL = 'http://192.168.107.15:3000';
@@ -28,7 +30,7 @@ class OrderPaymentController extends GetxController {
 
   final cfPaymentGateway = CFPaymentGatewayService();
 
-  OrderDataModel? orderData;
+  Rx<OrderDataModel?> orderData = Rx<OrderDataModel?>(null);
 
   OrderPaymentController() {
     paymentSuccessCallbackFxn(String _) => Get.showOverlay(
@@ -49,8 +51,12 @@ class OrderPaymentController extends GetxController {
       String orderID, double orderAmount) async {
     final UserController user = Get.find<UserController>();
 
-    orderData = await CashfreeGatewayApi.createNewOrderWithOrderID(orderID,
-        orderAmount, user.userId.value, user.userName.value, user.email.value);
+    orderData.value = await CashfreeGatewayApi.createNewOrderWithOrderID(
+        orderID,
+        orderAmount,
+        user.userId.value,
+        user.userName.value,
+        user.email.value);
   }
 
   // Future<void> onClientOrderFailure(
@@ -97,17 +103,19 @@ class OrderPaymentController extends GetxController {
     final prepListOrderData = {
       'userId': userController.userId.value,
       'items': itemsMap,
-      'orderID': orderData!.orderID,
+      'orderID': orderData.value!.orderID,
       'orderStatus': 'Preparing',
       'paymentStatus': orderPaymentStatus.value,
       'email': userController.email.value,
       'name': userController.userName.value,
       'userImageUrl': userController.imageUrl.value,
-      'time': orderData!.createdAt,
+      'time': orderData.value!.createdAt,
       'token': await firebaseMessaging.getToken(),
     };
 
-    await prepListCollection.doc(orderData!.orderID).set(prepListOrderData);
+    await prepListCollection
+        .doc(orderData.value!.orderID)
+        .set(prepListOrderData);
   }
 
   Future<void> handlePaymentError() async {
@@ -118,11 +126,11 @@ class OrderPaymentController extends GetxController {
 
   Future<void> handlePaymentSuccess(
       OrderPaymentStatus orderPaymentStatus) async {
-    final formattedDate = orderData!.createdAt;
+    final formattedDate = orderData.value!.createdAt;
     final UserController userController = Get.find<UserController>();
 
     await userController.addOrderToUserHistrory(
-        formattedDate, orderData!.orderID, orderPaymentStatus);
+        formattedDate, orderData.value!.orderID, orderPaymentStatus);
 
     await addOrderToPrepList(orderPaymentStatus);
 
@@ -140,11 +148,11 @@ class OrderPaymentController extends GetxController {
   }
 
   Future<void> createOrderInFireabseIfPaymentStatusIsUnknown() async {
-    final formattedDate = orderData!.createdAt;
+    final formattedDate = orderData.value!.createdAt;
     final UserController userController = Get.find<UserController>();
 
     await userController.addOrderToUserHistrory(
-        formattedDate, orderData!.orderID, OrderPaymentStatus.UNKNOWN);
+        formattedDate, orderData.value!.orderID, OrderPaymentStatus.UNKNOWN);
 
     // TODO REMOVE LINE BELOW IN PRODUCTION
     await userController.updateUserCurrentOrderStatusTo(false);
@@ -155,7 +163,7 @@ class OrderPaymentController extends GetxController {
 
   Future<void> verifyPayment(String _, CFErrorResponse? errorResponse) async {
     final OrderPaymentStatus? orderPaymentStatus =
-        await CashfreeGatewayApi.getOrderStatus(orderData!.orderID);
+        await CashfreeGatewayApi.getOrderStatus(orderData.value!.orderID);
 
     if (orderPaymentStatus == null) {
       await createOrderInFireabseIfPaymentStatusIsUnknown();
@@ -176,8 +184,8 @@ class OrderPaymentController extends GetxController {
     try {
       session = CFSessionBuilder()
           .setEnvironment(environment)
-          .setOrderId(orderData!.orderID)
-          .setPaymentSessionId(orderData!.paymentSessionId)
+          .setOrderId(orderData.value!.orderID)
+          .setPaymentSessionId(orderData.value!.paymentSessionId)
           .build();
     } on CFException catch (e) {
       print(e.message);
