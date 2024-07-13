@@ -60,6 +60,7 @@ dependencies:
   logger: ^2.3.0
   dio: ^5.5.0+1
   flutter_local_notifications: ^17.2.1+1
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

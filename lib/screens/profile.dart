@@ -4,6 +4,7 @@ import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/profile_screens/profile_card2.dart';
+import 'package:amul/services/shared_prefs_service.dart';
 import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -97,6 +98,8 @@ class Profile extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 48, 0, 16),
                 child: TextButton.icon(
                   onPressed: () async {
+                    Get.find<SharedPrefsService>()
+                        .setDarkTheme(!Get.isDarkMode);
                     Get.changeThemeMode(
                         Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
                   },

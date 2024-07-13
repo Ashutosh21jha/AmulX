@@ -3,6 +3,7 @@ import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/splashscreen.dart';
 import 'package:amul/services/notification_service.dart';
+import 'package:amul/services/shared_prefs_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -23,15 +24,16 @@ void main() async {
 
   Get.put(notificationService);
   Get.put(Logger());
+  Get.put(SharedPrefsService());
   Get.put(UserController());
 
-  // await FirebaseMessaging.instance.requestPermission();
+  final isDarkMode = await Get.find<SharedPrefsService>().isDarkTheme();
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     theme: lightThemeData(),
     darkTheme: darkThemeData(),
-    themeMode: ThemeMode.light,
+    themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
     home: const SplashScreen(),
   ));
 }
@@ -41,26 +43,3 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   print(message.notification!.title);
 }
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-//       statusBarColor: Colors.transparent,
-//       statusBarIconBrightness: Brightness.dark,
-//     ));
-//     return AdaptiveTheme(
-//       light: lightThemeData(),
-//       dark: darkThemeData(),
-//       initial: AdaptiveThemeMode.light,
-//       builder: (lightTheme, darkTheme) => GetMaterialApp(
-//         debugShowCheckedModeBanner: false,
-//         theme: lightTheme,
-//         darkTheme: darkTheme,
-//         // themeMode: ThemeMode.dark,
-//         home: const SplashScreen(),
-//       ),
-//     );
-//   }
-// }
