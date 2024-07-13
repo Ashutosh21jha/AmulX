@@ -56,7 +56,10 @@ class _EmailverificationState extends State<Emailverification> {
             final userController = Get.find<UserController>();
             await userController.getUserData();
           },
-          loadingWidget: const Center(child: CircularProgressIndicator()));
+          loadingWidget: const Center(
+              child: CircularProgressIndicator(
+            color: AppColors.blue,
+          )));
 
       if (!mounted) return;
 

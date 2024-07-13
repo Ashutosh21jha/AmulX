@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/api/cashfree.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/models/order_data_model.dart';
@@ -36,11 +37,17 @@ class OrderPaymentController extends GetxController {
   OrderPaymentController() {
     paymentSuccessCallbackFxn(String _) => Get.showOverlay(
         asyncFunction: () => verifyPayment(_, null),
-        loadingWidget: const Center(child: CircularProgressIndicator()));
+        loadingWidget: const Center(
+            child: CircularProgressIndicator(
+          color: AppColors.blue,
+        )));
     paymentFailureCallbackFxn(CFErrorResponse cfErrorResponse, String _) =>
         Get.showOverlay(
             asyncFunction: () => verifyPayment(_, cfErrorResponse),
-            loadingWidget: const Center(child: CircularProgressIndicator()));
+            loadingWidget: const Center(
+                child: CircularProgressIndicator(
+              color: AppColors.blue,
+            )));
 
     cfPaymentGateway.setCallback(
       paymentSuccessCallbackFxn,

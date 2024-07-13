@@ -229,9 +229,9 @@ class _OrderPageState extends State<OrderPage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     child: orderId == ''
-                        ? Center(
+                        ? const Center(
                             child: CircularProgressIndicator(
-                            color: appColors.blue,
+                            color: AppColors.blue,
                           ))
                         : StreamBuilder(
                             stream: isDeclined == false

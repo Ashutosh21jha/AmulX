@@ -359,7 +359,9 @@ class TrailingWidget extends StatelessWidget {
                   asyncFunction: () =>
                       AmulxFirebaseAPI.checkAndUpdateRefundStatus(docID),
                   loadingWidget: const Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: AppColors.blue,
+                    ),
                   ));
             },
             icon: const Icon(Icons.refresh),
@@ -396,7 +398,9 @@ class TrailingWidget extends StatelessWidget {
                     AmulxFirebaseAPI.checkPaymentStatusAndPlaceOrder(
                         docID, orderID),
                 loadingWidget: const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: AppColors.blue,
+                  ),
                 )),
             icon: const Icon(Icons.refresh),
           ),

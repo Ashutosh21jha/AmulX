@@ -100,6 +100,7 @@ class _ItemCardState extends State<ItemCard> {
                           ),
                         )
                       : const CircularProgressIndicator(
+                          color: AppColors.blue,
                           valueColor:
                               AlwaysStoppedAnimation<Color>(Colors.blue),
                         ),

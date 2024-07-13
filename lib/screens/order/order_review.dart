@@ -333,7 +333,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                         height: 10,
                         width: 10,
                         child: CircularProgressIndicator(
-                          color: Colors.white,
+                          color: AppColors.blue,
                         ),
                       )
                     : const Text(

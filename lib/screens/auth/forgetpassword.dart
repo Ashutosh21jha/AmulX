@@ -193,6 +193,7 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
                                         height: 15,
                                         width: 15,
                                         child: CircularProgressIndicator(
+                                          color: AppColors.blue,
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
                                                   Colors.white),

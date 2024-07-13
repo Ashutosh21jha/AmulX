@@ -267,7 +267,9 @@ class _SignInPageState extends State<SignInPage> {
                                 : Get.showOverlay(
                                     asyncFunction: _submitform,
                                     loadingWidget: const Center(
-                                        child: CircularProgressIndicator())),
+                                        child: CircularProgressIndicator(
+                                      color: AppColors.blue,
+                                    ))),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: appColors.blue,
                               shape: RoundedRectangleBorder(
