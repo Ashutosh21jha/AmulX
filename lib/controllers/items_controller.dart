@@ -69,7 +69,7 @@ class ItemController extends GetxController {
               case 'food':
                 food.add(item);
                 break;
-              case 'drink':
+              case 'drinks':
                 drink.add(item);
                 break;
               case 'munchies':
