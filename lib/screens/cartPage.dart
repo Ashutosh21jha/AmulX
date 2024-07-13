@@ -326,8 +326,8 @@ class _CartPageState extends State<CartPage> {
                                             ? Color(0xFF404040)
                                             : appColors.primaryText,
                                         spreadRadius: Get.isDarkMode ? 6 : 3,
-                                        blurRadius: 6,
-                                        offset: Offset(0, 3))
+                                        blurRadius: 2,
+                                        offset: const Offset(0, 3))
                                   ],
                                   borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(8),
