@@ -34,27 +34,6 @@ class OrderPaymentController extends GetxController {
 
   Rx<OrderDataModel?> orderData = Rx<OrderDataModel?>(null);
 
-  OrderPaymentController() {
-    paymentSuccessCallbackFxn(String _) => Get.showOverlay(
-        asyncFunction: () => verifyPayment(_, null),
-        loadingWidget: const Center(
-            child: CircularProgressIndicator(
-          color: AppColors.blue,
-        )));
-    paymentFailureCallbackFxn(CFErrorResponse cfErrorResponse, String _) =>
-        Get.showOverlay(
-            asyncFunction: () => verifyPayment(_, cfErrorResponse),
-            loadingWidget: const Center(
-                child: CircularProgressIndicator(
-              color: AppColors.blue,
-            )));
-
-    cfPaymentGateway.setCallback(
-      paymentSuccessCallbackFxn,
-      paymentFailureCallbackFxn,
-    );
-  }
-
   Future<void> createNewOrderWithOrderID(
       String orderID, double orderAmount) async {
     final UserController user = Get.find<UserController>();
@@ -204,6 +183,19 @@ class OrderPaymentController extends GetxController {
   }
 
   Future<void> payWithUpi(CFSession session) async {
+    paymentSuccessCallbackFxn(String _) => Get.showOverlay(
+        asyncFunction: () => verifyPayment(_, null),
+        loadingWidget: const Center(child: CircularProgressIndicator()));
+    paymentFailureCallbackFxn(CFErrorResponse cfErrorResponse, String _) =>
+        Get.showOverlay(
+            asyncFunction: () => verifyPayment(_, cfErrorResponse),
+            loadingWidget: const Center(child: CircularProgressIndicator()));
+
+    cfPaymentGateway.setCallback(
+      paymentSuccessCallbackFxn,
+      paymentFailureCallbackFxn,
+    );
+
     final upi = CFUPIBuilder()
         .setChannel(CFUPIChannel.INTENT)
         .setUPIID('testsuccess@gocash')
