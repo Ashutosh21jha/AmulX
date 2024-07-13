@@ -185,11 +185,17 @@ class OrderPaymentController extends GetxController {
   Future<void> payWithUpi(CFSession session) async {
     paymentSuccessCallbackFxn(String _) => Get.showOverlay(
         asyncFunction: () => verifyPayment(_, null),
-        loadingWidget: const Center(child: CircularProgressIndicator()));
+        loadingWidget: const Center(
+            child: CircularProgressIndicator(
+          color: AppColors.blue,
+        )));
     paymentFailureCallbackFxn(CFErrorResponse cfErrorResponse, String _) =>
         Get.showOverlay(
             asyncFunction: () => verifyPayment(_, cfErrorResponse),
-            loadingWidget: const Center(child: CircularProgressIndicator()));
+            loadingWidget: const Center(
+                child: CircularProgressIndicator(
+              color: AppColors.blue,
+            )));
 
     cfPaymentGateway.setCallback(
       paymentSuccessCallbackFxn,
