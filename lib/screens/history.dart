@@ -13,6 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/web.dart';
+import 'package:lottie/lottie.dart';
 import '../widgets/item.dart';
 
 class History extends StatefulWidget {
@@ -144,59 +145,82 @@ class _HistoryState extends State<History> {
                     return order2Time.compareTo(order1Time);
                   });
 
-                  return ListView.builder(
-                    itemCount: orders.length,
-                    itemBuilder: (context, index) {
-                      Map<String, dynamic> order = orders[index];
-                      List<dynamic> orderList = order['orders'];
+                  return orders.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "No Orders to show!",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                              Lottie.asset(
+                                "assets/raw/noHistory.json",
+                                height: 300,
+                                width: double.infinity,
+                                repeat: false,
+                                frameRate: FrameRate(30),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: orders.length,
+                          itemBuilder: (context, index) {
+                            Map<String, dynamic> order = orders[index];
+                            List<dynamic> orderList = order['orders'];
 
-                      return Column(
-                        children: orderList.map((orderItem) {
-                          Map<String, dynamic> items =
-                              Map<String, dynamic>.from(orderItem['items']);
-                          double totalAmount = 0.0;
+                            return Column(
+                              children: orderList.map((orderItem) {
+                                Map<String, dynamic> items =
+                                    Map<String, dynamic>.from(
+                                        orderItem['items']);
+                                double totalAmount = 0.0;
 
-                          for (var entry in items.entries) {
-                            Map<String, dynamic> item =
-                                Map<String, dynamic>.from(entry.value);
-                            totalAmount += (item['price']) * (item['count']);
-                          }
+                                for (var entry in items.entries) {
+                                  Map<String, dynamic> item =
+                                      Map<String, dynamic>.from(entry.value);
+                                  totalAmount +=
+                                      (item['price']) * (item['count']);
+                                }
 
-                          List<CartItem> historyItems = items.entries
-                              .map((item) => CartItem(
-                                  name: item.key,
-                                  price: double.parse(
-                                      (item.value['price']).toString()),
-                                  quantity: item.value['count']))
-                              .toList();
-                          String orderName = orderItem['orderID'];
+                                List<CartItem> historyItems = items.entries
+                                    .map((item) => CartItem(
+                                        name: item.key,
+                                        price: double.parse(
+                                            (item.value['price']).toString()),
+                                        quantity: item.value['count']))
+                                    .toList();
+                                String orderName = orderItem['orderID'];
 
-                          final DateTime orderTime =
-                              DateFormat("yyyy-MM-dd'T'HH:mm")
-                                  .parse(orderItem['time']);
+                                final DateTime orderTime =
+                                    DateFormat("yyyy-MM-dd'T'HH:mm")
+                                        .parse(orderItem['time']);
 
-                          final FirebaseOrderStatus firebaseOrderStatus =
-                              FirebaseOrderStatus.fromString(
-                                  orderItem['orderStatus']);
-                          final RefundStatus? refundStatus =
-                              orderItem['refundStatus'] != null
-                                  ? RefundStatus.fromString(
-                                      orderItem['refundStatus'])
-                                  : null;
+                                final FirebaseOrderStatus firebaseOrderStatus =
+                                    FirebaseOrderStatus.fromString(
+                                        orderItem['orderStatus']);
+                                final RefundStatus? refundStatus =
+                                    orderItem['refundStatus'] != null
+                                        ? RefundStatus.fromString(
+                                            orderItem['refundStatus'])
+                                        : null;
 
-                          return ListItem(
-                            id: orderItem['time'],
-                            items: historyItems,
-                            orderStatus: firebaseOrderStatus,
-                            refundStatus: refundStatus,
-                            timestamp: orderTime,
-                            orderID: orderName,
-                            totalAmount: totalAmount.toDouble(),
-                          );
-                        }).toList(),
-                      );
-                    },
-                  );
+                                return ListItem(
+                                  id: orderItem['time'],
+                                  items: historyItems,
+                                  orderStatus: firebaseOrderStatus,
+                                  refundStatus: refundStatus,
+                                  timestamp: orderTime,
+                                  orderID: orderName,
+                                  totalAmount: totalAmount.toDouble(),
+                                );
+                              }).toList(),
+                            );
+                          },
+                        );
                 },
               ),
             ),
