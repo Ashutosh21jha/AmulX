@@ -22,12 +22,10 @@ void main() async {
   notificationService.firebaseInit();
 
   Get.put(notificationService);
+  Get.put(Logger());
+  Get.put(UserController());
 
   // await FirebaseMessaging.instance.requestPermission();
-
-  final UserController userController = Get.put(UserController());
-
-  final logger = Get.put(Logger());
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,

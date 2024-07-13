@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
+import 'package:logger/web.dart';
 
 class NotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -37,9 +39,7 @@ class NotificationService {
 
   Future<void> getDeviceToken() async {
     deviceToken = await _firebaseMessaging.getToken() ?? "";
-    print("XXXXXXXXXXXXXXXXXXX");
-    print(deviceToken);
-    print("XXXXXXXXXXXXXXXXXXX");
+    Get.find<Logger>().i('Device Token  => $deviceToken');
   }
 
   Future<void> checkForTokenRefresh() async {
