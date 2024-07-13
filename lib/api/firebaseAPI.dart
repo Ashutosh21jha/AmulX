@@ -2,6 +2,7 @@ import 'package:amul/Utils/enums.dart';
 import 'package:amul/api/cashfree.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/services/notification_service.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -26,8 +27,9 @@ class AmulxFirebaseAPI {
         // ADD ITEM TO PREPLIST
         {
           final UserController userController = Get.find<UserController>();
-          final firebaseMessaging = FirebaseMessaging.instance;
           final CartController cartController = Get.find<CartController>();
+          final NotificationService notificationService =
+              Get.find<NotificationService>();
 
           final prepListCollection =
               FirebaseFirestore.instance.collection('prepList');
@@ -53,7 +55,7 @@ class AmulxFirebaseAPI {
             'name': userController.userName.value,
             'userImageUrl': userController.imageUrl.value,
             'time': docID,
-            'token': await firebaseMessaging.getToken(),
+            'token': notificationService.deviceToken,
           };
 
           await prepListCollection.doc(orderID).set(prepListOrderData);

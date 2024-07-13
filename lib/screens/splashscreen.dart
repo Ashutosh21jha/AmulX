@@ -6,6 +6,7 @@ import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/auth/signup_page.dart';
+import 'package:amul/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +32,9 @@ class _Splashscreenstate extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
+    Get.find<NotificationService>().initLocalNotifications(context);
+
     ItemController.to.fetchItems();
 
     Future.delayed(const Duration(milliseconds: 1000), () {

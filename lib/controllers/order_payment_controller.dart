@@ -4,6 +4,7 @@ import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/models/order_data_model.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
+import 'package:amul/services/notification_service.dart';
 import 'package:amul/widgets/amulX_dialogs.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -83,7 +84,8 @@ class OrderPaymentController extends GetxController {
 
   Future<void> addOrderToPrepList(OrderPaymentStatus orderPaymentStatus) async {
     final UserController userController = Get.find<UserController>();
-    final firebaseMessaging = FirebaseMessaging.instance;
+    final NotificationService notificationService =
+        Get.find<NotificationService>();
     final CartController cartController = Get.find<CartController>();
 
     final prepListCollection =
@@ -110,7 +112,7 @@ class OrderPaymentController extends GetxController {
       'name': userController.userName.value,
       'userImageUrl': userController.imageUrl.value,
       'time': orderData.value!.createdAt,
-      'token': await firebaseMessaging.getToken(),
+      'token': notificationService.deviceToken,
     };
 
     await prepListCollection
