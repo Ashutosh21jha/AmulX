@@ -1,5 +1,6 @@
 import 'package:amul/Utils/darkTheme.dart';
 import 'package:amul/Utils/lightTheme.dart';
+import 'package:amul/controllers/amul_status_controller.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/splashscreen.dart';
 import 'package:amul/services/notification_service.dart';
@@ -26,11 +27,13 @@ void main() async {
   notificationService.firebaseInit();
 
   final RemoteConfigService remoteConfigService = RemoteConfigService();
-
   await remoteConfigService.initialize();
+
+  final AmulXStatusController amulXStatusController = AmulXStatusController();
 
   Get.put(remoteConfigService);
   Get.put(notificationService);
+  Get.put(amulXStatusController);
   Get.put(SharedPrefsService());
   Get.put(UserController());
 

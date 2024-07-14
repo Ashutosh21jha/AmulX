@@ -1,10 +1,8 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/order_payment_controller.dart';
-import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/cartPage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'home/home_page.dart';
 
@@ -35,7 +33,7 @@ class _MainscreenState extends State<Mainscreen> {
   final PageController _pageController = PageController(initialPage: 0);
   List<Widget> widgetList = [
     const HomePage(),
-    CartPage(false),
+    const CartPage(fromFoodPage: false),
     const Profile(),
   ];
 

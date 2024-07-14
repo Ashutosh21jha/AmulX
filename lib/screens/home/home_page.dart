@@ -1,4 +1,5 @@
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/controllers/amul_status_controller.dart';
 import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/history.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -24,6 +26,9 @@ class _HomeState extends State<HomePage> {
   final db = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+
+  late final RxBool storeOpen = Get.find<AmulXStatusController>().open;
+
   final remoteConfig = FirebaseRemoteConfig.instance;
   late String currentVersion = "";
 
@@ -123,18 +128,10 @@ class _HomeState extends State<HomePage> {
   }
 
   Widget closedStoreMessage() {
-    return const Expanded(
+    return Expanded(
       child: Center(
-        child: Text(
-          'Store is Closed',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: AppColors.red,
-          ),
-        ),
-      ),
-      // const SizedBox(height: 20),
+        child: LottieBuilder.asset('assets/raw/store_closed.json'),
+      ), // const SizedBox(height: 20),
     );
   }
 
@@ -220,28 +217,8 @@ class _HomeState extends State<HomePage> {
             ),
           ),
         ),
-        StreamBuilder(
-          stream: db.collection('menu').doc('today menu').snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            }
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              const Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.blue,
-                ),
-              );
-            }
-
-            final sessionData = snapshot.data;
-            final bool isStoreOpen = sessionData?['session'] ?? false;
-
-            return isStoreOpen ? openStoreContent() : closedStoreMessage();
-          },
+        Obx(
+          () => storeOpen.value ? openStoreContent() : closedStoreMessage(),
         ),
       ],
     );

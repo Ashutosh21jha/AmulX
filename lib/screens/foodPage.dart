@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:amul/Utils/AppColors.dart';
+import 'package:amul/controllers/amul_status_controller.dart';
 import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/models/items_model.dart';
 import 'package:amul/screens/cartPage.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/utils/item_card.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -28,6 +30,7 @@ class FoodPage extends StatefulWidget {
 
 class FoodPageState extends State<FoodPage> {
   late final AppColors2 appColors = Theme.of(context).extension<AppColors2>()!;
+  late final RxBool storeOpen = Get.find<AmulXStatusController>().open;
 
   RxList<ItemsModel> filteredResults = <ItemsModel>[].obs;
 
@@ -110,22 +113,39 @@ class FoodPageState extends State<FoodPage> {
   }
 
   Widget closedStoreMessage() {
-    return const Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Center(
-          child: Text(
-            'Store is Closed',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.red,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: appColors.backgroundColor,
+        toolbarHeight: 70,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new_sharp,
+            color: Get.isDarkMode ? Colors.white : Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: true,
+        title: Text(
+          widget.cat,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+            color: Get.isDarkMode ? Colors.white : Colors.black,
           ),
         ),
-        SizedBox(height: 20),
-      ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(child: LottieBuilder.asset('assets/raw/store_closed.json')),
+          const SizedBox(height: 20),
+        ],
+      ),
     );
   }
 
@@ -362,7 +382,7 @@ class FoodPageState extends State<FoodPage> {
       floatingActionButton: InkWell(
         onTap: () async {
           await Get.to(
-            CartPage(true),
+            const CartPage(fromFoodPage: true),
           );
 
           /* await Navigator.push(context,
@@ -422,52 +442,36 @@ class FoodPageState extends State<FoodPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot>(
-      stream: db.collection('menu').doc('today menu').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Scaffold(
-            body: Center(
-              child: Text('Error: ${snapshot.error}'),
-            ),
-          );
-        }
+    return Scaffold(
+        body: Obx(
+      () => storeOpen.value ? openStoreContent() : closedStoreMessage(),
+    ));
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            backgroundColor: appColors.backgroundColor,
-            body: FutureBuilder(
-              future: Future.delayed(const Duration(
-                  seconds: 2)), // Add your desired delay duration
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return ListView.builder(
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return loadingShimmer();
-                    },
-                  );
-                } else {
-                  // Once the delay is over, continue with the actual content
-                  final sessionData = snapshot.data;
-                  final bool isStoreOpen = sessionData?['session'] ?? false;
+    // return StreamBuilder<DocumentSnapshot>(
+    //     stream: db.collection('menu').doc('today menu').snapshots(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasError) {
+    //         return Scaffold(
+    //           body: Center(
+    //             child: Text('Error: ${snapshot.error}'),
+    //           ),
+    //         );
+    //       }
 
-                  return isStoreOpen
-                      ? openStoreContent()
-                      : closedStoreMessage();
-                }
-              },
-            ),
-          );
-        }
+    //       if (snapshot.connectionState == ConnectionState.waiting) {
+    //         return Scaffold(
+    //             backgroundColor: appColors.backgroundColor,
+    //             body: ListView.builder(
+    //               itemCount: 5,
+    //               itemBuilder: (context, index) {
+    //                 return loadingShimmer();
+    //               },
+    //             ));
+    //       }
 
-        final sessionData = snapshot.data;
-        final bool isStoreOpen = sessionData?['session'] ?? false;
-
-        return Scaffold(
-          body: isStoreOpen ? openStoreContent() : closedStoreMessage(),
-        );
-      },
-    );
+    //       return Scaffold(
+    //         body: openStoreContent(),
+    //       );
+    //     });
   }
 }
