@@ -6,6 +6,7 @@ import 'package:amul/models/order_data_model.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/services/notification_service.dart';
+import 'package:amul/services/remote_config_service.dart';
 import 'package:amul/widgets/amulX_dialogs.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,6 +22,7 @@ import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/get_core.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/web.dart';
@@ -183,6 +185,13 @@ class OrderPaymentController extends GetxController {
   }
 
   Future<void> payWithUpi(CFSession session) async {
+    final RemoteConfigService remoteConfigService =
+        Get.find<RemoteConfigService>();
+
+    if (!remoteConfigService.lastFetchAttemptSuccess) {
+      if (!(await remoteConfigService.initialize())) return;
+    }
+
     paymentSuccessCallbackFxn(String _) => Get.showOverlay(
         asyncFunction: () => verifyPayment(_, null),
         loadingWidget: const Center(

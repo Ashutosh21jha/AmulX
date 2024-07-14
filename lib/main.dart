@@ -3,6 +3,7 @@ import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/splashscreen.dart';
 import 'package:amul/services/notification_service.dart';
+import 'package:amul/services/remote_config_service.dart';
 import 'package:amul/services/shared_prefs_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -17,13 +18,19 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  Get.put(Logger());
+
   final NotificationService notificationService = NotificationService();
   notificationService.requestPermission();
   notificationService.getDeviceToken();
   notificationService.firebaseInit();
 
+  final RemoteConfigService remoteConfigService = RemoteConfigService();
+
+  await remoteConfigService.initialize();
+
+  Get.put(remoteConfigService);
   Get.put(notificationService);
-  Get.put(Logger());
   Get.put(SharedPrefsService());
   Get.put(UserController());
 

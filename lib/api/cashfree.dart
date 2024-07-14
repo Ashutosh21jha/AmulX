@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:amul/Utils/enums.dart';
 import 'package:amul/models/order_data_model.dart';
+import 'package:amul/services/remote_config_service.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
@@ -71,6 +72,9 @@ enum OrderStatus {
 class CashfreeGatewayApi {
   static const String baseUrl = 'https://sandbox.cashfree.com/pg';
 
+  static final RemoteConfigService _remoteConfigService =
+      Get.find<RemoteConfigService>();
+
   static final Dio _dio = Dio(
     BaseOptions(
       baseUrl: baseUrl,
@@ -84,11 +88,11 @@ class CashfreeGatewayApi {
       String customerName,
       String customerEmail) async {
     try {
+      print(_remoteConfigService.cashfreeApiVersion);
       final Map<String, String> headers = {
-        'x-client-id': 'TEST102440183c3125107d983f09d55c81044201',
-        'x-client-secret':
-            'cfsk_ma_test_2f4e1dee5061fc679e5abe8369f84496_a5e8d5e9',
-        'x-api-version': '2023-08-01',
+        'x-client-id': _remoteConfigService.cashfreeApi,
+        'x-client-secret': _remoteConfigService.cashfreeSecret,
+        'x-api-version': _remoteConfigService.cashfreeApiVersion,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       };
@@ -136,10 +140,9 @@ class CashfreeGatewayApi {
     try {
       final headers = {
         'accept': 'application/json',
-        'x-api-version': '2023-08-01',
-        'x-client-id': 'TEST102440183c3125107d983f09d55c81044201',
-        'x-client-secret':
-            'cfsk_ma_test_2f4e1dee5061fc679e5abe8369f84496_a5e8d5e9',
+        'x-api-version': _remoteConfigService.cashfreeApiVersion,
+        'x-client-id': _remoteConfigService.cashfreeApi,
+        'x-client-secret': _remoteConfigService.cashfreeSecret,
       };
 
       final url = '/orders/$orderID/payments';
@@ -199,10 +202,9 @@ class CashfreeGatewayApi {
     try {
       final Map<String, String> headers = {
         'accept': 'application/json',
-        'x-api-version': '2023-08-01',
-        'x-client-id': 'TEST102440183c3125107d983f09d55c81044201',
-        'x-client-secret':
-            'cfsk_ma_test_2f4e1dee5061fc679e5abe8369f84496_a5e8d5e9',
+        'x-api-version': _remoteConfigService.cashfreeApiVersion,
+        'x-client-id': _remoteConfigService.cashfreeApi,
+        'x-client-secret': _remoteConfigService.cashfreeSecret,
       };
 
       final String url = '/orders/$orderID/refunds/$orderID-refund';
