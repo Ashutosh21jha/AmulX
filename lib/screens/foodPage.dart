@@ -34,7 +34,7 @@ class FoodPageState extends State<FoodPage> {
 
   RxList<ItemsModel> filteredResults = <ItemsModel>[].obs;
 
-  final RxInt selected = 4.obs;
+  final RxInt selected = 0.obs;
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -57,6 +57,7 @@ class FoodPageState extends State<FoodPage> {
 
     // separateItems();
     ItemController.to.fetchItems();
+    selected.value = 4;
   }
 
   int sortPriceLowToHighFxn(ItemsModel a, ItemsModel b) {
