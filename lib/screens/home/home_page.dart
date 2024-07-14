@@ -4,6 +4,7 @@ import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/screens/history.dart';
 import 'package:amul/screens/home/food_tile.dart';
+import 'package:amul/services/remote_config_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,66 +30,35 @@ class _HomeState extends State<HomePage> {
 
   late final RxBool storeOpen = Get.find<AmulXStatusController>().open;
 
-  final remoteConfig = FirebaseRemoteConfig.instance;
-  late String currentVersion = "";
+  final RemoteConfigService remoteConfigService =
+      Get.find<RemoteConfigService>();
 
-  late String latestVersion = "";
+  @override
+  void initState() {
+    super.initState();
+    CartController.to.fetchCart();
+    CartController.to.fetchCurrentOrder();
 
-  Future<void> fetchVersion() async {
-    try {
-      await remoteConfig.setConfigSettings(RemoteConfigSettings(
-        fetchTimeout: const Duration(seconds: 30),
-        minimumFetchInterval: const Duration(seconds: 60),
-      ));
-
-      await remoteConfig.setDefaults({
-        "AmulX_version": currentVersion,
-      });
-
-      await remoteConfig.fetchAndActivate();
-
-      setState(() {
-        latestVersion = remoteConfig.getString('AmulX_version');
-      });
-
-      print("Latest version: $latestVersion");
-      checkForUpdate();
-    } catch (e) {
-      print('Error fetching remote config: $e');
-    }
-  }
-
-  Future<void> getPackageInfo() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    setState(() {
-      currentVersion = packageInfo.version;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if ((await latestVersion) != remoteConfigService.amulXVersion) {
+        showUpdateDialog();
+      }
     });
-    print("current version :$currentVersion");
-    fetchVersion();
   }
 
-  void checkForUpdate() {
-    if (currentVersion != latestVersion) {
-      showUpdateDialog();
-    } else {
-      print("No update available");
-    }
+  Future<String> get latestVersion async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.version;
   }
 
   void launchPlayStore() async {
     const String packageName = "com.example.amul";
 
-    const String url =
-        "https://play.google.com/store/apps/details?id=com.devcomm.nsutx&pcampaignid=web_share";
+    final Uri url = Uri.parse(
+        "https://play.google.com/store/apps/details?id=com.devcomm.nsutx&pcampaignid=web_share");
 
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      const String webUrl =
-          "https://play.google.com/store/apps/details?id=com.devcomm.nsutx&pcampaignid=web_share";
-      if (await canLaunch(webUrl)) {
-        await launch(webUrl);
-      }
+    if (await canLaunchUrl(url)) {
+      await canLaunchUrl(url);
     }
   }
 
@@ -118,13 +88,6 @@ class _HomeState extends State<HomePage> {
         );
       },
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    CartController.to.fetchCart();
-    CartController.to.fetchCurrentOrder();
   }
 
   Widget closedStoreMessage() {

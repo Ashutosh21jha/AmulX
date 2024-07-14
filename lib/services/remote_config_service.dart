@@ -7,7 +7,7 @@ class RemoteConfigService {
     try {
       await _remoteConfig.setConfigSettings(RemoteConfigSettings(
         fetchTimeout: const Duration(seconds: 10),
-        minimumFetchInterval: const Duration(seconds: 5),
+        minimumFetchInterval: const Duration(hours: 1),
       ));
       return await _remoteConfig.fetchAndActivate();
     } catch (e) {
@@ -21,6 +21,10 @@ class RemoteConfigService {
 
   String get cashfreeApi {
     return _remoteConfig.getString('cashfree_api');
+  }
+
+  String get amulXVersion {
+    return _remoteConfig.getString('AmulX_version');
   }
 
   String get cashfreeSecret {
