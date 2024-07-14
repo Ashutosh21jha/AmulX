@@ -34,9 +34,15 @@ class FoodPageState extends State<FoodPage> {
 
   RxList<ItemsModel> filteredResults = <ItemsModel>[].obs;
 
-  final RxInt selected = 0.obs;
+  final RxInt selected = 4.obs;
 
   final TextEditingController _searchController = TextEditingController();
+
+  bool tappedIndex1 = true;
+  bool tappedIndex2 = true;
+  bool tappedIndex3 = true;
+
+  RxList<ItemsModel> initialFilteredResults = <ItemsModel>[].obs;
 
   @override
   void initState() {
@@ -44,12 +50,13 @@ class FoodPageState extends State<FoodPage> {
 
     filteredResults.value = widget.itemList.value;
 
-    filteredResults.value = filteredResults.toList()
-      ..sort(foodItemSortFunction);
+    filteredResults.value = filteredResults.toList();
+
+    initialFilteredResults.value = filteredResults.toList();
+
 
     // separateItems();
     ItemController.to.fetchItems();
-    selected.value = 0;
   }
 
   int sortPriceLowToHighFxn(ItemsModel a, ItemsModel b) {
@@ -232,8 +239,20 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index1;
-                        filteredResults.value = filteredResults.toList()
-                          ..sort(foodItemSortFunction);
+                        if (tappedIndex1){
+                          filteredResults.value = filteredResults.toList()
+                            ..sort(foodItemSortFunction);
+                          setState(() {
+                            tappedIndex1 = false;
+                          });
+                        }
+                        else if (!tappedIndex1){
+                          selected.value = 4;
+                          filteredResults.value = initialFilteredResults.toList();
+                          setState(() {
+                            tappedIndex1 = true;
+                          });
+                        }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -268,9 +287,20 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index2;
-
-                        filteredResults.value = filteredResults.toList()
-                          ..sort(foodItemSortFunction);
+                        if (tappedIndex2){
+                          filteredResults.value = filteredResults.toList()
+                            ..sort(foodItemSortFunction);
+                          setState(() {
+                            tappedIndex2 = false;
+                          });
+                        }
+                        else if (!tappedIndex2){
+                          selected.value = 4;
+                          filteredResults.value = initialFilteredResults.toList();
+                          setState(() {
+                            tappedIndex2 = true;
+                          });
+                        }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -305,8 +335,20 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index3;
-                        filteredResults.value = filteredResults.toList()
-                          ..sort(foodItemSortFunction);
+                        if (tappedIndex3){
+                          filteredResults.value = filteredResults.toList()
+                            ..sort(foodItemSortFunction);
+                          setState(() {
+                            tappedIndex3 = false;
+                          });
+                        }
+                        else if (!tappedIndex3){
+                          selected.value = 4;
+                          filteredResults.value = initialFilteredResults.toList();
+                          setState(() {
+                            tappedIndex3 = true;
+                          });
+                        }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
