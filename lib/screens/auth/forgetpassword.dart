@@ -28,7 +28,7 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
 
   String? _validteEmail(value) {
     if (value!.isEmpty) {
-      return "can't be empty";
+      return "Can't be empty";
     }
     if (!emailPattern.hasMatch(value)) {
       return "Please enter a valid email";
@@ -36,7 +36,7 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
     return null;
   }
 
-  Future<void> resentpassword() async {
+  Future<void> resetpassword() async {
     String email = _emailController.text.toString();
 
     try {
@@ -98,12 +98,11 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
       setState(() {
         isLoading = true;
       });
-      resentpassword();
+      resetpassword();
       setState(() {
         isLoading = false;
       });
     }
-    Get.back();
   }
 
   @override
@@ -114,20 +113,22 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
+      backgroundColor: appColors.backgroundColor,
       appBar: AppBar(
-        backgroundColor: appColors.blue,
+        backgroundColor: appColors.backgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: appColors.onPrimary,
+            color: appColors.blue,
           ),
           onPressed: () {
             Get.back();
           },
         ),
       ),
-      extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Stack(
@@ -136,27 +137,26 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Stack(children: [
-                    SvgPicture.asset('assets/images/shape.svg',
-                        color: appColors.blue),
-                    Container(
-                      height: 10,
-                      width: double.infinity,
-                      color: appColors.blue,
+                  SizedBox(height: 55,),
+                  SvgPicture.asset(
+                    'assets/images/logo.svg',
+                    width: 200,
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    "Please enter your email to reset your password",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: appColors.secondaryText,
+                      fontSize: 16,
                     ),
-                    Positioned(
-                        top: 100,
-                        left: 20,
-                        child: SvgPicture.asset(
-                          'assets/images/logo.svg',
-                          width: 48,
-                          height: 48,
-                          color: appColors.onPrimary,
-                        )),
-                  ]),
+                  ),
+                  SizedBox(height: height / 14,),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Form(
