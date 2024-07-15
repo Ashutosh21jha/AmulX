@@ -2,6 +2,7 @@ import 'package:amul/screens/auth/auth_input_widget.dart';
 import 'package:amul/screens/auth/auth_snackbar.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/auth/login_page.dart';
+import 'package:amul/screens/profile_screens/terms.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final auth = FirebaseAuth.instance;
   bool isLoading = false;
   bool passwordVisible = false;
+  bool termsChecked = false;
   final _idController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -239,7 +241,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Column(
                 children: [
                   SizedBox(
-                    height: height / 7,
+                    height: height / 9,
                   ),
                   Text(
                     "Welcome To",
@@ -327,10 +329,53 @@ class _SignUpPageState extends State<SignUpPage> {
                               obscureText: passwordVisible,
                               keyboardType: TextInputType.visiblePassword,
                               validator: _validatePassword,
+                              bottomPadding: 8,
                               controller: _passwordController),
-                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Checkbox(
+                                value: termsChecked,
+                                onChanged: (value) {
+                                  setState(() {
+                                    termsChecked = value!;
+                                  });
+                                },
+                                activeColor: appColors.blue,
+                                checkColor: appColors.onPrimary,
+                              ),
+                              Text(
+                                "I agree to the ",
+                                style: TextStyle(
+                                  color: appColors.primaryText,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => Get.to(() => const Terms()),
+                                style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        EdgeInsets.zero),
+                                    overlayColor: MaterialStateProperty.all(
+                                        Colors.transparent)),
+                                child: Text(
+                                  "Terms and Conditions",
+                                  style: TextStyle(
+                                    color: appColors.blue,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                " of AmulX",
+                                style: TextStyle(
+                                  color: appColors.primaryText,
+                                ),
+                              ),
+                            ],
+                          ),
                           ElevatedButton(
-                            onPressed: isLoading ? null : _submitform,
+                            onPressed: isLoading
+                                ? null
+                                : (termsChecked ? _submitform : null),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: appColors.blue,
                               shape: RoundedRectangleBorder(

@@ -10,6 +10,7 @@ class AuthInputWidget extends StatelessWidget {
       required this.keyboardType,
       required this.validator,
       required this.controller,
+      this.bottomPadding = 24,
       this.obscureText = false});
   final String hintText;
   final String label;
@@ -17,6 +18,7 @@ class AuthInputWidget extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final String? Function(String?) validator;
+  final double bottomPadding;
   final TextEditingController controller;
 
   @override
@@ -24,7 +26,7 @@ class AuthInputWidget extends StatelessWidget {
     final appColors = Theme.of(context).extension<AppColors2>()!;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+      padding: EdgeInsets.fromLTRB(0, 0, 0, bottomPadding),
       child: TextFormField(
           // autovalidateMode: AutovalidateMode.onUserInteraction,
           style: TextStyle(color: appColors.primaryText),
