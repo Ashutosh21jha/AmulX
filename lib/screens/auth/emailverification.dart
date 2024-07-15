@@ -49,6 +49,25 @@ class _EmailverificationState extends State<Emailverification> {
     });
   }
 
+  Future<void> manualredirect() async {
+      await auth.currentUser?.reload();
+      if (auth.currentUser!.emailVerified) {
+        signIn();
+    }
+      else{
+        await Get.showOverlay(
+            asyncFunction: () async {
+              final userController = Get.find<UserController>();
+              await userController.getUserData();
+            },
+            loadingWidget: const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.blue,
+                )));
+        showAuthErrorSnackBar("Verification Error", "Email is not verified",);
+      }
+  }
+
   Future<void> signIn() async {
     if (auth.currentUser?.emailVerified ?? false) {
       await Get.showOverlay(
@@ -73,6 +92,7 @@ class _EmailverificationState extends State<Emailverification> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: appColors.backgroundColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -179,6 +199,21 @@ class _EmailverificationState extends State<Emailverification> {
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 21,left: 11),
+            child: Center(
+              child: GestureDetector(
+                  onTap: () => resendlink(),
+                  child: Text(
+                    "Resend verification link",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: appColors.blue,
+                    ),
+                  ),
+              ),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: Padding(
@@ -194,13 +229,13 @@ class _EmailverificationState extends State<Emailverification> {
             ),
           ),
           child: InkWell(
-            onTap: () => resendlink(),
+            onTap: () => manualredirect(),
             child: Center(
               child: Text(
-                "Resend Link",
+                "Continue",
                 style: TextStyle(
                     letterSpacing: 1.0,
-                    color: appColors.onPrimary,
+                    color: appColors.blue,
                     fontWeight: FontWeight.bold,
                     fontSize: 14),
               ),
