@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/amul_status_controller.dart';
 import 'package:amul/controllers/items_controller.dart';
@@ -268,31 +269,31 @@ class FoodPageState extends State<FoodPage> {
                           });
                         }
                       },
-                      child: Padding(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 2.1,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
                         padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          width: 160,
-                          decoration: BoxDecoration(
-                            color: selected.value == index1
-                                ? appColors.blue
-                                : appColors.surfaceColor,
-                            border: Border.all(
-                              color: Get.isDarkMode
-                                  ? Colors.white70
-                                  : const Color(0xFF2546A9),
-                              width: 1, // Border width
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(32.0), // Border radius
+                        decoration: BoxDecoration(
+                          color: selected.value == index1
+                              ? appColors.blue
+                              : appColors.surfaceColor,
+                          border: Border.all(
+                            color: Get.isDarkMode
+                                ? Colors.white70
+                                : const Color(0xFF2546A9),
+                            width: 1, // Border width
                           ),
-                          child: Center(
-                            child: Text(
-                              "Most Popular",
-                              style: TextStyle(
-                                color: selected.value == index1
-                                    ? appColors.onPrimary
-                                    : appColors.secondaryText,
-                              ),
+                          borderRadius:
+                              BorderRadius.circular(32.0), // Border radius
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Most Popular",
+                            style: TextStyle(
+                              color: selected.value == index1
+                                  ? appColors.onPrimary
+                                  : appColors.secondaryText,
                             ),
                           ),
                         ),
@@ -316,31 +317,31 @@ class FoodPageState extends State<FoodPage> {
                           });
                         }
                       },
-                      child: Padding(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 2.1,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
                         padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          width: 240,
-                          decoration: BoxDecoration(
-                            color: selected.value == index2
-                                ? appColors.blue
-                                : appColors.surfaceColor,
-                            border: Border.all(
-                              color: Get.isDarkMode
-                                  ? Colors.white70
-                                  : const Color(0xFF2546A9),
-                              width: 1, // Border width
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(32.0), // Border radius
+                        decoration: BoxDecoration(
+                          color: selected.value == index2
+                              ? appColors.blue
+                              : appColors.surfaceColor,
+                          border: Border.all(
+                            color: Get.isDarkMode
+                                ? Colors.white70
+                                : const Color(0xFF2546A9),
+                            width: 1, // Border width
                           ),
-                          child: Center(
-                            child: Text(
-                              "Price: Lowest - Highest",
-                              style: TextStyle(
-                                color: selected.value == index2
-                                    ? appColors.onPrimary
-                                    : appColors.secondaryText,
-                              ),
+                          borderRadius:
+                              BorderRadius.circular(32.0), // Border radius
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Price: Lowest - Highest",
+                            style: TextStyle(
+                              color: selected.value == index2
+                                  ? appColors.onPrimary
+                                  : appColors.secondaryText,
                             ),
                           ),
                         ),
@@ -364,31 +365,31 @@ class FoodPageState extends State<FoodPage> {
                           });
                         }
                       },
-                      child: Padding(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 2.1,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
                         padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          width: 240,
-                          decoration: BoxDecoration(
-                            color: selected.value == index3
-                                ? appColors.blue
-                                : appColors.surfaceColor,
-                            border: Border.all(
-                              color: Get.isDarkMode
-                                  ? Colors.white70
-                                  : const Color(0xFF2546A9),
-                              width: 1, // Border width
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(32.0), // Border radius
+                        decoration: BoxDecoration(
+                          color: selected.value == index3
+                              ? appColors.blue
+                              : appColors.surfaceColor,
+                          border: Border.all(
+                            color: Get.isDarkMode
+                                ? Colors.white70
+                                : const Color(0xFF2546A9),
+                            width: 1, // Border width
                           ),
-                          child: Center(
-                            child: Text(
-                              "Price: Highest - Lowest",
-                              style: TextStyle(
-                                color: selected.value == index3
-                                    ? appColors.onPrimary
-                                    : appColors.secondaryText,
-                              ),
+                          borderRadius:
+                              BorderRadius.circular(32.0), // Border radius
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Price: Highest - Lowest",
+                            style: TextStyle(
+                              color: selected.value == index3
+                                  ? appColors.onPrimary
+                                  : appColors.secondaryText,
                             ),
                           ),
                         ),
