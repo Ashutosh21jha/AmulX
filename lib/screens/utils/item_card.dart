@@ -214,10 +214,53 @@ class _ItemCardState extends State<ItemCard> {
                                       : Colors.grey,
                                   onPressed: tap == false
                                       ? () async {
+                                          if (count >= widget.itemData.stock) {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      'Exceeded Limit'),
+                                                  titlePadding:
+                                                      const EdgeInsets.only(
+                                                          top: 16,
+                                                          bottom: 8,
+                                                          left: 24),
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 24,
+                                                          vertical: 4),
+                                                  shape:
+                                                      const ContinuousRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          20))),
+                                                  content: const Text(
+                                                      'You have reached the maximum limit of this item.'),
+                                                  actionsPadding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 0),
+                                                  actions: [
+                                                    TextButton(
+                                                      child: const Text('OK'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                            return;
+                                          }
+
                                           setState(() {
                                             tap = true;
                                           });
-
                                           if (count == 1) {
                                             setState(() {
                                               added = true;
