@@ -97,9 +97,9 @@ class _EditProfileState extends State<EditProfile> {
       barBlur: 10,
       backgroundGradient: const LinearGradient(
         colors: [
-          Color(0xFFF98181),
-          AppColors.red,
-          Color(0xFF850000),
+          Color(0xFFA2E8D8),
+          AppColors.green,
+          Color(0xFF007A52),
         ],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -152,15 +152,17 @@ class _EditProfileState extends State<EditProfile> {
                     child: Column(
                       children: [
                         Stack(children: [
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: const BoxDecoration(
-                              color: Colors.grey,
-                              shape: BoxShape.circle,
+                          Obx(
+                            () => Container(
+                              width: 100,
+                              height: 100,
+                              decoration: const BoxDecoration(
+                                color: Colors.grey,
+                                shape: BoxShape.circle,
+                              ),
+                              child: UserImageWidget(
+                                  imageUrl: userController.imageUrl.value),
                             ),
-                            child: UserImageWidget(
-                                imageUrl: userController.imageUrl.value),
                           ),
                           Positioned(
                             bottom: 0,
