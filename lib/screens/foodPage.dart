@@ -50,10 +50,23 @@ class FoodPageState extends State<FoodPage> {
 
     filteredResults.value = widget.itemList.value;
 
-    filteredResults.value = filteredResults.toList();
+    filteredResults.value = filteredResults.toList()
+      ..sort((ItemsModel a, ItemsModel b) {
+        if (a.availability && !b.availability) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
 
-    initialFilteredResults.value = filteredResults.toList();
-
+    initialFilteredResults.value = filteredResults.toList()
+      ..sort((ItemsModel a, ItemsModel b) {
+        if (a.availability && !b.availability) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
 
     // separateItems();
     ItemController.to.fetchItems();
@@ -240,16 +253,16 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index1;
-                        if (tappedIndex1){
+                        if (tappedIndex1) {
                           filteredResults.value = filteredResults.toList()
                             ..sort(foodItemSortFunction);
                           setState(() {
                             tappedIndex1 = false;
                           });
-                        }
-                        else if (!tappedIndex1){
+                        } else if (!tappedIndex1) {
                           selected.value = 4;
-                          filteredResults.value = initialFilteredResults.toList();
+                          filteredResults.value =
+                              initialFilteredResults.toList();
                           setState(() {
                             tappedIndex1 = true;
                           });
@@ -288,16 +301,16 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index2;
-                        if (tappedIndex2){
+                        if (tappedIndex2) {
                           filteredResults.value = filteredResults.toList()
                             ..sort(foodItemSortFunction);
                           setState(() {
                             tappedIndex2 = false;
                           });
-                        }
-                        else if (!tappedIndex2){
+                        } else if (!tappedIndex2) {
                           selected.value = 4;
-                          filteredResults.value = initialFilteredResults.toList();
+                          filteredResults.value =
+                              initialFilteredResults.toList();
                           setState(() {
                             tappedIndex2 = true;
                           });
@@ -336,16 +349,16 @@ class FoodPageState extends State<FoodPage> {
                     GestureDetector(
                       onTap: () {
                         selected.value = index3;
-                        if (tappedIndex3){
+                        if (tappedIndex3) {
                           filteredResults.value = filteredResults.toList()
                             ..sort(foodItemSortFunction);
                           setState(() {
                             tappedIndex3 = false;
                           });
-                        }
-                        else if (!tappedIndex3){
+                        } else if (!tappedIndex3) {
                           selected.value = 4;
-                          filteredResults.value = initialFilteredResults.toList();
+                          filteredResults.value =
+                              initialFilteredResults.toList();
                           setState(() {
                             tappedIndex3 = true;
                           });
