@@ -4,7 +4,9 @@ import 'package:amul/Utils/enums.dart';
 import 'package:amul/models/order_data_model.dart';
 import 'package:amul/services/remote_config_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/web.dart';
 
 enum OrderPaymentStatus {
@@ -88,7 +90,6 @@ class CashfreeGatewayApi {
       String customerName,
       String customerEmail) async {
     try {
-      print(_remoteConfigService.cashfreeApiVersion);
       final Map<String, String> headers = {
         'x-client-id': _remoteConfigService.cashfreeApi,
         'x-client-secret': _remoteConfigService.cashfreeSecret,
@@ -96,6 +97,11 @@ class CashfreeGatewayApi {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       };
+
+      final DateTime dateTime = DateTime.now().add(const Duration(days: 1));
+
+      final String orderExpiryTime =
+          DateFormat("yyyy-MM-dd'T'HH:mm:ss+05:30").format(dateTime);
 
       final Map<String, dynamic> data = {
         "order_amount": orderAmount.toStringAsFixed(2),
@@ -107,7 +113,7 @@ class CashfreeGatewayApi {
           "customer_email": customerEmail,
           "customer_phone": "9999999999"
         },
-        "order_expiry_time": "2024-07-18T10:20:12+05:30"
+        "order_expiry_time": orderExpiryTime
       };
 
       const url = '/orders';
@@ -175,7 +181,7 @@ class CashfreeGatewayApi {
             return bTime.compareTo(aTime);
           });
         } catch (e) {
-          print(e);
+          debugPrint(e.toString());
         }
       }
 
