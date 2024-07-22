@@ -3,18 +3,13 @@ import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/auth/emailverification.dart';
 import 'package:amul/screens/auth/login_page.dart';
-import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/mainscreen.dart';
-import 'package:amul/screens/auth/signup_page.dart';
 import 'package:amul/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 
 final auth = FirebaseAuth.instance;
 
@@ -73,6 +68,7 @@ class _Splashscreenstate extends State<SplashScreen> {
     } else {
       Get.off(() => const SignInPage());
     }
+    FlutterNativeSplash.remove();
   }
 
   @override

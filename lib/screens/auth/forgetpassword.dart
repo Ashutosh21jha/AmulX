@@ -3,9 +3,7 @@ import 'package:amul/screens/auth/auth_input_widget.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -140,7 +138,9 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 55,),
+                  const SizedBox(
+                    height: 55,
+                  ),
                   SvgPicture.asset(
                     'assets/images/logo.svg',
                     width: 200,
@@ -156,7 +156,9 @@ class _forgetPasswordState extends State<ForgetPasswordPage> {
                       fontSize: 16,
                     ),
                   ),
-                  SizedBox(height: height / 14,),
+                  SizedBox(
+                    height: height / 14,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Form(

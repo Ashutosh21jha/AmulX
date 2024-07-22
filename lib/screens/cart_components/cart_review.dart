@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CartItemReviewWidget extends StatelessWidget {
   final CartItem item;
 
-  CartItemReviewWidget({required this.item});
+  const CartItemReviewWidget({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {

@@ -38,7 +38,6 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(storeOpen);
     return Obx(() => WillPopScope(
           onWillPop: () async {
             Navigator.push(context,
@@ -236,7 +235,7 @@ class _CartPageState extends State<CartPage> {
                                         boxShadow: [
                                           BoxShadow(
                                               color: Get.isDarkMode
-                                                  ? Color(0xFF404040)
+                                                  ? const Color(0xFF404040)
                                                   : appColors.primaryText,
                                               spreadRadius:
                                                   Get.isDarkMode ? 6 : 3,
@@ -287,8 +286,6 @@ class _CartPageState extends State<CartPage> {
                                               alignment: Alignment.centerRight,
                                               child: ElevatedButton(
                                                 onPressed: () async {
-                                                  print(
-                                                      'pressed order now button');
                                                   final cartController =
                                                       CartController.to;
                                                   if (cartController
@@ -296,8 +293,6 @@ class _CartPageState extends State<CartPage> {
                                                     if (CartController
                                                             .to.currentOrder ==
                                                         false) {
-                                                      print(
-                                                          "Navigating to review Screen");
                                                       Get.to(
                                                         () => OrderReviewPage(
                                                           cartItems:

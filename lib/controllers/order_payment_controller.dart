@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/api/cashfree.dart';
 import 'package:amul/controllers/user_controller.dart';
@@ -10,23 +9,15 @@ import 'package:amul/services/remote_config_service.dart';
 import 'package:amul/widgets/amulX_dialogs.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfupi.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfupipayment.dart';
-import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfwebcheckoutpayment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:http/http.dart' as http;
-import 'package:logger/web.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class OrderPaymentController extends GetxController {
   final String backendURL = 'http://192.168.107.15:3000';

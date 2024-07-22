@@ -6,12 +6,10 @@ import 'package:amul/screens/profile_screens/terms.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../Utils/AppColors.dart';
 import 'emailverification.dart';
-import '../mainscreen.dart';
 
 enum SignUpState { alreadyRegistered, success, error, weakPassword }
 
@@ -117,7 +115,7 @@ class _SignUpPageState extends State<SignUpPage> {
         'imageUrl': '',
         "currentOrder": false,
       });
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       return false;
     }
 
@@ -353,9 +351,9 @@ class _SignUpPageState extends State<SignUpPage> {
                               TextButton(
                                 onPressed: () => Get.to(() => const Terms()),
                                 style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
+                                    padding: WidgetStateProperty.all(
                                         EdgeInsets.zero),
-                                    overlayColor: MaterialStateProperty.all(
+                                    overlayColor: WidgetStateProperty.all(
                                         Colors.transparent)),
                                 child: Text(
                                   "Terms and Conditions",

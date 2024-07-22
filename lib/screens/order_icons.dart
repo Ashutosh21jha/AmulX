@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class OrderStatusIcons extends StatelessWidget {
+  const OrderStatusIcons({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Row(

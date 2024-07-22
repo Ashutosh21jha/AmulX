@@ -2,12 +2,11 @@ import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:flutter/material.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
-import 'package:get/get.dart';
 
 import '../../Utils/AppColors.dart';
 
 class CartItemCard extends StatefulWidget {
-  CartItemCard({super.key, required this.item});
+  const CartItemCard({super.key, required this.item});
   final CartItem item;
   @override
   State<CartItemCard> createState() => _CartItemCardState();

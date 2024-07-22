@@ -6,7 +6,8 @@ class CartAction extends StatelessWidget {
   final CartItem item;
   final Function() onUpdateItemCount;
 
-  CartAction({required this.item, required this.onUpdateItemCount});
+  const CartAction(
+      {super.key, required this.item, required this.onUpdateItemCount});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class CartAction extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
-          icon: Icon(Icons.remove),
+          icon: const Icon(Icons.remove),
           onPressed: () {
             CartController.to.removeItem(item);
             onUpdateItemCount();
@@ -22,7 +23,7 @@ class CartAction extends StatelessWidget {
         ),
         Text(item.quantity.toString()), // Display the quantity
         IconButton(
-          icon: Icon(Icons.add),
+          icon: const Icon(Icons.add),
           onPressed: () {
             CartController.to.addItem(item); // Increase the quantity
             onUpdateItemCount();

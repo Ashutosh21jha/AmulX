@@ -5,7 +5,6 @@ import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/services/notification_service.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 class AmulxFirebaseAPI {

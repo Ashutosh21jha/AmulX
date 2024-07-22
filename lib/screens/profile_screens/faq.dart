@@ -2,7 +2,6 @@ import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class Faq extends StatefulWidget {
   const Faq({super.key});

@@ -6,10 +6,9 @@ import 'package:amul/screens/splashscreen.dart';
 import 'package:amul/services/notification_service.dart';
 import 'package:amul/services/remote_config_service.dart';
 import 'package:amul/services/shared_prefs_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:logger/web.dart';
@@ -51,5 +50,7 @@ void main() async {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  print(message.notification!.title);
+  if (kDebugMode) {
+    print(message.notification!.title);
+  }
 }

@@ -16,7 +16,6 @@ class Mainscreen extends StatefulWidget {
 class _MainscreenState extends State<Mainscreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     Get.put(OrderPaymentController());

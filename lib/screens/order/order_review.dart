@@ -4,6 +4,7 @@ import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
@@ -177,13 +178,10 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       final stock = await getStockFromMenu(item.name);
       if (item.quantity > stock) {
         exceededItems.add(item.name);
-        print('${item.name} quantity exceeds stock: ${item.quantity} > $stock');
       }
     }
 
     if (exceededItems.isNotEmpty) {
-      print('Stock Exceeded for items: ${exceededItems.join(', ')}');
-
       setState(() {
         isLoading = false;
       });
@@ -191,8 +189,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
       stockExceedSnackBar(exceededItems);
       return;
     }
-
-    print("Stock check passed");
 
     processPayment();
   }

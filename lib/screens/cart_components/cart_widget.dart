@@ -6,13 +6,14 @@ class CartItemWidget extends StatelessWidget {
   final CartItem item;
   final Function() onUpdateItemCount; // Pass the callback function
 
-  CartItemWidget({required this.item, required this.onUpdateItemCount});
+  const CartItemWidget(
+      {super.key, required this.item, required this.onUpdateItemCount});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(item.name),
-      subtitle: Text('₹\${item.price.toStringAsFixed(2)}'),
+      subtitle: const Text('₹\${item.price.toStringAsFixed(2)}'),
       trailing: CartAction(
         item: item,
         onUpdateItemCount: onUpdateItemCount,

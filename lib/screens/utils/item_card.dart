@@ -1,11 +1,9 @@
-import 'package:amul/screens/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:amul/screens/cart_components/cart_controller.dart';
 import 'package:amul/models/items_model.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 import '../../Utils/AppColors.dart';
 import '../cart_components/cartItem_model.dart';
 
@@ -57,12 +55,10 @@ class _ItemCardState extends State<ItemCard> {
           if (value.get('count') != null) {
             setState(() {
               added = true;
-              print("fetched from cart collection");
             });
             setState(() {
               count = value.get('count');
               // localcount=value.get('count');
-              print("updated count from from cart collection");
             });
           }
         } catch (e) {

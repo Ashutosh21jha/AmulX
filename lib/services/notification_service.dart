@@ -45,7 +45,6 @@ class NotificationService {
   Future<void> checkForTokenRefresh() async {
     _firebaseMessaging.onTokenRefresh.listen((String token) {
       deviceToken = token;
-      print('onTokenRefresh: $token');
     });
   }
 

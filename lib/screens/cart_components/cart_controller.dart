@@ -4,7 +4,6 @@ import 'package:amul/screens/cart_components/cartItem_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:logger/web.dart';
 
 final _auth = FirebaseAuth.instance;
 final _db = FirebaseFirestore.instance;
