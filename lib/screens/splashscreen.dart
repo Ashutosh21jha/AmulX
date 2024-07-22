@@ -55,6 +55,7 @@ class _Splashscreenstate extends State<SplashScreen> {
   }
 
   void _navigateToNextScreen() async {
+    FlutterNativeSplash.remove();
     if (auth.currentUser != null) {
       if (auth.currentUser?.emailVerified ?? false) {
         await Get.find<UserController>().getUserData();
@@ -68,7 +69,6 @@ class _Splashscreenstate extends State<SplashScreen> {
     } else {
       Get.off(() => const SignInPage());
     }
-    FlutterNativeSplash.remove();
   }
 
   @override
