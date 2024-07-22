@@ -2,7 +2,7 @@ import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/api/cashfree.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/models/order_data_model.dart';
-import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/controllers/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/services/notification_service.dart';
 import 'package:amul/services/remote_config_service.dart';

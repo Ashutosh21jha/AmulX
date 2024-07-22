@@ -10,7 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/controllers/cart_controller.dart';
 import 'package:amul/screens/utils/item_card.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:lottie/lottie.dart';
@@ -417,16 +417,14 @@ class FoodPageState extends State<FoodPage> {
                     itemCount: filteredResults.length,
                     itemBuilder: (context, index) {
                       ItemsModel itemData = filteredResults[index];
-                      bool available = itemData.availability;
-                      bool unavailable = !available;
 
-                      bool isOutOfStock = available && itemData.stock == 0;
+                      final correspondingItemInCart = CartController
+                          .to.cartItems
+                          .where((element) => element.name == itemData.id!);
+
                       return ItemCard(
                         key: Key(itemData.id!),
                         itemData: itemData,
-                        isOutOfStock: isOutOfStock,
-                        unavailable: unavailable,
-                        index: index,
                       );
                     },
                   ),
@@ -465,21 +463,16 @@ class FoodPageState extends State<FoodPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        SvgPicture.asset(
-                          "assets/images/cartlogo.svg",
-                        ),
-                        const SizedBox(width: 60),
-                        const Text(
-                          'View Cart',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    SvgPicture.asset(
+                      "assets/images/cartlogo.svg",
+                    ),
+                    const Text(
+                      'View Cart',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const Icon(
                       Icons.arrow_forward,

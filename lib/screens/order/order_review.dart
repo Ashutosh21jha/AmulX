@@ -8,8 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
-import '../cart_components/cart_controller.dart';
-import '../cart_components/cartItem_model.dart';
+import '../../controllers/cart_controller.dart';
+import '../../models/cart_item_model.dart';
 
 class OrderReviewPage extends StatefulWidget {
   OrderReviewPage({super.key, required this.cartItems});

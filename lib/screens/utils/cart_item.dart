@@ -1,7 +1,7 @@
 import 'package:amul/controllers/items_controller.dart';
-import 'package:amul/screens/cart_components/cartItem_model.dart';
+import 'package:amul/models/cart_item_model.dart';
 import 'package:flutter/material.dart';
-import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/controllers/cart_controller.dart';
 
 import '../../Utils/AppColors.dart';
 
@@ -53,7 +53,7 @@ class _CartItemCardState extends State<CartItemCard> {
             ),
             const Spacer(),
             Text(
-              '\₹${widget.item.price.toStringAsFixed(2)}',
+              '₹${widget.item.price.toStringAsFixed(2)}',
               style: const TextStyle(
                 color: AppColors.green,
                 fontSize: 14,

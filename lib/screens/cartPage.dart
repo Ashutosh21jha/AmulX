@@ -1,6 +1,6 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/amul_status_controller.dart';
-import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/controllers/cart_controller.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/order/orderPage.dart';
 import 'package:amul/screens/profile.dart';
