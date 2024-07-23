@@ -102,7 +102,8 @@ class _HomeState extends State<HomePage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const SizedBox(height: 45),
+          // const SizedBox(height: 45),
+          SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
           Text(
             "Answer your\nappetite!",
             style: TextStyle(
@@ -114,7 +115,7 @@ class _HomeState extends State<HomePage> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 30),
+          SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
