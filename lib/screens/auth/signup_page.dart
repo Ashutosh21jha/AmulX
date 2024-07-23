@@ -1,8 +1,8 @@
 import 'package:amul/screens/auth/auth_input_widget.dart';
-import 'package:amul/screens/auth/auth_snackbar.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/profile_screens/terms.dart';
+import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
       switch (signUpState) {
         case SignUpState.alreadyRegistered:
-          showAuthErrorSnackBar(
+          AmulXSnackBars.showAuthErrorSnackBar(
               "Error", "Email already registered. Please sign in.");
           break;
         case SignUpState.success:
@@ -74,11 +74,11 @@ class _SignUpPageState extends State<SignUpPage> {
           );
           break;
         case SignUpState.error:
-          showAuthErrorSnackBar(
+          AmulXSnackBars.showAuthErrorSnackBar(
               "Error", "An error occurred. Please try again.");
           break;
         default:
-          showAuthErrorSnackBar(
+          AmulXSnackBars.showAuthErrorSnackBar(
               "Error", "An error occurred. Please try again.");
           break;
       }

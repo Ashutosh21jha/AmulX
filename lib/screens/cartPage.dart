@@ -5,6 +5,7 @@ import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/screens/order/orderPage.dart';
 import 'package:amul/screens/profile.dart';
 import 'package:amul/screens/utils/cart_item.dart';
+import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:amul/screens/order/order_review.dart';
@@ -213,7 +214,7 @@ class _CartPageState extends State<CartPage> {
                                                                 fontSize: 14),
                                                           ),
                                                           Text(
-                                                            '\₹${(item.price * item.quantity).toStringAsFixed(2)}',
+                                                            '₹${(item.price * item.quantity).toStringAsFixed(2)}',
                                                             style: TextStyle(
                                                                 color: appColors
                                                                     .secondaryText,
@@ -270,7 +271,7 @@ class _CartPageState extends State<CartPage> {
                                                 final cartController =
                                                     CartController.to;
                                                 return Text(
-                                                  '\₹ ${cartController.totalAmount.toStringAsFixed(2)}',
+                                                  '₹ ${cartController.totalAmount.toStringAsFixed(2)}',
                                                   style: TextStyle(
                                                     fontSize: 20,
                                                     color:
@@ -315,10 +316,8 @@ class _CartPageState extends State<CartPage> {
                                                       ));*/
                                                     }
                                                   } else {
-                                                    Get.snackbar(
-                                                      'Cart is Empty',
-                                                      'Please add items to the cart first',
-                                                    );
+                                                    AmulXSnackBars
+                                                        .showEmptyCartPleaseAddItemSnackbar();
                                                   }
                                                 },
                                                 style: ElevatedButton.styleFrom(

@@ -199,8 +199,8 @@ class CartController extends GetxController {
     }
   }
 
-  Future<bool?> updateStockOnPay(List<CartItem> cartItems) async {
-    bool? anyItemOutOfStock = false;
+  Future<List<String>> updateStockOnPay(List<CartItem> cartItems) async {
+    final List<String> itemsOutOfStock = [];
 
     try {
       await _db.runTransaction((transaction) async {
@@ -226,20 +226,16 @@ class CartController extends GetxController {
                 {'availability': false, 'stock': newStock},
               );
             } else {
-              anyItemOutOfStock = true;
-              // Handle out-of-stock case
-              print('Item ${cartItem.name} is out of stock.');
+              itemsOutOfStock.add(cartItem.name);
             }
           }
         }
       });
     } catch (error) {
-      print('Error updating stock on pay: $error');
-      return null;
+      debugPrint('Error updating stock on pay: $error');
       // Handle the error as needed
     }
-
-    return anyItemOutOfStock;
+    return itemsOutOfStock;
   }
 
   Future<void> addBackStock(List<CartItem> cartItems) async {

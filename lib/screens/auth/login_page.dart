@@ -1,8 +1,8 @@
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/screens/auth/auth_input_widget.dart';
-import 'package:amul/screens/auth/auth_snackbar.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/auth/signup_page.dart';
+import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -79,19 +79,22 @@ class _SignInPageState extends State<SignInPage> {
           );
           break;
         case SignInState.userNotFound:
-          showAuthErrorSnackBar("Error", "No user found for that email.");
+          AmulXSnackBars.showAuthErrorSnackBar(
+              "Error", "No user found for that email.");
           break;
         case SignInState.invalidCredential:
-          showAuthErrorSnackBar("Error", "Wrong email or password.");
+          AmulXSnackBars.showAuthErrorSnackBar(
+              "Error", "Wrong email or password.");
           break;
         case SignInState.tooManyRequests:
-          showAuthErrorSnackBar("Error", "Too many requests. Try again later.");
+          AmulXSnackBars.showAuthErrorSnackBar(
+              "Error", "Too many requests. Try again later.");
           break;
         case SignInState.error:
-          showAuthErrorSnackBar("Error", "Unknown Error");
+          AmulXSnackBars.showAuthErrorSnackBar("Error", "Unknown Error");
           break;
         default:
-          showAuthErrorSnackBar("Error", "Unknown Error");
+          AmulXSnackBars.showAuthErrorSnackBar("Error", "Unknown Error");
       }
 
       setState(() {

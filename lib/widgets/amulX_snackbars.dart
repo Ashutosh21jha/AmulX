@@ -3,6 +3,167 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class AmulXSnackBars {
+  static void showAuthSuccessSnackBar(String title, String message) {
+    Get.snackbar(
+      title,
+      message,
+      barBlur: 1,
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFA2E8D8),
+          AppColors.green,
+          Color(0xFF007A52),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 3),
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+
+  static void showEmptyCartPleaseAddItemSnackbar() {
+    Get.snackbar(
+      'Cart is Empty',
+      'Please add items to the cart first',
+      barBlur: 1,
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFF98181),
+          AppColors.red,
+          Color(0xFF850000),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 3),
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+
+  static void showNameSuccessfullyChangedSnackbar() {
+    Get.snackbar(
+      'Success',
+      'Name Updated',
+      barBlur: 10,
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFA2E8D8),
+          AppColors.green,
+          Color(0xFF007A52),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 1),
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+
+  static void showProfileImageSuccessfullyChangedSnackbar() {
+    Get.snackbar(
+      'Success',
+      'Profile Image Updated',
+      barBlur: 10,
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFA2E8D8),
+          AppColors.green,
+          Color(0xFF007A52),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 1),
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+
+  static void showAuthErrorSnackBar(String title, String message) {
+    Get.snackbar(
+      title,
+      message,
+      barBlur: 1,
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFFF98181),
+          AppColors.red,
+          Color(0xFF850000),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 3),
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+
+  static void onPasswordResetAccountNotFoundSnackbar() {
+    Get.snackbar(
+      'You do not have account yet!',
+      'Sign Up using Nsut credentials',
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFF00084B),
+          Color(0xFF2E55C0),
+          Color(0xFF148BFA),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 2),
+      barBlur: 10,
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+
+  static void showPasswordResetLinkSendSnackbar() {
+    Get.snackbar(
+      'Password Reset link Sent!',
+      'Thank You for using Amul',
+      backgroundGradient: const LinearGradient(
+        colors: [
+          Color(0xFF00084B),
+          Color(0xFF2E55C0),
+          Color(0xFF148BFA),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: const Duration(seconds: 2),
+      barBlur: 10,
+      icon: Image.asset(
+        'assets/images/icon.png',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+
   static void showPaymentOrderSuccessSnackbar() {
     Get.snackbar(
       'Payment Successful',
@@ -95,10 +256,11 @@ class AmulXSnackBars {
     );
   }
 
-  static void showItemOutOfStockSnackbar() {
+  static void showItemOutOfStockSnackbar(List<String> items) {
+    items = items.map((item) => "'$item'").toList();
     Get.snackbar(
-      'Some item is out of stock',
-      'Please remove that item from cart',
+      'Stock Exceeded',
+      'Reduce quantity for ${items.join(', ')}',
       barBlur: 10,
       backgroundGradient: const LinearGradient(
         colors: [
