@@ -103,7 +103,7 @@ class _HomeState extends State<HomePage> {
       child: Column(
         children: [
           // const SizedBox(height: 45),
-          SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+          SizedBox(height: MediaQuery.sizeOf(context).height * 0.03),
           Text(
             "Answer your\nappetite!",
             style: TextStyle(
@@ -115,7 +115,7 @@ class _HomeState extends State<HomePage> {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+          SizedBox(height: MediaQuery.sizeOf(context).height * 0.03),
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
