@@ -1,51 +1,69 @@
 import 'package:amul/Utils/AppColors.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 
 class AmulXSnackBars {
+  static final List<Color> successColors = [
+    const Color(0xFFA2E8D8),
+    AppColors.green,
+    const Color(0xFF007A52),
+  ];
+
+  static final List<Color> errorColors = [
+    const Color(0xFFF98181),
+    AppColors.red,
+    const Color(0xFF850000),
+  ];
+
+  static final List<Color> infoColors = [
+    const Color(0xFF00084B),
+    const Color(0xFF2E55C0),
+    const Color(0xFF148BFA),
+  ];
+
+  static const double barBlur = 5;
+
+  static const Color darkModeBackgroundColor = Colors.black12;
+  static const Color lightModeBackgroundColor = Colors.black87;
+
+  static const Duration duration = Duration(seconds: 3);
+
+  static final icon = Image.asset(
+    'assets/images/icon.png',
+    width: 24,
+    height: 24,
+  );
+
   static void showAuthSuccessSnackBar(String title, String message) {
-    Get.snackbar(
-      title,
-      message,
-      barBlur: 1,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFA2E8D8),
-          AppColors.green,
-          Color(0xFF007A52),
-        ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ),
-      duration: const Duration(seconds: 3),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
-    );
+    Get.snackbar(title, message,
+        barBlur: barBlur,
+        colorText: Colors.white,
+        backgroundColor:
+            Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+        backgroundGradient: LinearGradient(
+          colors: successColors,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        duration: duration,
+        icon: icon);
   }
 
   static void showEmptyCartPleaseAddItemSnackbar() {
     Get.snackbar(
       'Cart is Empty',
       'Please add items to the cart first',
-      barBlur: 1,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFF98181),
-          AppColors.red,
-          Color(0xFF850000),
-        ],
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      backgroundGradient: LinearGradient(
+        colors: errorColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 3),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      icon: icon,
     );
   }
 
@@ -53,22 +71,17 @@ class AmulXSnackBars {
     Get.snackbar(
       'Success',
       'Name Updated',
-      barBlur: 10,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFA2E8D8),
-          AppColors.green,
-          Color(0xFF007A52),
-        ],
+      colorText: Colors.white,
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      backgroundGradient: LinearGradient(
+        colors: successColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 1),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      icon: icon,
     );
   }
 
@@ -76,22 +89,17 @@ class AmulXSnackBars {
     Get.snackbar(
       'Success',
       'Profile Image Updated',
-      barBlur: 10,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFA2E8D8),
-          AppColors.green,
-          Color(0xFF007A52),
-        ],
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      backgroundGradient: LinearGradient(
+        colors: successColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 1),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      icon: icon,
     );
   }
 
@@ -99,22 +107,17 @@ class AmulXSnackBars {
     Get.snackbar(
       title,
       message,
-      barBlur: 1,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFF98181),
-          AppColors.red,
-          Color(0xFF850000),
-        ],
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      backgroundGradient: LinearGradient(
+        colors: errorColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 3),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      icon: icon,
     );
   }
 
@@ -122,22 +125,17 @@ class AmulXSnackBars {
     Get.snackbar(
       'You do not have account yet!',
       'Sign Up using Nsut credentials',
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFF00084B),
-          Color(0xFF2E55C0),
-          Color(0xFF148BFA),
-        ],
+      backgroundGradient: LinearGradient(
+        colors: infoColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 2),
-      barBlur: 10,
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      icon: icon,
     );
   }
 
@@ -145,22 +143,17 @@ class AmulXSnackBars {
     Get.snackbar(
       'Password Reset link Sent!',
       'Thank You for using Amul',
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFF00084B),
-          Color(0xFF2E55C0),
-          Color(0xFF148BFA),
-        ],
+      backgroundGradient: LinearGradient(
+        colors: infoColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 2),
-      barBlur: 10,
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      icon: icon,
     );
   }
 
@@ -168,22 +161,17 @@ class AmulXSnackBars {
     Get.snackbar(
       'Payment Successful',
       'Thank You for using Amul',
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFA2E8D8),
-          AppColors.green,
-          Color(0xFF007A52),
-        ],
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      backgroundGradient: LinearGradient(
+        colors: successColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 1),
-      barBlur: 10,
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      barBlur: barBlur,
+      colorText: Colors.white,
+      icon: icon,
     );
   }
 
@@ -191,22 +179,17 @@ class AmulXSnackBars {
     Get.snackbar(
       'Order creation failed',
       'please contact AMULX',
-      barBlur: 10,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFF98181),
-          AppColors.red,
-          Color(0xFF850000),
-        ],
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      backgroundGradient: LinearGradient(
+        colors: errorColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 1),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      icon: icon,
     );
   }
 
@@ -214,22 +197,17 @@ class AmulXSnackBars {
     Get.snackbar(
       'Payment Failed',
       'Please Try Again',
-      barBlur: 10,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFF98181),
-          AppColors.red,
-          Color(0xFF850000),
-        ],
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      backgroundGradient: LinearGradient(
+        colors: errorColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 1),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      icon: icon,
     );
   }
 
@@ -237,22 +215,17 @@ class AmulXSnackBars {
     Get.snackbar(
       'Payment Pending',
       'Please wait for the payment to be processed',
-      barBlur: 10,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFA2E8D8),
-          AppColors.green,
-          Color(0xFF007A52),
-        ],
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      backgroundGradient: LinearGradient(
+        colors: successColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 1),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      icon: icon,
     );
   }
 
@@ -261,22 +234,17 @@ class AmulXSnackBars {
     Get.snackbar(
       'Stock Exceeded',
       'Reduce quantity for ${items.join(', ')}',
-      barBlur: 10,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFF98181),
-          AppColors.red,
-          Color(0xFF850000),
-        ],
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      backgroundGradient: LinearGradient(
+        colors: errorColors,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
-      duration: const Duration(seconds: 1),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
+      duration: duration,
+      icon: icon,
     );
   }
 }

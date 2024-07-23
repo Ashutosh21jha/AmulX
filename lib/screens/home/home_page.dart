@@ -118,9 +118,6 @@ class _HomeState extends State<HomePage> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: MediaQuery.sizeOf(context).height * 0.03),
-          // ElevatedButton(
-          //     onPressed: () => AmulXSnackBars.showItemOutOfStockSnackbar(),
-          //     child: const Text("SD")),
           GridView.count(
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
