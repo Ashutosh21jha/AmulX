@@ -173,8 +173,8 @@ class _ItemCartTrailingWidgetState extends State<ItemCartTrailingWidget> {
               const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
           shape: const ContinuousRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
-          content:
-              const Text('You have reached the maximum limit of this item.'),
+          content: const Text(
+              "You have reached the maximum stock limit for this item."),
           actionsPadding: const EdgeInsets.only(bottom: 0),
           actions: [
             TextButton(
