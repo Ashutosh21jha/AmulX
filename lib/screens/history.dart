@@ -1,7 +1,7 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/Utils/enums.dart';
 import 'package:amul/api/firebaseAPI.dart';
-import 'package:amul/screens/cart_components/cartItem_model.dart';
+import 'package:amul/models/cart_item_model.dart';
 import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';

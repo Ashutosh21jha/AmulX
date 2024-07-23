@@ -1,12 +1,14 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/amul_status_controller.dart';
 import 'package:amul/controllers/items_controller.dart';
-import 'package:amul/screens/cart_components/cart_controller.dart';
+import 'package:amul/controllers/cart_controller.dart';
 import 'package:amul/screens/history.dart';
 import 'package:amul/screens/home/food_tile.dart';
 import 'package:amul/services/remote_config_service.dart';
+import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -102,7 +104,8 @@ class _HomeState extends State<HomePage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const SizedBox(height: 45),
+          // const SizedBox(height: 45),
+          SizedBox(height: MediaQuery.sizeOf(context).height * 0.03),
           Text(
             "Answer your\nappetite!",
             style: TextStyle(
@@ -114,8 +117,12 @@ class _HomeState extends State<HomePage> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 30),
+          SizedBox(height: MediaQuery.sizeOf(context).height * 0.03),
+          // ElevatedButton(
+          //     onPressed: () => AmulXSnackBars.showItemOutOfStockSnackbar(),
+          //     child: const Text("SD")),
           GridView.count(
+            physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
             shrinkWrap: true,
             children: const [
@@ -180,8 +187,10 @@ class _HomeState extends State<HomePage> {
             ),
           ),
         ),
-        Obx(
-          () => storeOpen.value ? openStoreContent() : closedStoreMessage(),
+        Expanded(
+          child: Obx(
+            () => storeOpen.value ? openStoreContent() : closedStoreMessage(),
+          ),
         ),
       ],
     );

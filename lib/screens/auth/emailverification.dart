@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/user_controller.dart';
-import 'package:amul/screens/auth/auth_snackbar.dart';
 import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/mainscreen.dart';
+import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,7 @@ class _EmailverificationState extends State<Emailverification> {
 
   Future<void> resendlink() async {
     await auth.currentUser?.sendEmailVerification();
-    showAuthSuccessSnackBar("", "Email sent successfully!");
+    AmulXSnackBars.showAuthSuccessSnackBar("", "Email sent successfully!");
   }
 
   Future<void> autoredirect() async {
@@ -50,22 +50,24 @@ class _EmailverificationState extends State<Emailverification> {
   }
 
   Future<void> manualredirect() async {
-      await auth.currentUser?.reload();
-      if (auth.currentUser!.emailVerified) {
-        signIn();
+    await auth.currentUser?.reload();
+    if (auth.currentUser!.emailVerified) {
+      signIn();
+    } else {
+      await Get.showOverlay(
+          asyncFunction: () async {
+            final userController = Get.find<UserController>();
+            await userController.getUserData();
+          },
+          loadingWidget: const Center(
+              child: CircularProgressIndicator(
+            color: AppColors.blue,
+          )));
+      AmulXSnackBars.showAuthErrorSnackBar(
+        "Verification Error",
+        "Email is not verified",
+      );
     }
-      else{
-        await Get.showOverlay(
-            asyncFunction: () async {
-              final userController = Get.find<UserController>();
-              await userController.getUserData();
-            },
-            loadingWidget: const Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.blue,
-                )));
-        showAuthErrorSnackBar("Verification Error", "Email is not verified",);
-      }
   }
 
   Future<void> signIn() async {
@@ -200,17 +202,17 @@ class _EmailverificationState extends State<Emailverification> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 21,left: 11),
+            padding: const EdgeInsets.only(top: 21, left: 11),
             child: Center(
               child: GestureDetector(
-                  onTap: () => resendlink(),
-                  child: Text(
-                    "Resend verification link",
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: appColors.blue,
-                    ),
+                onTap: () => resendlink(),
+                child: Text(
+                  "Resend verification link",
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: appColors.blue,
                   ),
+                ),
               ),
             ),
           ),

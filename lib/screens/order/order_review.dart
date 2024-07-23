@@ -8,8 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
-import '../cart_components/cart_controller.dart';
-import '../cart_components/cartItem_model.dart';
+import '../../controllers/cart_controller.dart';
+import '../../models/cart_item_model.dart';
 
 class OrderReviewPage extends StatefulWidget {
   OrderReviewPage({super.key, required this.cartItems});
@@ -45,11 +45,11 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     });
 
     try {
-      final bool? itemsOutOfStock =
+      final List<String> itemsOutOfStock =
           await CartController.to.updateStockOnPay(CartController.to.cartItems);
 
-      if (itemsOutOfStock == null || itemsOutOfStock) {
-        AmulXSnackBars.showItemOutOfStockSnackbar();
+      if (itemsOutOfStock.isNotEmpty) {
+        AmulXSnackBars.showItemOutOfStockSnackbar(itemsOutOfStock);
         return;
       }
 
@@ -146,52 +146,6 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
   //   }
   //   CartController.to.reloadCart();
   // }
-
-  void stockExceedSnackBar(List item) {
-    Get.snackbar(
-      'Stock Exceeded',
-      'Reduce quantity for ${item.join(', ')}',
-      barBlur: 10,
-      backgroundGradient: const LinearGradient(
-        colors: [
-          Color(0xFFF98181),
-          AppColors.red,
-          Color(0xFF850000),
-        ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ),
-      duration: const Duration(seconds: 1),
-      icon: Image.asset(
-        'assets/images/icon.png',
-        width: 24,
-        height: 24,
-      ),
-    );
-  }
-
-  Future<void> navigateToPayment() async {
-    final exceededItems = <String>[];
-
-    // Check if the quantity exceeds stock for each item
-    for (final item in widget.cartItems) {
-      final stock = await getStockFromMenu(item.name);
-      if (item.quantity > stock) {
-        exceededItems.add(item.name);
-      }
-    }
-
-    if (exceededItems.isNotEmpty) {
-      setState(() {
-        isLoading = false;
-      });
-
-      stockExceedSnackBar(exceededItems);
-      return;
-    }
-
-    processPayment();
-  }
 
   Future<int> getStockFromMenu(String itemName) async {
     final availableCollection = FirebaseFirestore.instance
