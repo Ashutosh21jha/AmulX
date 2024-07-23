@@ -27,7 +27,7 @@ class _Splashscreenstate extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
+    FlutterNativeSplash.remove();
     Get.find<NotificationService>().initLocalNotifications(context);
 
     ItemController.to.fetchItems();
@@ -55,7 +55,6 @@ class _Splashscreenstate extends State<SplashScreen> {
   }
 
   void _navigateToNextScreen() async {
-    FlutterNativeSplash.remove();
     if (auth.currentUser != null) {
       if (auth.currentUser?.emailVerified ?? false) {
         await Get.find<UserController>().getUserData();
@@ -77,6 +76,7 @@ class _Splashscreenstate extends State<SplashScreen> {
     //   statusBarColor: Colors.transparent,
     //   statusBarIconBrightness: Brightness.light,
     // ));
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
