@@ -23,7 +23,7 @@ class AmulXSnackBars {
 
   static const double barBlur = 5;
 
-  static const Color darkModeBackgroundColor = Colors.black12;
+  static const Color darkModeBackgroundColor = Colors.black38;
   static const Color lightModeBackgroundColor = Colors.black87;
 
   static const Duration duration = Duration(seconds: 3);
