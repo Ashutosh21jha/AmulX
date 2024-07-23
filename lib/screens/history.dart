@@ -1,6 +1,5 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/Utils/enums.dart';
-import 'package:amul/api/firebaseAPI.dart';
 import 'package:amul/models/cart_item_model.dart';
 import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +11,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/web.dart';
 import 'package:lottie/lottie.dart';
 import '../widgets/item.dart';
 

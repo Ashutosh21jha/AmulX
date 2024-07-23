@@ -1,6 +1,4 @@
 import 'package:amul/Utils/AppColors.dart';
-import 'package:amul/Utils/darkTheme.dart';
-import 'package:amul/Utils/lightTheme.dart';
 import 'package:amul/screens/auth/login_page.dart';
 import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/screens/profile_screens/profile_card2.dart';

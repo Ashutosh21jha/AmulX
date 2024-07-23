@@ -9,6 +9,7 @@ import 'package:amul/services/remote_config_service.dart';
 import 'package:amul/widgets/amulX_dialogs.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfupi.dart';
@@ -169,7 +170,9 @@ class OrderPaymentController extends GetxController {
           .setPaymentSessionId(orderData.value!.paymentSessionId)
           .build();
     } on CFException catch (e) {
-      print(e.message);
+      if (kDebugMode) {
+        print(e.message);
+      }
     }
 
     return session;

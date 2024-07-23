@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/amul_status_controller.dart';
 import 'package:amul/controllers/items_controller.dart';
@@ -10,9 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:amul/controllers/cart_controller.dart';
 import 'package:amul/screens/utils/item_card.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 

@@ -7,7 +7,6 @@ import 'package:amul/screens/mainscreen.dart';
 import 'package:amul/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -27,7 +26,6 @@ class _Splashscreenstate extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    FlutterNativeSplash.remove();
     Get.find<NotificationService>().initLocalNotifications(context);
 
     ItemController.to.fetchItems();

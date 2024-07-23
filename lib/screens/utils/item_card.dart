@@ -1,13 +1,9 @@
 import 'package:amul/controllers/user_controller.dart';
-import 'package:amul/screens/splashscreen.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:amul/controllers/cart_controller.dart';
 import 'package:amul/models/items_model.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import '../../Utils/AppColors.dart';
 import '../../models/cart_item_model.dart';
 

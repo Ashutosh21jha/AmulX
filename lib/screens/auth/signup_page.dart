@@ -351,9 +351,9 @@ class _SignUpPageState extends State<SignUpPage> {
                               TextButton(
                                 onPressed: () => Get.to(() => const Terms()),
                                 style: ButtonStyle(
-                                    padding: const MaterialStatePropertyAll(
+                                    padding: const WidgetStatePropertyAll(
                                         EdgeInsets.zero),
-                                    overlayColor: MaterialStateProperty.all(
+                                    overlayColor: WidgetStateProperty.all(
                                         Colors.transparent)),
                                 child: Text(
                                   "Terms and Conditions",
