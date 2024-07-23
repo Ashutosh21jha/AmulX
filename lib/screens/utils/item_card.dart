@@ -224,7 +224,7 @@ class _ItemCartTrailingWidgetState extends State<ItemCartTrailingWidget> {
   }
 
   void handleOnRemove() async {
-    if (quantity.value == 0) {
+    if (quantity.value <= 0) {
       return;
     }
 
@@ -241,7 +241,7 @@ class _ItemCartTrailingWidgetState extends State<ItemCartTrailingWidget> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (quantity.value == 0) {
+      if (quantity.value <= 0) {
         return GestureDetector(
           onTap: handleOnAdd,
           child: Container(
