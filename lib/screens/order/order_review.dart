@@ -4,7 +4,6 @@ import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
@@ -99,7 +98,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         orderID = "ORD-$count";
       });
     } catch (error) {
-      print('Error updating order count: $error');
+      return null;
     }
 
     return orderID;

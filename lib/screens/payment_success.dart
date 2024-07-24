@@ -1,5 +1,3 @@
-import 'package:amul/screens/foodPage.dart';
-import 'package:amul/screens/home/home_page.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

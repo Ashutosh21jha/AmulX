@@ -1,13 +1,9 @@
-import 'dart:io';
-
-import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/auth/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:path_provider/path_provider.dart';
 
 const EdgeInsets _paddingButtons =
     EdgeInsets.symmetric(horizontal: 12, vertical: 8);
@@ -32,12 +28,12 @@ final db = FirebaseFirestore.instance;
 
 Future<void> signOut() async {
   try {
-    print(auth.currentUser?.email);
     await auth.signOut();
     Get.offAll(
       () => const SignInPage(),
     );
   } catch (e) {
+    // Todo : handle
     throw Exception(e);
   }
 }

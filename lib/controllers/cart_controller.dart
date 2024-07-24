@@ -32,7 +32,6 @@ class CartController extends GetxController {
           await FirebaseFirestore.instance.doc(collectionPath).get();
       currentOrder = userDoc.get('currentOrder');
     } catch (e) {
-      print('Error fetching current order from Firestore: $e');
       return null;
     }
     return null;
@@ -193,7 +192,6 @@ class CartController extends GetxController {
           doc.reference.delete();
         }
       });
-      print("Cart deleted successfully!");
     } catch (e) {
       print("Error deleting cart: $e");
     }

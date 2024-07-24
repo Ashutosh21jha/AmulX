@@ -2,9 +2,6 @@ import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:lottie/lottie.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:get/get.dart';
 
@@ -38,7 +35,6 @@ class _OrderPageState extends State<OrderPage> {
           if (element.data()['isRefunded'] == true) {
             refundFunction();
           }
-          print("$orderId is declined.");
           setState(() {
             isDeclined = true;
           });
@@ -48,10 +44,6 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   void refundFunction() async {
-    print('Refund initiated. Navigating to Mainscreen...');
-
-    print('Navigating to Mainscreen...');
-
     Get.to(const Mainscreen());
     Get.snackbar(
       'Refund Initiated',
@@ -82,15 +74,12 @@ class _OrderPageState extends State<OrderPage> {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('prepList').get();
     try {
-      print('Fetching orders for userId: ${widget.userId}');
       var filteredDocs = querySnapshot.docs
           .where((doc) =>
               RegExp(r'^ORD-\d+$').hasMatch(doc.id.toString()) &&
               (doc['userId'] == widget.userId) &&
               doc['orderStatus'] != 'Placed')
           .toList();
-      print(
-          'Filtered Docs: ${filteredDocs.toList().elementAt(0).get('orderID')}');
       setState(() {
         orderId = filteredDocs.toList().elementAt(0).get('orderID');
         calculateTotalAmount(filteredDocs.toList().elementAt(0).get('items'));
@@ -103,30 +92,19 @@ class _OrderPageState extends State<OrderPage> {
           .where('isRefunded', isEqualTo: false)
           .get();
 
-      print('Declined Collection Documents: ${declinedSnapshot.docs.length}');
-
       var filteredDocs = declinedSnapshot.docs
           .where((doc) =>
               RegExp(r'^ORD-\d+$').hasMatch(doc.id.toString()) &&
               doc['orderStatus'] == 'Declined')
           .toList();
 
-      print('Filtered Docs Count: ${filteredDocs.length}');
       if (filteredDocs.isNotEmpty) {
-        var firstDoc = filteredDocs.first;
-        print('First Document ID: ${filteredDocs.first.id}');
-        print('First Document Data: ${filteredDocs.first.data()}');
-        print(
-            'Filtered Docs: ${filteredDocs.toList().elementAt(0).get('orderID')}');
         setState(() {
           orderId = filteredDocs.toList().elementAt(0).get('orderID');
           calculateTotalAmount(filteredDocs.toList().elementAt(0).get('items'));
-          print("isDeclined becomes true");
           isDeclined = true;
         });
         // listenForRefundStatus();
-      } else {
-        print('No matching documents found in Declined collection');
       }
     }
   }

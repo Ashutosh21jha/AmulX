@@ -4,18 +4,13 @@ import 'package:amul/screens/components/devcomm_logo.dart';
 import 'package:amul/widgets/amulX_appbar.dart';
 import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:amul/widgets/user_image_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 import '../../Utils/AppColors.dart';

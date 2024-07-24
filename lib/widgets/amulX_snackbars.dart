@@ -247,4 +247,22 @@ class AmulXSnackBars {
       icon: icon,
     );
   }
+
+  static void showErrorSnackBar(String title, String message) {
+    Get.snackbar(
+      title,
+      message,
+      barBlur: barBlur,
+      backgroundColor:
+          Get.isDarkMode ? darkModeBackgroundColor : lightModeBackgroundColor,
+      colorText: Colors.white,
+      backgroundGradient: LinearGradient(
+        colors: errorColors,
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      duration: duration,
+      icon: icon,
+    );
+  }
 }

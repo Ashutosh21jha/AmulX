@@ -1,21 +1,16 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/amul_status_controller.dart';
-import 'package:amul/controllers/items_controller.dart';
 import 'package:amul/controllers/cart_controller.dart';
 import 'package:amul/screens/history.dart';
 import 'package:amul/screens/home/food_tile.dart';
 import 'package:amul/services/remote_config_service.dart';
-import 'package:amul/widgets/amulX_snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {

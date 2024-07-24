@@ -1,9 +1,7 @@
 import 'package:amul/Utils/AppColors.dart';
 import 'package:amul/controllers/user_controller.dart';
 import 'package:amul/widgets/user_image_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class ProfileCard2 extends StatelessWidget {
