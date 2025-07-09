@@ -1,5 +1,6 @@
 # amul
 A new Flutter project.
+README.md
 
 ## Getting Started
 
