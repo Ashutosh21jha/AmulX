@@ -1,7 +1,4 @@
 # amul
-![WhatsApp Image 2025-07-09 at 00 03 08_3dea5bd3](https://github.com/user-attachments/assets/42c3315e-5529-47e7-86f3-9e26615883aa)
-
-
 A new Flutter project.
 
 ## Getting Started
