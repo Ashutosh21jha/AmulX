@@ -1,7 +1,6 @@
 # amul
 A new Flutter project.
-![Image](https://github.com/user-attachments/assets/39b4fc4e-df54-47cc-bfc7-2d5dd436049b)
-![Image](https://github.com/user-attachments/assets/a8de0815-2b5f-4abd-b4d0-bfabc84a8498)
+![Image](https://github.com/user-attachments/assets/39b4fc4e-df54-47cc-bfc7-2d5dd436049b) ![Image](https://github.com/user-attachments/assets/a8de0815-2b5f-4abd-b4d0-bfabc84a8498)
 ![Image](https://github.com/user-attachments/assets/1edf147b-4c15-4ac0-b88b-f951a4dd815d)
 ![Image](https://github.com/user-attachments/assets/85ef3988-2594-42f8-b908-066c74bf1c5a)
 ![Image](https://github.com/user-attachments/assets/de872a59-099d-45d5-97e0-126fd4f4d638)
