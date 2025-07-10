@@ -10,4 +10,5 @@ A brief description of what this project does and who it's for
 **BackEnd:** Firebase(No SQL).
 
 
-![Signup Screenshot](assets/signup.jpg)
+![Signup Screenshot](signup.jpg)
+
