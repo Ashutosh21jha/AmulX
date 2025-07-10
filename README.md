@@ -1,20 +1,23 @@
 
-# Project Title
+# Project Description
 
+**Problem:** **Overwhelming demand** at the **Amul shop on the NSUT campus** caused **25–30-minute wait times**, resulting in **missed classes** and **frustration**.
 
-Problem: Overwhelming demand Amul shop at NSUT campus caused 25–30-minute wait times, resulting in missed classes and frustration. 
+**Solution:** **Developed an app for pre-ordering food**, enabling **quick pick-up without standing in queues**.
 
-Solution: Developed an app for pre-ordering food, enabling quick pick up without standing in queues. 
+## 🔧 Features Implemented
 
-Tech Stack: The app was built using Flutter for the frontend and Firebase for the backend. Firebase Auth handles user authentication, while Fire store is used for the database. 
+- **Secure user authentication** for **NSUT students and faculty** using **college email IDs**
+- **Add items to cart**, **place orders**, and **track order status**
+- **Integrated payment gateway** for **quick and easy transactions**
+- **Real-time notifications** to keep users updated on **order status**
 
-Features Implemented: The app includes secure user authentication for NSUT students and faculty using college email IDs. It allows users to add items to the cart, place orders, and track order status. A payment gateway is integrated for quick and easy transactions. Real-time notifications keep users updated on order status .  
 
 
 ## Tech Stack
 
 **FrontEnd:** Flutter, Bloc, Getx.
-**BackEnd:** Firebase(No SQL).
+**BackEnd:** Firebase.
 
 
 ## 📸 App Screenshots
