@@ -1,15 +1,18 @@
-# amul
-A new Flutter project.
 
-## Getting Started
+# Project Title
 
-This project is a starting point for a Flutter application.
+A brief description of what this project does and who it's for
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Tech Stack
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**FrontEnd:** Flutter, Bloc, Getx.
+
+**BackEnd:** Firebase(No SQL).
+
+
+## Screenshots
+
+![App Screenshot](https://firebasestorage.googleapis.com/v0/b/amul-c27e3.appspot.com/o/SS%2FSignUp.jpg?alt=media&token=4a58d519-926a-4ca4-92d0-4bcbc9d01b9c)
+
+![App Screenshot](https://firebasestorage.googleapis.com/v0/b/amul-c27e3.appspot.com/o/SS%2FSignUp.jpg?alt=media&token=4a58d519-926a-4ca4-92d0-4bcbc9d01b9c)
