@@ -13,33 +13,33 @@ A brief description of what this project does and who it's for
 ## 📸 App Screenshots
 
 ### 📝 Signup Page
-![Signup Screenshot](screenshots/signup.jpg)
+![Signup Screenshot](signup.jpg)
 
 ### 🔐 Login Page
-![Login Screenshot](screenshots/login.jpg)
+![Login Screenshot](login.jpg)
 
 ### 🏠 DashBoard 
-![Front Page Screenshot](screenshots/frontpage.jpg)
+![Front Page Screenshot](frontpage.jpg)
 
 ### 🕳️ Empty Cart
-![Empty Cart Screenshot](screenshots/emptyCart.jpg)
+![Empty Cart Screenshot](emptyCart.jpg)
 
 ### 🍔 Menu Items Page
-![Food Screenshot](screenshots/food.jpg)
+![Food Screenshot](food.jpg)
 
 ### 🛒 Cart Page
-![Cart Screenshot](screenshots/cart.jpg)
+![Cart Screenshot](cart.jpg)
 
 ### 💳 Checkout Page
-![Checkout Screenshot](screenshots/checkout.jpg)
+![Checkout Screenshot](checkout.jpg)
 
 
 ### ✅ Payment Success 
-![Success Screenshot](screenshots/Success.jpg)
+![Success Screenshot](Success.jpg)
 
 
 ### 📜 Order History
-![History Screenshot](screenshots/history.jpg)
+![History Screenshot](history.jpg)
 
 
 
